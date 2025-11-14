@@ -38,7 +38,7 @@ editPost:
 
 Diffusion models have become one of the most powerful tools in *Artificial Intelligence (AI)*. They’re the engines behind some of today's most advanced *generative systems* -- from creating realistic images, audio, text, and videos to designing new molecules and medicines, and even modeling complex climate and environmental systems.
 
-There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <u>core principles</u> (in this post) and explore how diffusion models are being used in Earth and environmental sciences, and why those applications are so promising (Part 2 - in preparation).*
+There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the core principles (in this post) and explore how diffusion models are being used in Earth and environmental sciences, and why those applications are so promising (Part 2 - in preparation).*
 
 Let’s get started!
 
@@ -130,13 +130,13 @@ Since $\boldsymbol{\epsilon}\_{t-1}$ is standard Gaussian, if $\mathbf{x}\_{t-1}
   caption="Forward diffusion process."
 >}}
 
-In theory, if we normalize the original sample $\mathbf{x}\_{0}$ to have zero mean and unit variance, then the sequence $(\mathbf{x}_1, \dots, \mathbf{x}_T)$ will preserve these properties. By the [*Central Limit Theorem*](https://en.wikipedia.org/wiki/Central_limit_theorem), $\mathbf{x}_T$ will approximate a standard Gaussian distribution for $T \gg 0$.
+In theory, if we normalize the original sample $\mathbf{x}\_{0}$ to have zero mean and unit variance, then the entire sequence $(\mathbf{x}_1, \dots, \mathbf{x}_T)$ will preserve these properties under the forward process. By the [*Central Limit Theorem*](https://en.wikipedia.org/wiki/Central_limit_theorem), $\mathbf{x}_T$ will approximate a standard Gaussian distribution as $T$ becomes sufficiently large.
 
-In practice, inputs are typically scaled to a bounded range (*e.g.*, $[0,1]$ or $[-1,1]$). This range must be known and consistent because the noise schedule is defined based on a specific data scale.
+><mark>*This scaling ensures that the variance remains stable throughout the diffusion process.*</mark>
 
-><mark>*This scaling ensures that the mean and variance remain stable throughout the diffusion process.*</mark>
+In practice, inputs are typically scaled to a bounded range (*e.g.*, $[0,1]$ or $[-1,1]$), and this range must be known and consistent because the noise schedule is defined relative to the data's scale.
 
-Another nice property of the above process is that we can jump straight from the original sample $\mathbf{x}_0$ to any noised version of the forward diffusion process $\mathbf{x}_t$ using a clever *reparameterization* trick as follow.
+Another nice property of the above process is that we can jump straight from the original sample $\mathbf{x}_0$ to any noised version of the forward diffusion process $\mathbf{x}_t$ using a *reparameterization* trick.
 
 Let $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$, then we can write the following:
 $$
@@ -147,8 +147,8 @@ $$
 &= {\color{red}\sqrt{\alpha\_t \alpha\_{t-1}} \mathbf{x}\_{t-2} + \sqrt{\alpha\_t (1-\alpha\_{t-1})}\boldsymbol{\epsilon}\_{t-2}} + \sqrt{1 - \alpha\_{t}}\boldsymbol{\epsilon}\_{t-1} \\\
 &= \sqrt{\alpha\_t \alpha\_{t-1}} \mathbf{x}\_{t-2} + {\color{red}\sqrt{1 - \alpha\_t \alpha\_{t-1}} \bar{\boldsymbol{\epsilon}}\_{t-2} } \\\
 &= \dots \\\
-&= \sqrt{\alpha\_t \alpha\_{t-1}\dots\alpha\_1} \mathbf{x}\_{0} + \sqrt{1 - \alpha\_t \alpha\_{t-1}\dots\alpha\_1} \bar{\boldsymbol{\epsilon}} \\\
-&= \sqrt{\bar{\alpha}\_t}\mathbf{x}\_0 + \sqrt{1 - \bar{\alpha}\_t}\boldsymbol{\epsilon}
+&= \sqrt{\alpha\_t \alpha\_{t-1}\dots\alpha\_1} \mathbf{x}\_{0} + \sqrt{1 - \alpha\_t \alpha\_{t-1}\dots\alpha\_1} \boldsymbol{\epsilon}_0 \\\
+&= \sqrt{\bar{\alpha}\_t}\mathbf{x}\_0 + \sqrt{1 - \bar{\alpha}\_t}\boldsymbol{\epsilon}_0
 \end{aligned}
 $$
 
@@ -163,7 +163,7 @@ $$
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Reverse denoising process
-The reverse process works in the opposite direction -- and this is where the magic happens. Instead of adding noise, the model systematically removes it, step by step, gradually reconstructing the original data.
+The reverse process works in the *opposite direction* -- and this is where the magic happens. Instead of adding noise, the model systematically removes it, step by step, gradually reconstructing the original data.
 Once trained, it can start from pure Gaussian noise and iteratively apply this reverse procedure to generate new, realistic samples similar to $\mathbf{x}_0$.
 
 In theory, the reverse diffusion process is defined as $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)$ -- meaning that given a noisy sample $\mathbf{x}\_t$, we would like to compute the distribution of the previous, slightly less noisy sample $\mathbf{x}\_{t-1}$. However, this distribution is *intractable* in practice because it depends on the entire (unknown) data distribution.
@@ -174,18 +174,26 @@ In theory, the reverse diffusion process is defined as $q(\mathbf{x}\_{t-1} \ver
   caption="Reverse denoising process."
 >}}
 
-#### Conditioning trick
-Another useful trick in diffusion models is that the reverse transition becomes tractable if we condition on the original clean data $\mathbf{x}\_{0}$:
+**Conditioning trick**
+
+Another useful trick in diffusion models is that the reverse transition becomes *tractable* if we condition on the original data $\mathbf{x}\_{0}$. Since the forward process is fully known, we can apply *Bayes’ rule* to obtain a closed-form expression:
 $$
-q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) = \mathcal{N}\big(\mathbf{x}\_{t-1}; {\tilde{\boldsymbol{\mu}}}(\mathbf{x}\_t, \mathbf{x}\_0), {\tilde{\beta}\_t} \mathbf{I}\big)
+\begin{aligned}
+q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) &= q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}, \mathbf{x}\_0) \frac{ q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_0) }{ q(\mathbf{x}\_t \vert \mathbf{x}\_0) } \\\
+&= \mathcal{N}\big(\mathbf{x}\_{t-1}; {\tilde{\boldsymbol{\mu}}}\_t, {\tilde{\beta}\_t} \mathbf{I}\big)
+\end{aligned}
 $$
-where $\tilde{\boldsymbol{\mu}}\_t = {\frac{1}{\sqrt{\alpha\_t}} \Big( \mathbf{x}\_t - \frac{1 - \alpha\_t}{\sqrt{1 - \bar{\alpha}\_t}} \boldsymbol{\epsilon}\_t \Big)}$ and $\tilde{\beta}\_t = {\frac{1 - \bar{\alpha}\_{t-1}}{1 - \bar{\alpha}\_t} \beta\_t}$, which are closed-form functions derived from the forward process parameters.
+where $\tilde{\boldsymbol{\mu}}\_t = {\frac{1}{\sqrt{\alpha\_t}} \Big( \mathbf{x}\_t - \frac{1 - \alpha\_t}{\sqrt{1 - \bar{\alpha}\_t}} \boldsymbol{\epsilon}\_t \Big)}$ and $\tilde{\beta}\_t = {\frac{1 - \bar{\alpha}\_{t-1}}{1 - \bar{\alpha}\_t} \beta\_t}$.
 
->*For a detailed derivation of this trick, see [Lil'Log](https://lilianweng.github.io/posts/2021-07-11-diffusion-models) diffusion models post[^lillog_diff].*
+This derivation relies on the *Markov property* of the forward process -- each state $\mathbf{x}\_t$ depends on the previous $\mathbf{x}\_{t-1}$, not on the original data $\mathbf{x}\_0$. Formally, $q(\mathbf{x}\_{t} \vert \mathbf{x}\_{t-1}, \mathbf{x}\_0) = q(\mathbf{x}\_{t} \vert \mathbf{x}\_{t-1})$.
+Since all the factors in the Bayes' rule expression are Gaussian, multiplying them results in another Gaussian. Using $\mathcal{N}\big(x; \mu, \sigma\big) \propto \exp \left( \frac{-(x-\mu)^2}{2\sigma^2}\right),$ we can solve analytically for $\tilde{\boldsymbol{\mu}}\_t$ and $\tilde{\beta}\_t$ as shown above.
 
-*What does this mean?* It means that during training, since we know $\mathbf{x}\_0$, we can compute the exact noise that was added to get $\mathbf{x}\_t$. This allows us to create training pairs $(\mathbf{x}\_t, \mathbf{\epsilon})$ where $\mathbf{\epsilon}$ is the exact noise, and train a model to predict this noise.
+>*If you’d like a quick walkthrough of this derivation, check out this [Lil'Log's post](https://lilianweng.github.io/posts/2021-07-11-diffusion-models)[^lillog_diff]. For a full step-by-step version, see page 12 of this article[^Luo2022].*
 
-#### Why do we need deep learning?
+What does this conditioning mean? It means that during training, since we know $\mathbf{x}\_0$, we can compute the exact noise that was added to get $\mathbf{x}\_t$. This allows us to create training pairs $(\mathbf{x}\_t, \mathbf{\epsilon})$, where $\mathbf{\epsilon}$ is the exact noise, and train a model to predict this noise.
+
+**Why do we need deep learning?**
+
 However, at generation time, we start from pure Gaussian noise and do not know $\mathbf{x}\_0$.
 So we can no longer use the closed-form $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0)$.
 
@@ -224,36 +232,30 @@ $$
 Here $q(\mathbf{x}\_0)$ is the real data distribution, and $p\_{\theta}(\mathbf{x}\_0)$ is the distribution modeled by the neural network.
 However, the likelihood $p\_{\theta}(\mathbf{x}\_0)$ is intractable because the model generates data through a chain of latent noisy variables:
 $$
-p_{\theta}(x_0)
-= \int p\_\theta(\mathbf{x}\_{0:T}) dx_{1:T}
+p_{\theta}(\mathbf{x}\_0)
+= \int p\_\theta(\mathbf{x}\_{0:T}) d\mathbf{x}\_{1:T}
 $$
 
 To solve this, diffusion models use a classical idea from variational inference -- the *Evidence Lower Bound (ELBO)*.
 
-><mark>We can’t compute the true likelihood, but we can compute a lower bound on it and train the model by maximizing that bound.</mark>
+><mark>*We can’t compute the true likelihood, but we can compute a lower bound on it and train the model by maximizing that bound*.</mark>
 
 ELBO is a computable lower bound on the true log-likelihood of data. We maximize it because doing so also maximizes the likelihood of real data — but in a way we can actually calculate.
 
 $$
 \begin{aligned}
 \underbrace{\log p\_\theta(\mathbf{x}\_0)}\_{\text{Evidence}}
-&= \log \int p\_\theta(\mathbf{x}\_{0:T}) dx_{1:T} = \log \int {\color{red} q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \frac{p\_\theta(\mathbf{x}\_{0:T})}{\color{red}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}} dx_{1:T} \\\
+&= \log \int p\_\theta(\mathbf{x}\_{0:T}) d\mathbf{x}\_{1:T} = \log \int {\color{red} q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \frac{p\_\theta(\mathbf{x}\_{0:T})}{\color{red}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}} d\mathbf{x}\_{1:T} \\\
 &= \log \mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[\frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}\Bigg] \quad \quad \color{green}\small{\text{By definition: } \mathbb{E}\_{p(x)}[f(x)] = \int p(x)f(x)dx} \\\
-&\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[ \log \frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \Bigg]}\_{\text{Evidence Lower Bound (ELBO)}} \quad \quad \color{green}\small{\text{Apply Jensen's inequality (log is concave)}}
-\end{aligned}
-$$
-
-<span style="color: blue;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. . . We skip the details here for simplicity. For a complete derivation, check out &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-. . . this video[^Ozdemir] and this article[^Luo2022]. At the end, we obtain:</span>
-
-$$
-\begin{aligned}
-\quad \quad \quad \quad
+&\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[ \log \frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \Bigg]}\_{\text{Evidence Lower Bound (ELBO)}} \quad \quad \color{green}\small{\text{Apply Jensen's inequality (log is concave)}} \\\
+&\rule{0pt}{2em} \color{blue}\small{\text{. . . We skip the details here for simplicity. At the end, we obtain:}} \\\
 &\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1} \vert \mathbf{x}\_0)} \Big[ \log p_{\theta}(\mathbf{x}\_{0} \vert \mathbf{x}\_{1})\Big] - D\_\text{KL}\big(q(\mathbf{x}\_{T}\vert\mathbf{x}\_0) \|| p\_\theta(\mathbf{x}\_{T}) \big) - \sum\_{t=2}^T \mathbb{E}\_{q(\mathbf{x}\_{t} \vert \mathbf{x}\_0)} \Big[ D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t) \big)\Big]}\_{\text{Variational Lower Bound ($L\_{VLB}$)}}
 \end{aligned}
 $$
 
-where $D\_\text{KL}(p||q)$ is the *Kullback–Leibler (KL) divergence*. It measures the similarity between two distributions. KL divergence is always positive and can be non-symmetric under the interchange of $p$ and $q$.
+>*For a complete derivation, check out this video[^Ozdemir] and this article[^Luo2022]*.
+
+where $D\_\text{KL}(p||q)$ is the *Kullback–Leibler (KL) divergence*. Basically, it measures the similarity between two probability distributions. KL divergence is always positive and can be non-symmetric under the interchange of $p$ and $q$.
 
 To train the model, we instead minimize the negative log-likelihood bound:
 $$
@@ -273,7 +275,7 @@ By minimizing this loss, the model learns to invert each step of the noising pro
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
-<mark>**Quick summary:**</mark>
+**Quick summary:**
 - We gradually add noise to data (the *forward process*).
 - The model learns to remove the noise (the *reverse process*).
 - Training aims to *maximize the likelihood* of real data (or equivalently, *minimize the negative log-likelihood*).
