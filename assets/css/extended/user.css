@@ -1,3 +1,4 @@
+
 /* Center Hugo figure shortcode content */
 .figure,
 figure {
@@ -46,6 +47,74 @@ figure figcaption {
 h1.post-title + .post-description {
     font-size: 1rem !important;
     font-style: italic;
-    font-weight: 200;
+    font-weight: 75;
     line-height: 1.6;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 100vw;
+    height: 1.5;
+    background-color: #188eac;
+}
+
+.logo a {
+    margin-left: 150px;
+    color: white;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 75;
+}
+
+#menu {
+    margin-right: 150px;
+}
+
+#menu a {
+    font-size: 16px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 75;
+    color: white;
+}
+
+#menu .active {
+    font-weight: 100;
+    border-bottom: 2px solid currentColor;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 75;
+    color: white;
+}
+
+button#theme-toggle {
+    font-size: 26px;
+    margin: auto 4px;
+    color: white;
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 75;
+}
+
+.site-hero {
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+
+.site-hero img {
+  width: 100vw;
+  height: 200px;
+  display: block;
+  object-fit: cover;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--theme);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
