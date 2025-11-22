@@ -13,7 +13,7 @@ figure img {
 
 .figure figcaption,
 figure figcaption {
-    font-size: 0.85rem !important; /* adjust bigger if you want */
+    font-size: 0.85rem !important;
     text-align: center;
     font-style: italic;
     color: var(--fg-light);
@@ -22,10 +22,12 @@ figure figcaption {
 
 /* Increase font size for figure captions inside posts */
 .post-single .post-content figcaption p {
-    font-size: 0.85rem !important; /* adjust bigger if you want */
+    font-size: 0.75rem !important;
     line-height: 1.45;
-    text-align: center;
-    margin-top: 0.4rem;
+    text-align: justify;
+    text-align-last: center; /* keep last line left-aligned */
+    margin-top: 0.25rem;
+    margin-bottom: 2rem; /* spacing after figure caption */
 }
 
 /* Hugo Goldmark footnote hr */
@@ -48,4 +50,29 @@ h1.post-title + .post-description {
     font-style: italic;
     font-weight: 200;
     line-height: 1.6;
+}
+
+/* Custom highlight colors without changing default yellow */
+mark.gray {
+    background-color: #e0e0e0 !important;
+}
+
+mark.blue {
+    background-color: #bbdefb !important;
+}
+
+mark.green {
+    background-color: #c8e6c9 !important;
+}
+
+mark.pink {
+    background-color: #f8bbd0 !important;
+}
+
+mark.purple {
+    background-color: #b39ddb !important; /* lavender */
+}
+
+mark.orange {
+    background-color: #ffcc80 !important; /* warm orange */
 }

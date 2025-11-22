@@ -4,3 +4,10 @@ code.has-jax {
     border: none;
     font-size: 100%;
 }
+
+mark.mark-gray {
+    background-color: #e0e0e0 !important; /* Light gray */
+    color: inherit;
+    padding: 0.1em 0.2em;
+    border-radius: 2px;
+}
