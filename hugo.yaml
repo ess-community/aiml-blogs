@@ -75,6 +75,10 @@ menu:
           name: Tags
           url: /tags/
           weight: 6
+        - identifier: ees
+          name: ESS-CIWG
+          url: "http://esscommunity.org/"
+          weight: 7
 
 caches:
     images:

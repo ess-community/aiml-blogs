@@ -48,8 +48,28 @@ figure figcaption {
 h1.post-title + .post-description {
     font-size: 1rem !important;
     font-style: italic;
-    font-weight: 200;
-    line-height: 1.6;
+    font-weight: 150;
+    line-height: 1.4;
+}
+
+#menu a {
+    font-size: 0.75rem;
+}
+
+.post-banner {
+    width: 100vw; /* full width */
+    height: 200px; /* <- fixed maximum height */
+    overflow: hidden; /* crop anything beyond 100px */
+    margin-left: 50%;
+    transform: translateX(-50%); /* center relative to viewport */
+    position: relative;
+}
+
+.post-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* fill and crop */
+    display: block;
 }
 
 /* Custom highlight colors without changing default yellow */
