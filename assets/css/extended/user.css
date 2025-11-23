@@ -46,6 +46,12 @@ h1.post-title + .post-description {
     line-height: 1.4;
 }
 
+/* Increase summary/description size on the homepage */
+.post-entry p {
+    font-size: 16px;
+    line-height: 1.6 !important;
+}
+
 /* Post banner image */
 .post-banner {
     width: 100vw;
@@ -86,6 +92,10 @@ h1.post-title + .post-description {
 .logo-switches {
     display: flex;
     align-items: center;
+}
+
+.home-info + .post-entry {
+    margin-top: -3rem !important; /* reduce gap between 1st post and home info (default ~4rem) */
 }
 
 /* Custom highlight colors */

@@ -76,10 +76,8 @@ menu:
           url: /tags/
           weight: 6
         - identifier: ees
-          name: ESS-CIWG
-          url: "http://esscommunity.org/"
           weight: 7
-
+          pre: '<a href="http://esscommunity.org/" target="_blank" rel="noopener">ESS-CIWG</a>'
 caches:
     images:
         dir: :cacheDir/images
