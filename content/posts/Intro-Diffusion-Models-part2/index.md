@@ -1,5 +1,5 @@
 ---
-title: "Diffusion Models: Principles and Applications in Earth Sciences - Part 2"
+title: "Diffusion Models (Part 2): Advancing Weather Forecasting"
 description: "Diffusion models are transforming how we analyze and predict Earth system processes"
 summary: "Diffusion models for environmental science"
 date: 2025-11-18

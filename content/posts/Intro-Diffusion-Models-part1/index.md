@@ -1,5 +1,5 @@
 ---
-title: "Diffusion Models: Principles and Applications in Earth Sciences - Part 1"
+title: "Diffusion Models (Part 1): Foundations and Principles"
 description: "A beginner-friendly introduction to diffusion models: from noise to meaningful structure - with insights for Earth science"
 summary: "A beginner’s guide to diffusion models"
 date: 2025-10-28
