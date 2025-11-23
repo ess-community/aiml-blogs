@@ -70,7 +70,7 @@ That’s beginning to change.
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
 ## Next-Generation AI for Weather Forecasting
-In 2024, Google DeepMind introduced **GenCast**[^Price2024], a probabilistic weather forecasting system built on  diffusion models. GenCast provides:
+In 2024, Google DeepMind introduced **GenCast**[^Price2024], a probabilistic weather forecasting system built on diffusion models. Building on GraphCast[^Lam2023] deterministic architecture, GenCast enhances weather forecasting by quantifying uncertainty and generating many plausible outcomes. It provides:
 - Global ensemble forecasts at 0.25$^\circ$ spatial resolution;
 - Forecast up to 15 days ahead;
 - Improved forecasts for both everyday weather and extreme events compared to [ECMWF's ensemble forecast (ENS)](https://www.ecmwf.int/en/forecasts).
@@ -82,9 +82,8 @@ Instead, we’ll take a look under the hood and show how GenCast works -- breaki
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
-### Basic Principles
-Before diving into how GenCast uses diffusion models, we first clarify how the forecasting problem is framed as a probability model of future atmospheric states.
-
+### Problem Formulation
+We first clarify how the forecasting problem is framed as a probability model of future atmospheric states.
 Let $\mathbf{X}^t$ denote the global weather state at current time $t$.
 GenCast adopts a second-order <mark class="gray">*Markov approximation*</mark> for the latent atmospheric dynamics, assuming that the next (unknown) state depends only on the two most recent known states:
 $$
@@ -101,9 +100,11 @@ P(\mathbf{X}^{-1}, \mathbf{X}^{0:T} \mid \mathbf{O}^{\le 0}) & = P(\mathbf{X}^{-
 &\rule{0pt}{1.0em} = \underbrace{P(\mathbf{X}^{0}, \mathbf{X}^{-1} \mid \mathbf{O}^{\le 0})}\_{\text{state inference}} \times \underbrace{{\color{red}\prod_{t=0}^{T-1} p(\mathbf{X}^{t+1} \mid \mathbf{X}^t, \mathbf{X}^{t-1})}}\_{\text{forecast model}} \quad \ {\color{green}\small{\text{AR(2) factorization}}}
 \end{aligned}
 
-<mark class="orange">**Chain rule of probability**: $P(A,B,C \mid D) = P(A,B \mid D) \times P(C \mid A,B,D)$ </mark>
+<!--<mark class="orange">**Chain rule of probability**: $P(A,B,C \mid D) = P(A,B \mid D) \times P(C \mid A,B,D)$ </mark>-->
 
-In GenCast:
+### Model Framework
+GenCast models the atmosphere as a high-dimensional dynamical system evolving over space and time. In GenCast:
+
 - Each state $\mathbf{X}^t$ consists of 6 surface variables and 6 atmospheric variables at 13 pressure levels on a 0.25$^\circ$ equiangular latitude-longitude grid (*i.e.*, $\mathbf{X}^t \in \mathbb{R}^{(6+6\times 13)\times720\times1440}$).
 - Forecasts extend 15 days into the future, with $\Delta t=12$ hour increments between steps, giving $T=30$.
 - The <mark class="blue">*state inference*</mark> represents the probability of the true current state of the atmosphere given available observations up to $t=0$.
@@ -124,9 +125,6 @@ GenCast handles the state inference by simply using existing <mark class="green"
 
 ***The remaining problem becomes solving the forecast model*** -- and that’s where generative diffusion models step in.
 
-<!--This setup gives GenCast a structured way to represent uncertainty. What remains is how to draw meaningful samples from that distribution — and that’s where diffusion models play a crucial role.-->
-
-<!--<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>-->
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
 ## Diffusion Models in GenCast
