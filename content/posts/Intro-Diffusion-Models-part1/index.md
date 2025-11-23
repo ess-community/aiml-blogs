@@ -37,7 +37,7 @@ editPost:
 
 Diffusion models have become one of the most powerful tools in *Artificial Intelligence (AI)*. They’re the engines behind some of today's most advanced *generative systems* -- from creating realistic images, audio, text, and videos to designing new molecules and medicines, and even modeling complex climate and environmental systems.
 
-There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <mark class="gray">core principles</mark> (in this post) and explore how diffusion models are being used in Earth and environmental sciences, and why those applications are so promising ([Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}})).*
+There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <mark class="gray">core principles</mark> (in this post) and explore how diffusion models are being used in Earth and environmental sciences, and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), Part&nbsp;3, Part&nbsp;4).*
 
 Let’s get started!
 
@@ -67,7 +67,7 @@ Generative models are also *probabilistic*, *i.e.*, they don’t always produce 
 There are different types of generative models, such as Generative Adversarial Networks[^Goodfellow:2014] (GANs), Variational Autoencoders[^Kingma2014] (VAEs), flow-based models[^Kingma2018], and diffusion models[^Sohl-Dickstein2015]<sup>,</sup>[^Ho2020]. Each type has its strengths and weaknesses, but diffusion models have recently shown outstanding performance in producing high-quality and realistic results. Their success largely comes from the ability to progressively refine noise, allowing diffusion models to capture complex data distributions and produce stable, high-fidelity results without the training instability common in other generative modeling approaches.
 
 {{< quote-red >}}
-**We’ll focus on diffusion models in this series.**
+**We focus on diffusion models in this series.**
 {{< /quote-red >}}
 
 
@@ -99,9 +99,11 @@ That's it -- and yet this simple idea works incredibly well in practice.
 {{< /quote-blue >}}
 
 
-Diffusion models come in different forms, depending on whether the diffusion process is modeled in <mark class="gray">*discrete* or *continuous*</mark> time, and whether noise is removed through <mark class="gray">*probabilistic* or *deterministic*</mark> dynamics.
+Diffusion models come in different forms, depending on whether the diffusion process is modeled in *discrete* or *continuous* time, and whether noise is removed through *probabilistic* or *deterministic* dynamics.
 
-One of the most widely used approaches is the Denoising Diffusion Probabilistic Model[^Ho2020] (DDPM), which performs diffusion in discrete time. It models the generative process as a reverse Markov chain, gradually denoising the sample through a fixed sequence of probabilistic transitions.
+One of the most widely used approaches is the Denoising Diffusion Probabilistic Model[^Ho2020] (DDPM), which performs diffusion in discrete time. It models the generative process as a reverse <mark class="green">*Markov chain*</mark>, gradually denoising the sample through a fixed sequence of probabilistic transitions.
+
+><mark class="green"> *A **Markov chain** is a discrete-time stochastic process where the next state depends only on the current state — not on the full history of how you got there.*.</mark>
 
 Other diffusion formulations include DDPM's deterministic variants like Denoising Diffusion Implicit Models[^JSong2020] (DDIMs) that accelerate sampling by integrating an *ordinary differential equation (ODE)* instead of a Markov chain, and continuous-time score-based models[^YSong2020], which use *stochastic differential equations (SDEs)* to model noise removal. More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit guidance techniques for improved controllability and speed.
 
@@ -162,7 +164,7 @@ $$
 \begin{aligned}
 \mathbf{x}\_t
 &= \sqrt{\alpha\_t}\mathbf{x}\_{t-1} + \sqrt{1 - \alpha\_t}\boldsymbol{\epsilon}\_{t-1} \\\
-&= \sqrt{\alpha\_t} {\color{red}\(\underbrace{\sqrt{\alpha\_{t-1}}\mathbf{x}\_{t-2} + \sqrt{1 - \alpha\_{t-1}}\boldsymbol{\epsilon}\_{t-2}}_{\color{black}\mathbf{x}\_{t-1}} \)} + \sqrt{1 - \alpha\_{t}}\boldsymbol{\epsilon}\_{t-1} \\\
+&= \sqrt{\alpha\_t} {(\underbrace{\color{red}\sqrt{\alpha\_{t-1}}\mathbf{x}\_{t-2} + \sqrt{1 - \alpha\_{t-1}}\boldsymbol{\epsilon}\_{t-2}}_{\mathbf{x}\_{t-1}} \)} + \sqrt{1 - \alpha\_{t}}\boldsymbol{\epsilon}\_{t-1} \\\
 &= {\color{red}\sqrt{\alpha\_t \alpha\_{t-1}} \mathbf{x}\_{t-2} + \sqrt{\alpha\_t (1-\alpha\_{t-1})}\boldsymbol{\epsilon}\_{t-2}} + \sqrt{1 - \alpha\_{t}}\boldsymbol{\epsilon}\_{t-1} \\\
 &= \sqrt{\alpha\_t \alpha\_{t-1}} \mathbf{x}\_{t-2} + {\color{red}\sqrt{1 - \alpha\_t \alpha\_{t-1}} \bar{\boldsymbol{\epsilon}}\_{t-2} } \\\
 &= \dots \\\
@@ -179,11 +181,12 @@ $$
 q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}\big(\mathbf{x}_t; \sqrt{\bar{\alpha}_t} \mathbf{x}_0, (1 - \bar{\alpha}_t)\mathbf{I}\big)
 $$
 
+What this really tells us is that $\mathbf{x}_t$ never loses the original signal -- it’s just being covered by more and more Gaussian noise. The goal of diffusion models is figuring out how to peel that noise away again.
+
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Reverse denoising process
-The reverse process works in the opposite direction -- *and this is where the magic happens*. Instead of adding noise, the model systematically removes it, step by step, gradually reconstructing the original data.
-Once trained, it can start from pure Gaussian noise and iteratively apply this reverse procedure to generate new, realistic samples similar to $\mathbf{x}_0$.
+The reverse process works in the opposite direction -- *and this is where the magic happens*. Instead of adding noise, the reverse systematically removes it, step by step, gradually reconstructing the original data. Once trained, the model can start from pure Gaussian noise and iteratively apply this reverse procedure to generate new, realistic samples similar to $\mathbf{x}_0$.
 
 In theory, the reverse diffusion process is defined as $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)$ -- meaning that given a noisy sample $\mathbf{x}\_t$, we would like to compute the distribution of the previous, slightly less noisy sample $\mathbf{x}\_{t-1}$. However, this distribution is *intractable* in practice because it depends on the entire (unknown) data distribution.
 
@@ -302,8 +305,10 @@ By minimizing this loss, the model learns to invert each step of the noising pro
 - Training aims to *maximize the likelihood* of real data (or equivalently, *minimize the negative log-likelihood*).
 - The exact likelihood is intractable, we instead minimize a *lower bound*.
 
+</br>
+
 {{< quote-blue >}}
-In [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), we'll dive into how diffusion models are applied in Earth sciences — stay tuned!
+In [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), we'll dive into how diffusion models are applied in Earth 🌎 sciences.
 {{< /quote-blue >}}
 
 ## References
