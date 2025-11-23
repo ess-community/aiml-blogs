@@ -37,7 +37,7 @@ editPost:
 ---
 
  - [In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored the principles of diffusion models -- how they can transform random noise into structured and meaningful data.
- - In this Part 2, we look at how these models are being used for weather forecasting and why that could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 first for useful background context.
+ - In Part 2, we look at how these models are being applied to weather forecasting and why that could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
@@ -183,7 +183,7 @@ The benefits are straightforward:
 - Fewer steps needed to refine each sample
 - Fast enough to run long forecasts
 
-><mark class="purple"> For more details on the probability flow ODEs, check out this article[^JSong2020].</mark>
+><mark class="gray">For more details on the probability flow ODEs, check out this article[^JSong2020].</mark>
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
@@ -202,8 +202,8 @@ At each step, it reduces noise in the predicted state while enforcing physically
 
 The architecture of $D_{\theta}$ includes 3 components:
 
-- **The encoder**: maps a noisy target state $\mathbf{Z}_{n}^{t+1}$, as well as the conditioning $(\mathbf{X}^{t}, \mathbf{X}^{t-1})$, from the latitude-longitude grid to an internal learned representation defined on a <mark class="gray">*six-times-refined icosahedral mesh*</mark> (M$^6$). This mesh helps the model better capture global weather patterns without distortions near the poles.
-- **The processor**: is a graph transformer in which each node attends to its <mark class="gray">*k-hop neighborhood*</mark> on the mesh. It updates each point by learning how weather patterns influence each other across space -- helping the model understand spatial features like storms, jet streams, and atmospheric waves.
+- **The encoder**: maps a noisy target state $\mathbf{Z}_{n}^{t+1}$, as well as the conditioning $(\mathbf{X}^{t}, \mathbf{X}^{t-1})$, from the latitude-longitude grid to an internal learned representation defined on a *six-times-refined icosahedral mesh* (M$^6$). This mesh helps the model better capture global weather patterns without distortions near the poles.
+- **The processor**: is a graph transformer in which each node attends to its *k-hop neighborhood* on the mesh. It updates each point by learning how weather patterns influence each other across space -- helping the model understand spatial features like storms, jet streams, and atmospheric waves.
 
 - **The decoder**: maps the internal mesh representation back to a denoised target state, defined on the grid. The result is a physically meaningful "*weather state change*" that advances the forecast.
 
@@ -220,7 +220,10 @@ The architecture of $D_{\theta}$ includes 3 components:
 
 ><mark class="orange">***Graph transformers**</mark> are AI models designed for data that naturally form a network -- such as weather variables distributed across the globe. They combine the strengths of Transformers[^Vaswani2017], which excel at capturing long-range dependencies, with [Graph Neural Networks (GNNs)](https://arxiv.org/abs/1812.08434), which are built to model relationships defined by spatial or structural connectivity.*
 
-<mark>We’ll explore transformer and GNN architectures -- and their applications in Earth sciences -- in future posts.</mark>
+{{< quote-red >}}
+We’ll explore transformer and GNN architectures -- and their applications in Earth sciences -- in future posts.
+{{< /quote-red >}}
+
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
@@ -246,17 +249,21 @@ This loss helps the model learn to remove noise in a physically consistent way a
 
 The training strategy follows a two-stage resolution approach: the model is first pre-trained at a lower spatial resolution to learn stable, large-scale atmospheric patterns, and then fine-tuned at the full target resolution to capture finer-scale details during the final training phase.
 
-><mark class="purple">*If you’d like to explore the complete Methods in GenCast, check out these papers[^Price2024]<sup>,</sup>[^Lam2023]<sup>.*</mark>
+><mark class="gray">*If you’d like to explore the complete Methods in GenCast, check out these papers[^Price2024]<sup>,</sup>[^Lam2023]<sup>.*</mark>
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
+{{< quote-red >}}
 **Quick summary:**
+{{< /quote-red >}}
 - Weather is chaotic, so forecasts need uncertainty — diffusion models help provide realistic probabilistic forecasts.
 - GenCast uses diffusion models to generate fast, high-quality ensemble forecasts up to 15 days ahead.
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.
 
+{{< quote-blue >}}
 In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images -- stay tuned!
+{{< /quote-blue >}}
 
 ## References
 [^Price2024]: Price, I., Sanchez-Gonzalez, A., Alet, F. et al. [Probabilistic weather forecasting with machine learning](https://www.nature.com/articles/s41586-024-08252-9). *Nature* **637**, 84--90 (2025).
