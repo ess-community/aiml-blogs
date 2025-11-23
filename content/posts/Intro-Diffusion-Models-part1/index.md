@@ -52,6 +52,7 @@ A generative model can study all those images to learn what makes a picture look
 
 Generative models are also *probabilistic*, *i.e.*, they don’t always produce the same output. Instead, they can create many different versions of an image or dataset, all slightly varied, but still realistic. This makes them especially useful for creative tasks, predictive simulations, and risk-based scientific modeling.
 
+><small>"*Creating noise from data is easy; creating data from noise is generative modeling*." -- Song *et al* (2020)[^YSong2020]</small>
 
 {{< figure
   src="../../images/generative_modeling.jpg"
@@ -59,13 +60,14 @@ Generative models are also *probabilistic*, *i.e.*, they don’t always produce 
   caption="A generative model learns features from the training data and can generate new, high-quality contents ([Source](https://x.com/iscienceluvr/status/1592860024657051649))."
 >}}
 
+
 There are different types of generative models, such as Generative Adversarial Networks[^Goodfellow:2014] (GANs), Variational Autoencoders[^Kingma2014] (VAEs), flow-based models[^Kingma2018], and diffusion models[^Sohl-Dickstein2015]<sup>,</sup>[^Ho2020]. Each type has its strengths and weaknesses, but diffusion models have recently shown outstanding performance in producing high-quality and realistic results. Their success largely comes from the ability to progressively refine noise, allowing diffusion models to capture complex data distributions and produce stable, high-fidelity results without the training instability common in other generative modeling approaches.
-<mark class="gray">*We’ll focus on diffusion models in this series*.</mark>
+<mark>*We’ll focus on diffusion models in this series*.</mark>
 
 {{< figure
   src="../../images/generative-overview.png"
   alt="Generative"
-  caption="Computation graphs of prominent generative models. Source: [Lil'Log](https://lilianweng.github.io/)"
+  caption="Computation graphs of prominent generative models. GANs sample noise $\mathbf{z}$ from a known $p(\mathbf{z})$ and use a generator $G(\mathbf{z})$ to get data. VAEs sample noise $\mathbf{z}$ from a prior $p(\mathbf{z})$ and use a decoder $p(\mathbf{x}|\mathbf{z})$ to sample data. Flow-based model sample noise $\mathbf{z}$ from a base distribution $p(\mathbf{z})$ and use an invertible transformation $f$ to get data, $\mathbf{x}=f^{-1}(\mathbf{z})$. The transformations in these models are done in a single step by some neural networks. Diffusion models instead gradually transform noise $\mathbf{z}$ into data $\mathbf{x}_0$ through a sequence of iterative denoising steps, reversing a learned diffusion process. <small>Image source: [Lil'Log](https://lilianweng.github.io/)</small>"
 >}}
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
@@ -87,10 +89,13 @@ That's it -- and yet this simple idea works incredibly well in practice.
 
 ><mark class="purple">*For a more intuitive explanation, check out [this article](https://erdem.pl/2023/11/step-by-step-visual-introduction-to-diffusion-models) -- it provides an interactive, step-by-step introduction that makes diffusion models much easier to grasp.*</mark>
 
-Diffusion models come in different forms, depending on whether the diffusion process is modeled in <mark class="blue">*discrete*</mark> or <mark class="pink">*continuous*</mark> time, and whether noise is removed through <mark class="blue">*probabilistic*</mark> or <mark class="pink">*deterministic*</mark> dynamics.
-One of the most widely used approaches is the Denoising Diffusion Probabilistic Model[^Ho2020] (DDPM), which performs diffusion in discrete time. It models the generative process as a reverse Markov chain, gradually denoising the sample through a fixed sequence of probabilistic transitions. We focus on the DDPM in this post.
+Diffusion models come in different forms, depending on whether the diffusion process is modeled in <mark class="gray">*discrete* or *continuous*</mark> time, and whether noise is removed through <mark class="gray">*probabilistic* or *deterministic*</mark> dynamics.
+
+One of the most widely used approaches is the Denoising Diffusion Probabilistic Model[^Ho2020] (DDPM), which performs diffusion in discrete time. It models the generative process as a reverse Markov chain, gradually denoising the sample through a fixed sequence of probabilistic transitions.
 
 Other diffusion formulations include DDPM's deterministic variants like Denoising Diffusion Implicit Models[^JSong2020] (DDIMs) that accelerate sampling by integrating an *ordinary differential equation (ODE)* instead of a Markov chain, and continuous-time score-based models[^YSong2020], which use *stochastic differential equations (SDEs)* to model noise removal. More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit guidance techniques for improved controllability and speed.
+
+We focus on the DDPM in this post.
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
