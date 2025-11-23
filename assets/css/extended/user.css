@@ -46,6 +46,12 @@ h1.post-title + .post-description {
     line-height: 1.4;
 }
 
+/* Increase summary/description size on the homepage */
+.post-entry p {
+    font-size: 16px;
+    line-height: 1.6 !important;
+}
+
 /* Post banner image */
 .post-banner {
     width: 100vw;
@@ -88,9 +94,13 @@ h1.post-title + .post-description {
     align-items: center;
 }
 
+.home-info + .post-entry {
+    margin-top: -3rem !important; /* reduce gap between 1st post and home info (default ~4rem) */
+}
+
 /* Custom highlight colors */
 mark.gray {
-    background-color: #e0e0e0 !important;
+    background-color: darkgrey !important;
 }
 mark.blue {
     background-color: #bbdefb !important;
@@ -106,4 +116,41 @@ mark.purple {
 }
 mark.orange {
     background-color: #ffcc80 !important;
+}
+
+/* Base look similar to normal Markdown blockquote */
+blockquote {
+    border-left-width: 6px !important; /* thicker */
+    border-left-style: solid !important;
+    /*padding-left: 16px !important;*/
+}
+
+/* red quote */
+blockquote.quote-red {
+    border-left-color: coral !important;
+    border-left: 12px solid coral !important;
+}
+
+/* Blue quote */
+blockquote.quote-blue {
+    border-left-color: dodgerblue !important;
+    border-left: 12px solid dodgerblue !important;
+}
+
+/* green quote */
+blockquote.quote-green {
+    border-left-color: seagreen !important;
+    border-left: 12px solid seagreen !important;
+}
+
+/* orange quote */
+blockquote.quote-orange {
+    border-left-color: darkorange !important;
+    border-left: 12px solid darkorange !important;
+}
+
+/* purple quote */
+blockquote.quote-purple {
+    border-left-color: rebeccapurple !important;
+    border-left: 12px solid rebeccapurple !important;
 }
