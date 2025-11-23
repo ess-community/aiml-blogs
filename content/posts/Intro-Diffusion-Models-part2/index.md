@@ -11,7 +11,6 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: true
-disableHLJS: true # to disable highlightjs
 disableShare: false
 disableHLJS: false
 hideSummary: false
@@ -223,7 +222,7 @@ The architecture of $D_{\theta}$ includes 3 components:
 
 ><mark class="orange">***Graph transformers**</mark> are AI models designed for data that naturally form a network -- such as weather variables distributed across the globe. They combine the strengths of Transformers[^Vaswani2017], which excel at capturing long-range dependencies, with [Graph Neural Networks (GNNs)](https://arxiv.org/abs/1812.08434), which are built to model relationships defined by spatial or structural connectivity.*
 
-<mark class="gray">We’ll explore transformer and GNN architectures -- and their applications in Earth science -- in future posts.</mark>
+<mark class="gray">We’ll explore transformer and GNN architectures -- and their applications in Earth sciences -- in future posts.</mark>
 <!--This means Graph Transformers can understand both who is connected to who and how distant parts of the network affect each other — letting all nodes “pay attention” to the ones that matter most, even if they’re far apart.-->
 
 
