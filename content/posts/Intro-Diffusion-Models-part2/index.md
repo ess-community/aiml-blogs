@@ -37,7 +37,7 @@ editPost:
 ---
 
  - [In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored the principles of diffusion models -- how they can transform random noise into structured and meaningful data.
- - In Part 2, we look at how these models are being applied to weather forecasting and why that could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
+ - In Part 2, we look at how these models are being applied to weather forecasting and why that shift could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
@@ -56,7 +56,7 @@ To address this complexity, scientists rely on <mark class="gray">*ensemble fore
 
 Let’s take tropical cyclones as an example. Predicting the exact path of a storm is notoriously difficult because it depends on many interacting and often unpredictable factors. That’s why forecasters use the <mark class="gray">*cone of uncertainty*</mark> -- the familiar graphic you often see on weather maps. It shows where the storm is most likely headed. As shown in the figure, the forecast is more certain in the near future, and paths at the outside of the cone are less likely than those at the center -- but still possible.
 
-Producing these kinds of probabilistic forecasts relies on sophisticated numerical weather prediction (NWP) models. However, these systems demand substantial computing power. Every additional member of the ensemble requires running <mark class="green">*physics-based*</mark> simulations, making large ensembles computationally expensive and slow to produce.
+Producing these kinds of probabilistic forecasts relies on sophisticated numerical weather prediction (NWP) models. However, these systems demand substantial computing power. Every additional member of the ensemble requires running <mark class="green">*physics-based*</mark> simulations, making large ensembles computationally expensive and slow to produce at scale.
 
 <!--<mark> *Physics-based models use established laws of nature to simulate physical systems.*-->
 
@@ -75,7 +75,7 @@ In 2024, Google DeepMind introduced **GenCast**[^Price2024], a probabilistic wea
 - Forecast up to 15 days ahead;
 - Improved forecasts for both everyday weather and extreme events compared to [ECMWF's ensemble forecast (ENS)](https://www.ecmwf.int/en/forecasts).
 
-><mark class="blue">ENS is one of the most advanced global weather forecasting systems in the world. It consists of one “*best guess*” based on the best available input data and 50 additional predictions based on perturbed inputs and model assumptions.</mark>
+><mark class="blue">ECMWF's ENS is one of the most advanced global weather forecasting systems in the world. It consists of one “*best guess*” based on the best available input data and 50 additional predictions based on perturbed inputs and model assumptions.</mark>
 
 We won’t dive into GenCast’s performance here, as those results are documented in the paper[^Price2024] and in [DeepMind's blog](https://deepmind.google/blog/gencast-predicts-weather-and-the-risks-of-extreme-conditions-with-sota-accuracy/).
 Instead, we’ll take a look under the hood and show how GenCast works -- breaking down the key ideas in a simple, easy-to-follow way.
@@ -83,7 +83,8 @@ Instead, we’ll take a look under the hood and show how GenCast works -- breaki
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Problem Formulation
-We first clarify how the forecasting problem is framed as a probability model of future atmospheric states.
+We begin by explaining how weather forecasting can be framed as a probabilistic modeling problem -- and how GenCast uses this framework to generate realistic predictions of future atmospheric conditions.
+
 Let $\mathbf{X}^t$ denote the global weather state at current time $t$.
 GenCast adopts a second-order <mark class="gray">*Markov approximation*</mark> for the latent atmospheric dynamics, assuming that the next (unknown) state depends only on the two most recent known states:
 $$
@@ -256,10 +257,12 @@ The training strategy follows a two-stage resolution approach: the model is firs
 {{< quote-red >}}
 **Quick summary:**
 {{< /quote-red >}}
-- Weather is chaotic, so forecasts need uncertainty — diffusion models help provide realistic probabilistic forecasts.
+- Because weather is chaotic, forecasts must quantify uncertainty — and diffusion models offer a powerful, principled way to do exactly that.
 - GenCast uses diffusion models to generate fast, high-quality ensemble forecasts up to 15 days ahead.
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.
+
+</br>
 
 {{< quote-blue >}}
 In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images -- stay tuned!
