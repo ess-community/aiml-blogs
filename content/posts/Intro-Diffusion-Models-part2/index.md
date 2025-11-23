@@ -103,7 +103,7 @@ P(\mathbf{X}^{-1}, \mathbf{X}^{0:T} \mid \mathbf{O}^{\le 0}) & = P(\mathbf{X}^{-
 <!--<mark class="orange">**Chain rule of probability**: $P(A,B,C \mid D) = P(A,B \mid D) \times P(C \mid A,B,D)$ </mark>-->
 
 ### Model Framework
-GenCast models the atmosphere as a high-dimensional dynamical system evolving over space and time. In GenCast:
+GenCast models the atmosphere as a high-dimensional dynamical system evolving over space and time. Specifically:
 
 - Each state $\mathbf{X}^t$ consists of 6 surface variables and 6 atmospheric variables at 13 pressure levels on a 0.25$^\circ$ equiangular latitude-longitude grid (*i.e.*, $\mathbf{X}^t \in \mathbb{R}^{(6+6\times 13)\times720\times1440}$).
 - Forecasts extend 15 days into the future, with $\Delta t=12$ hour increments between steps, giving $T=30$.
