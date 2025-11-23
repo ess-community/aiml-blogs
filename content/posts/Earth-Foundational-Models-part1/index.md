@@ -4,16 +4,12 @@ date: 2026-10-01
 tags: ["Foundational Model", "Earth",]
 summary: "A beginner’s guide to the powerful models shaping the future of Earth science"
 series: ["PaperMod"]
-# weight: 1
-# aliases: ["/papermod-installation"]
-tags: ["Foundational Model"]
 author: ["AI/ML WG"]
 showToc: false
 TocOpen: false
 draft: false
 hidemeta: false
 comments: false
-disableHLJS: false # to disable highlightjs
 disableShare: false
 disableHLJS: false
 hideSummary: false
