@@ -46,6 +46,30 @@ Try to:
 - Use good visualization where appropriate
 - ...
 
+This is an inline equation: $y=x^2$.
+
+This is a display equation:
+$$
+\frac{dx}{dt} = ax+b
+$$
+
+> This is a block quote
+
+**Bold text**
+
+*Italic text*
+
+***Bold italic text***
+
+---
+
+This is an example figure
+{{< figure
+  src="../../images/generative_modeling.jpg"
+  alt="Generative"
+  caption="Generative AI."
+>}}
+
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
 ## 1️⃣ Introduction
