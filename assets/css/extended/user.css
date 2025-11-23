@@ -11,23 +11,19 @@ figure img {
     margin: 0 auto;
 }
 
+/* Make figure captions match post body text exactly */
+figure figcaption,
 .figure figcaption,
-figure figcaption {
-    font-size: 0.85rem !important;
-    text-align: center;
+.post-single .post-content figcaption,
+.post-single .post-content figcaption p {
+    font-size: inherit !important; /* Same size as .post-content text */
+    line-height: inherit;
+    text-align: justify;
+    text-align-last: center;
     font-style: italic;
     color: var(--fg-light);
-    margin-top: 0.5em;
-}
-
-/* Increase font size for figure captions inside posts */
-.post-single .post-content figcaption p {
-    font-size: 0.75rem !important;
-    line-height: 1.45;
-    text-align: justify;
-    text-align-last: center; /* keep last line left-aligned */
-    margin-top: 0.25rem;
-    margin-bottom: 2rem; /* spacing after figure caption */
+    margin-top: 0.6em;
+    margin-bottom: 1.5rem;
 }
 
 /* Hugo Goldmark footnote hr */
@@ -35,64 +31,79 @@ figure figcaption {
     display: none !important;
 }
 
-/* Make footnote (References) text smaller */
+/* Footnote text styling */
 .footnotes,
 .footnotes p,
 .footnotes li {
-    font-size: 0.75rem; /* adjust as needed */
     line-height: 1.4;
 }
 
-/* Single post pages */
+/* Single post pages metadata */
 .single .post-description,
 h1.post-title + .post-description {
-    font-size: 1rem !important;
     font-style: italic;
-    font-weight: 150;
+    font-weight: 300;
     line-height: 1.4;
 }
 
-#menu a {
-    font-size: 0.75rem;
-}
-
+/* Post banner image */
 .post-banner {
-    width: 100vw; /* full width */
-    height: 200px; /* <- fixed maximum height */
-    overflow: hidden; /* crop anything beyond 100px */
+    width: 100vw;
+    height: 200px;
+    overflow: hidden;
     margin-left: 50%;
-    transform: translateX(-50%); /* center relative to viewport */
+    transform: translateX(-50%);
     position: relative;
 }
 
 .post-banner img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* fill and crop */
+    object-fit: cover;
     display: block;
 }
 
-/* Custom highlight colors without changing default yellow */
+/* Keep PaperMod header sticky */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 20000;
+    backdrop-filter: blur(10px);
+    background-color: var(--theme);
+    opacity: 0.95;
+}
+
+/* Add vertical bar after theme toggle */
+.logo-switches::before {
+    content: "";
+    border-left: 2px solid currentColor;
+    height: 1.1rem;
+    margin-left: 0.2rem;
+    opacity: 0.75;
+}
+
+/* Align toggle + line */
+.logo-switches {
+    display: flex;
+    align-items: center;
+}
+
+/* Custom highlight colors */
 mark.gray {
     background-color: #e0e0e0 !important;
 }
-
 mark.blue {
     background-color: #bbdefb !important;
 }
-
 mark.green {
     background-color: #c8e6c9 !important;
 }
-
 mark.pink {
     background-color: #f8bbd0 !important;
 }
-
 mark.purple {
-    background-color: #b39ddb !important; /* lavender */
+    background-color: #b39ddb !important;
 }
-
 mark.orange {
-    background-color: #ffcc80 !important; /* warm orange */
+    background-color: #ffcc80 !important;
 }
