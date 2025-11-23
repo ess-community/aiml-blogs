@@ -75,7 +75,7 @@ In 2024, Google DeepMind introduced **GenCast**[^Price2024], a probabilistic wea
 - Forecast up to 15 days ahead;
 - Improved forecasts for both everyday weather and extreme events compared to [ECMWF's ensemble forecast (ENS)](https://www.ecmwf.int/en/forecasts).
 
-><mark>ENS is one of the most advanced global weather forecasting systems in the world. It consists of one “*best guess*” based on the best available input data and 50 additional predictions based on perturbed inputs and model assumptions.</mark>
+><mark class="blue">ENS is one of the most advanced global weather forecasting systems in the world. It consists of one “*best guess*” based on the best available input data and 50 additional predictions based on perturbed inputs and model assumptions.</mark>
 
 We won’t dive into GenCast’s performance here, as those results are documented in the paper[^Price2024] and in [DeepMind's blog](https://deepmind.google/blog/gencast-predicts-weather-and-the-risks-of-extreme-conditions-with-sota-accuracy/).
 Instead, we’ll take a look under the hood and show how GenCast works -- breaking down the key ideas in a simple, easy-to-follow way.
@@ -117,10 +117,10 @@ In GenCast:
 >}}
 
 <!--### Model Processing-->
-GenCast handles the state inference by simply using existing <mark>*reanalysis data*</mark> ([ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5)) from ECMWF, including [ERA5 EDA](https://www.ecmwf.int/en/newsletter/158/meteorology/50-member-ensemble-data-assimilations)
+GenCast handles the state inference by simply using existing <mark class="green">*reanalysis data*</mark> ([ERA5](https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5)) from ECMWF, including [ERA5 EDA](https://www.ecmwf.int/en/newsletter/158/meteorology/50-member-ensemble-data-assimilations)
 (ensemble of data assimilations) for initial conditions. This step is purely numerical and outside the scope of our discussion here.
 
-><mark>"***Reanalysis data** provide the most complete picture currently possible of past weather and climate. They are a blend of observations with past short-range weather forecasts rerun with modern weather forecasting models.*" </mark> -- ECMWF
+><mark class="green">"***Reanalysis data** provide the most complete picture currently possible of past weather and climate. They are a blend of observations with past short-range weather forecasts rerun with modern weather forecasting models.*" </mark> -- ECMWF
 
 ***The remaining problem becomes solving the forecast model*** -- and that’s where generative diffusion models step in.
 
@@ -164,7 +164,7 @@ until the final residual $\mathbf{Z}^{1}=\mathbf{Z}_N^1$ is obtained at noise le
 </div>
 
 **Notation recap:**
-- $t$: forecast time step (e.g., Day 3)
+- $t$: forecast time step
 - $i$: refinement step during noise removal
 - $\mathbf{Z}_{i}^{t+1}$: noisy future-state increment
 - $\mathbf{X}^t$: full weather state at time $t$
@@ -175,7 +175,7 @@ Instead of predicting a single future, GenCast generates many possible futures. 
 
 ### ODE solver
 
-In GenCast, the removal of noise is treated as a *continuous transformation* rather than a series of fixed denoising steps like in DDPMs[^Ho2020]. This continuous transformation has a mathematical form called a <mark class="purple">*probability flow ordinary differential equation (ODE)*</mark>. It describes how a noisy sample changes smoothly as the noise level decreases, eventually becoming a clean and physically meaningful weather state.
+In GenCast, the removal of noise is treated as a *continuous transformation* rather than a series of fixed denoising steps like in DDPMs[^Ho2020]. This continuous transformation has a mathematical form called a <mark class="gray">*probability flow ordinary differential equation (ODE)*</mark>. It describes how a noisy sample changes smoothly as the noise level decreases, eventually becoming a clean and physically meaningful weather state.
 
 A useful fact -- *and the only one we need here* -- is that this probability flow ODE can be solved just like any other ODEs. GenCast uses a fast numerical method called DPMSolver++2S[^Lu2022] to perform this transformation efficiently. The process is deterministic, requires only a small number of steps, and helps ensure forecasts evolve smoothly and stably over time.
 
@@ -185,7 +185,7 @@ The benefits are straightforward:
 - Fewer steps needed to refine each sample
 - Fast enough to run long forecasts
 
-><mark class="gray"> For more details on the probability flow ODEs, check out this article[^JSong2020].</mark>
+><mark class="purple"> For more details on the probability flow ODEs, check out this article[^JSong2020].</mark>
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
@@ -222,9 +222,7 @@ The architecture of $D_{\theta}$ includes 3 components:
 
 ><mark class="orange">***Graph transformers**</mark> are AI models designed for data that naturally form a network -- such as weather variables distributed across the globe. They combine the strengths of Transformers[^Vaswani2017], which excel at capturing long-range dependencies, with [Graph Neural Networks (GNNs)](https://arxiv.org/abs/1812.08434), which are built to model relationships defined by spatial or structural connectivity.*
 
-<mark class="gray">We’ll explore transformer and GNN architectures -- and their applications in Earth sciences -- in future posts.</mark>
-<!--This means Graph Transformers can understand both who is connected to who and how distant parts of the network affect each other — letting all nodes “pay attention” to the ones that matter most, even if they’re far apart.-->
-
+<mark>We’ll explore transformer and GNN architectures -- and their applications in Earth sciences -- in future posts.</mark>
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
@@ -250,7 +248,7 @@ This loss helps the model learn to remove noise in a physically consistent way a
 
 The training strategy follows a two-stage resolution approach: the model is first pre-trained at a lower spatial resolution to learn stable, large-scale atmospheric patterns, and then fine-tuned at the full target resolution to capture finer-scale details during the final training phase.
 
-><mark class="gray">*If you’d like to explore the complete Methods in GenCast, check out these papers[^Price2024]<sup>,</sup>[^Lam2023]<sup>.*</mark>
+><mark class="purple">*If you’d like to explore the complete Methods in GenCast, check out these papers[^Price2024]<sup>,</sup>[^Lam2023]<sup>.*</mark>
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
@@ -260,7 +258,7 @@ The training strategy follows a two-stage resolution approach: the model is firs
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.
 
-><mark class="gray">In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images</mark> -- stay tuned!
+In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images -- stay tuned!
 
 ## References
 [^Price2024]: Price, I., Sanchez-Gonzalez, A., Alet, F. et al. [Probabilistic weather forecasting with machine learning](https://www.nature.com/articles/s41586-024-08252-9). *Nature* **637**, 84--90 (2025).
