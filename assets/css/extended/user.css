@@ -90,7 +90,7 @@ h1.post-title + .post-description {
 
 /* Custom highlight colors */
 mark.gray {
-    background-color: #e0e0e0 !important;
+    background-color: darkgray !important;
 }
 mark.blue {
     background-color: #bbdefb !important;

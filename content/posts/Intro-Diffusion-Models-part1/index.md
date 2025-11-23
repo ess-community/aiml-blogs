@@ -283,7 +283,7 @@ By minimizing this loss, the model learns to invert each step of the noising pro
 - The exact likelihood is intractable, we instead minimize a *lower bound*.
 <!--- Once trained, the model can start from random noise and iteratively denoise to generate realistic samples.-->
 
-><mark class="green">In [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), we'll dive into how diffusion models are applied in Earth sciences</mark> -- stay tuned!
+>In [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), we'll dive into how diffusion models are applied in Earth sciences -- stay tuned!
 
 ## References
 [^Goodfellow:2014]: Goodfellow, I. et al., 2014. [Generative Adversarial Networks](https://arxiv.org/abs/1406.2661). *Advances in Neural Information Processing Systems (NeurIPS)*, 27, pp.2672–2680.

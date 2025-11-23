@@ -260,7 +260,7 @@ The training strategy follows a two-stage resolution approach: the model is firs
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.
 
-><mark class="green">In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images</mark> -- stay tuned!
+><mark class="gray">In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images</mark> -- stay tuned!
 
 ## References
 [^Price2024]: Price, I., Sanchez-Gonzalez, A., Alet, F. et al. [Probabilistic weather forecasting with machine learning](https://www.nature.com/articles/s41586-024-08252-9). *Nature* **637**, 84--90 (2025).
