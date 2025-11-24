@@ -54,7 +54,7 @@ Generative models are also *probabilistic*, *i.e.*, they don’t always produce 
 
 {{< quote-red >}}
 <small>"Creating noise from data is easy; creating data from noise is generative modeling." </br>
--- Song Y. et al., (2020) </small>
+-- **Song Y. et al., (2020)** </small>
 {{< /quote-red >}}
 
 {{< figure
@@ -74,7 +74,7 @@ There are different types of generative models, such as Generative Adversarial N
 {{< figure
   src="../../images/generative-overview.png"
   alt="Generative"
-  caption="Computation graphs of prominent generative models. GANs sample noise $\mathbf{z}$ from a known $p(\mathbf{z})$ and use a generator $G(\mathbf{z})$ to get data. VAEs sample noise $\mathbf{z}$ from a prior $p(\mathbf{z})$ and use a decoder $p(\mathbf{x}|\mathbf{z})$ to sample data. Flow-based models sample noise $\mathbf{z}$ from a base distribution $p(\mathbf{z})$ and use an invertible transformation $f$ to get data, $\mathbf{x}=f^{-1}(\mathbf{z})$. The transformations in these models are done in a single step by some neural networks. Diffusion models instead gradually transform noise $\mathbf{z}$ into data $\mathbf{x}_0$ through a sequence of iterative denoising steps, reversing a learned diffusion process. <small>Image source: [Lil'Log](https://lilianweng.github.io/).</small>"
+  caption="**Computation graphs of prominent generative models**. GANs use a generator $G(\mathbf{z})$ to produce data. VAEs use a probabilistic decoder $p_{\theta}(\mathbf{x}|\mathbf{z})$ to generate data. Flow-based models apply an invertible transformation $f^{-1}(\mathbf{z})$ to obtain data from latent variables. The transformations in these models are performed in a single forward pass through the neural network. Diffusion models instead gradually transform noise into data through a sequence of iterative denoising steps, reversing a learned diffusion process. <small>Image source: [Lil'Log](https://lilianweng.github.io/).</small>"
 >}}
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
@@ -108,7 +108,7 @@ One of the most widely used approaches is the Denoising Diffusion Probabilistic 
 Other diffusion formulations include DDPM's deterministic variants like Denoising Diffusion Implicit Models[^JSong2020] (DDIMs) that accelerate sampling by integrating an *ordinary differential equation (ODE)* instead of a Markov chain, and continuous-time score-based models[^YSong2020], which use *stochastic differential equations (SDEs)* to model noise removal. More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit guidance techniques for improved controllability and speed.
 
 {{< quote-red >}}
-**We focus on the DDPM in this post.**
+**We focus on the DDPM in this post since it provides the most basic foundation.**
 {{< /quote-red >}}
 
 
