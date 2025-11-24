@@ -146,7 +146,7 @@ Diffusion models work by first adding random noise to the data, and then learnin
   width="70%"
 >}}
 
-### Diffusion Forecast
+### Autoregressive Diffusion Forecast
 Once the denoiser in the diffusion model is trained, forecasting becomes a <mark class="gray">*sampling process*</mark>. At each forecast step, the model turns noise into a physically meaningful weather increment conditioned on the most recent states.
 
 The sampling procedure can be summarized as follows:
