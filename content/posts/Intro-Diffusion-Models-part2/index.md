@@ -1,7 +1,7 @@
 ---
 title: "Diffusion Models (Part 2): Advancing Weather Forecasting"
-description: "Diffusion models are transforming how we analyze and predict Earth system processes"
-summary: "Diffusion models for environmental science"
+description: "Diffusion models are transforming how we analyze and predict weather"
+summary: "A new era of weather forecasting is emerging with diffusion models"
 date: 2025-11-18
 tags: ["Diffusion Model", "Weather Forecast", "Earth system", "GenCast"]
 author: "Phong Le"
@@ -146,27 +146,28 @@ Diffusion models work by first adding random noise to the data, and then learnin
   width="70%"
 >}}
 
-### Diffusion Forecast
+### Autoregressive Diffusion Forecast
 Once the denoiser in the diffusion model is trained, forecasting becomes a <mark class="gray">*sampling process*</mark>. At each forecast step, the model turns noise into a physically meaningful weather increment conditioned on the most recent states.
 
 The sampling procedure can be summarized as follows:
-<div style="border: 2px solid  #b39ddb; border-radius: 16px; padding: 4px 16px; margin: 1em auto; width: 90%;">
+<div style="border: 3px solid  #b39ddb; border-radius: 16px; padding: 4px 16px; margin: 1em auto; width: 90%;">
 <ol>
-<li> Draw an initial sample $\mathbf{Z}_0^{t+1}$ from a noise distribution $P_{noise}(\cdot \vert \sigma_0)$ on the sphere, at a high initial noise level $\sigma_0$;
-<li> Gradually denoise $\mathbf{Z}_0^{t+1}$ using a refinement function $r_{\theta}$, which applies the denoiser $D_{\theta}$ conditioned on the two most recent states $(\mathbf{X}^0, \mathbf{X}^{-1})$ to obtain $\mathbf{Z}_1^{t+1}$ at lower noise level $\sigma_1<\sigma_0$;
-<li> For $i=1$ to $20$, continue refining
+<li style="padding-bottom: 12px;"> Draw an initial sample $\mathbf{Z}_0^{t+1}$ from a noise distribution $P_{noise}(\cdot \vert \sigma_0)$ on the sphere, at a high initial noise level $\sigma_0$;
+<li style="padding-bottom: 12px;"> Gradually denoise $\mathbf{Z}_0^{t+1}$ using a refinement function $r_{\theta}$, which applies the denoiser $D_{\theta}$ conditioned on the two most recent states $(\mathbf{X}^0, \mathbf{X}^{-1})$ to obtain $\mathbf{Z}_1^{t+1}$ at lower noise level $\sigma_1<\sigma_0$;
+<li style="padding-bottom: 12px;"> For $i=1$ to $20$, continue refining
 $\mathbf{Z}_{i+1}^{t+1} = r_{\theta} (\mathbf{Z}_{i}^{t+1}, \mathbf{X}^{t}, \mathbf{X}^{t-1}, \sigma_{i+1}, \sigma_i)$
 until the final residual $\mathbf{Z}^{1}=\mathbf{Z}_N^1$ is obtained at noise level $\sigma_N=0$;
-<li> Update $\mathbf{X}^{t+1} = \mathbf{X}^{t} + S \mathbf{Z}^{t+1}$, where $S$ is a diagonal matrix that inverts the normalization;
-<li> Autoregressively repeat the entire process for $T=30$ times to obtain a full 15-day trajectory forecast.
+<li style="padding-bottom: 12px;"> Update $\mathbf{X}^{t+1} = \mathbf{X}^{t} + S \mathbf{Z}^{t+1}$, where $S$ is a diagonal matrix that inverts the normalization;
+<li style="padding-bottom: 12px;"> Autoregressively repeat the entire process for $T=30$ times to obtain a full 15-day trajectory forecast.
 </ol>
 </div>
 
+{{< quote-red >}}
 **Notation recap:**
-- $t$: forecast time step
-- $i$: refinement step during noise removal
-- $\mathbf{Z}_{i}^{t+1}$: noisy future-state increment
-- $\mathbf{X}^t$: full weather state at time $t$
+$t$: forecast time step; $i$: refinement step during noise removal; $\mathbf{Z}_{i}^{t+1}$: weather state increment at step $i$ and time $t+1$; and $\mathbf{X}^t$: full weather state at time $t$
+{{< /quote-red >}}
+
+<!--<div style="margin-top: -12px;">-->
 
 Instead of predicting a single future, GenCast generates many possible futures. Each begins as noise and is gradually shaped into a realistic atmospheric evolution based on learned physics and decades of ERA5 data. For example, 50 different noise samples yield 50 plausible storm paths -- some turning north, others speeding up or weakening -- capturing the full range of uncertainty in the atmosphere.
 
@@ -176,10 +177,10 @@ Instead of predicting a single future, GenCast generates many possible futures. 
 
 In GenCast, the removal of noise is treated as a *continuous transformation* rather than a series of fixed denoising steps like in DDPMs[^Ho2020]. This continuous transformation has a mathematical form called a <mark class="gray">*probability flow ordinary differential equation (ODE)*</mark>. It describes how a noisy sample changes smoothly as the noise level decreases, eventually becoming a clean and physically meaningful weather state.
 
-A useful fact -- *and the only one we need here* -- is that this probability flow ODE can be solved just like any other ODEs. GenCast uses a fast numerical method called DPMSolver++2S[^Lu2022] to perform this transformation efficiently. The process is deterministic, requires only a small number of steps, and helps ensure forecasts evolve smoothly and stably over time.
+A useful fact -- *and the only one we need here* -- is that this probability flow ODE can be solved just like any other ODEs. GenCast uses a fast numerical method called **DPMSolver++2S**[^Lu2022] to perform this transformation efficiently. The process is deterministic, requires only a small number of steps, and helps ensure forecasts evolve smoothly and stably over time.
 
-We'll leave the details for another article -- the key idea is that this ODE solver gives GenCast an efficient and accurate way to turn noise into realistic weather states.
-The benefits are straightforward:
+We'll save the details for another post -- the key idea is that this ODE solver enables GenCast to efficiently and accurately transform noise into realistic weather states.
+Its benefits include:
 - Smooth and stable forecast evolution
 - Fewer steps needed to refine each sample
 - Fast enough to run long forecasts
@@ -190,7 +191,7 @@ The benefits are straightforward:
 
 ### Denoiser Architecture
 
-The core of the refinement function $r_{\theta}$ is a trainable denoiser neural network $D_{\theta}$.
+The core of the refinement function $r_{\theta}$ is a *trainable denoiser neural network* $D_{\theta}$.
 At each step, it reduces noise in the predicted state while enforcing physically realistic atmospheric patterns, ensuring that the evolving forecast remains consistent with large-scale dynamics and fine-scale structures alike.
 
 {{< figure
@@ -201,7 +202,7 @@ At each step, it reduces noise in the predicted state while enforcing physically
   width="100%"
 >}}
 
-The architecture of $D_{\theta}$ includes 3 components:
+The architecture of $D_{\theta}$ includes 3 main components:
 
 - **The encoder**: maps a noisy target state $\mathbf{Z}_{n}^{t+1}$, as well as the conditioning $(\mathbf{X}^{t}, \mathbf{X}^{t-1})$, from the latitude-longitude grid to an internal learned representation defined on a *six-times-refined icosahedral mesh* (M$^6$). This mesh helps the model better capture global weather patterns without distortions near the poles.
 - **The processor**: is a graph transformer in which each node attends to its *k-hop neighborhood* on the mesh. It updates each point by learning how weather patterns influence each other across space -- helping the model understand spatial features like storms, jet streams, and atmospheric waves.
