@@ -1,7 +1,7 @@
 ---
-title: "Diffusion Models: Principles and Applications in Earth Sciences - Part 2"
-description: "Diffusion models are transforming how we analyze and predict Earth system processes"
-summary: "Diffusion models for environmental science"
+title: "Diffusion Models (Part 2): Advancing Weather Forecasting"
+description: "Diffusion models are transforming how we analyze and predict weather"
+summary: "A new era of weather forecasting is emerging with diffusion models"
 date: 2025-11-18
 tags: ["Diffusion Model", "Weather Forecast", "Earth system", "GenCast"]
 author: "Phong Le"
@@ -37,7 +37,7 @@ editPost:
 ---
 
  - [In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored the principles of diffusion models -- how they can transform random noise into structured and meaningful data.
- - In Part 2, we look at how these models are being applied to weather forecasting and why that could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
+ - In Part 2, we look at how these models are being applied to weather forecasting and why that shift could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
@@ -56,7 +56,7 @@ To address this complexity, scientists rely on <mark class="gray">*ensemble fore
 
 Let’s take tropical cyclones as an example. Predicting the exact path of a storm is notoriously difficult because it depends on many interacting and often unpredictable factors. That’s why forecasters use the <mark class="gray">*cone of uncertainty*</mark> -- the familiar graphic you often see on weather maps. It shows where the storm is most likely headed. As shown in the figure, the forecast is more certain in the near future, and paths at the outside of the cone are less likely than those at the center -- but still possible.
 
-Producing these kinds of probabilistic forecasts relies on sophisticated numerical weather prediction (NWP) models. However, these systems demand substantial computing power. Every additional member of the ensemble requires running <mark class="green">*physics-based*</mark> simulations, making large ensembles computationally expensive and slow to produce.
+Producing these kinds of probabilistic forecasts relies on sophisticated numerical weather prediction (NWP) models. However, these systems demand substantial computing power. Every additional member of the ensemble requires running <mark class="green">*physics-based*</mark> simulations, making large ensembles computationally expensive and slow to produce at scale.
 
 <!--<mark> *Physics-based models use established laws of nature to simulate physical systems.*-->
 
@@ -75,7 +75,7 @@ In 2024, Google DeepMind introduced **GenCast**[^Price2024], a probabilistic wea
 - Forecast up to 15 days ahead;
 - Improved forecasts for both everyday weather and extreme events compared to [ECMWF's ensemble forecast (ENS)](https://www.ecmwf.int/en/forecasts).
 
-><mark class="blue">ENS is one of the most advanced global weather forecasting systems in the world. It consists of one “*best guess*” based on the best available input data and 50 additional predictions based on perturbed inputs and model assumptions.</mark>
+><mark class="blue">ECMWF's ENS is one of the most advanced global weather forecasting systems in the world. It consists of one “*best guess*” based on the best available input data and 50 additional predictions based on perturbed inputs and model assumptions.</mark>
 
 We won’t dive into GenCast’s performance here, as those results are documented in the paper[^Price2024] and in [DeepMind's blog](https://deepmind.google/blog/gencast-predicts-weather-and-the-risks-of-extreme-conditions-with-sota-accuracy/).
 Instead, we’ll take a look under the hood and show how GenCast works -- breaking down the key ideas in a simple, easy-to-follow way.
@@ -83,7 +83,8 @@ Instead, we’ll take a look under the hood and show how GenCast works -- breaki
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Problem Formulation
-We first clarify how the forecasting problem is framed as a probability model of future atmospheric states.
+We begin by explaining how weather forecasting can be framed as a probabilistic modeling problem -- and how GenCast uses this framework to generate realistic predictions of future atmospheric conditions.
+
 Let $\mathbf{X}^t$ denote the global weather state at current time $t$.
 GenCast adopts a second-order <mark class="gray">*Markov approximation*</mark> for the latent atmospheric dynamics, assuming that the next (unknown) state depends only on the two most recent known states:
 $$
@@ -149,23 +150,24 @@ Diffusion models work by first adding random noise to the data, and then learnin
 Once the denoiser in the diffusion model is trained, forecasting becomes a <mark class="gray">*sampling process*</mark>. At each forecast step, the model turns noise into a physically meaningful weather increment conditioned on the most recent states.
 
 The sampling procedure can be summarized as follows:
-<div style="border: 2px solid  #b39ddb; border-radius: 16px; padding: 4px 16px; margin: 1em auto; width: 90%;">
+<div style="border: 3px solid  #b39ddb; border-radius: 16px; padding: 4px 16px; margin: 1em auto; width: 90%;">
 <ol>
-<li> Draw an initial sample $\mathbf{Z}_0^{t+1}$ from a noise distribution $P_{noise}(\cdot \vert \sigma_0)$ on the sphere, at a high initial noise level $\sigma_0$;
-<li> Gradually denoise $\mathbf{Z}_0^{t+1}$ using a refinement function $r_{\theta}$, which applies the denoiser $D_{\theta}$ conditioned on the two most recent states $(\mathbf{X}^0, \mathbf{X}^{-1})$ to obtain $\mathbf{Z}_1^{t+1}$ at lower noise level $\sigma_1<\sigma_0$;
-<li> For $i=1$ to $20$, continue refining
+<li style="padding-bottom: 12px;"> Draw an initial sample $\mathbf{Z}_0^{t+1}$ from a noise distribution $P_{noise}(\cdot \vert \sigma_0)$ on the sphere, at a high initial noise level $\sigma_0$;
+<li style="padding-bottom: 12px;"> Gradually denoise $\mathbf{Z}_0^{t+1}$ using a refinement function $r_{\theta}$, which applies the denoiser $D_{\theta}$ conditioned on the two most recent states $(\mathbf{X}^0, \mathbf{X}^{-1})$ to obtain $\mathbf{Z}_1^{t+1}$ at lower noise level $\sigma_1<\sigma_0$;
+<li style="padding-bottom: 12px;"> For $i=1$ to $20$, continue refining
 $\mathbf{Z}_{i+1}^{t+1} = r_{\theta} (\mathbf{Z}_{i}^{t+1}, \mathbf{X}^{t}, \mathbf{X}^{t-1}, \sigma_{i+1}, \sigma_i)$
 until the final residual $\mathbf{Z}^{1}=\mathbf{Z}_N^1$ is obtained at noise level $\sigma_N=0$;
-<li> Update $\mathbf{X}^{t+1} = \mathbf{X}^{t} + S \mathbf{Z}^{t+1}$, where $S$ is a diagonal matrix that inverts the normalization;
-<li> Autoregressively repeat the entire process for $T=30$ times to obtain a full 15-day trajectory forecast.
+<li style="padding-bottom: 12px;"> Update $\mathbf{X}^{t+1} = \mathbf{X}^{t} + S \mathbf{Z}^{t+1}$, where $S$ is a diagonal matrix that inverts the normalization;
+<li style="padding-bottom: 12px;"> Autoregressively repeat the entire process for $T=30$ times to obtain a full 15-day trajectory forecast.
 </ol>
 </div>
 
+{{< quote-red >}}
 **Notation recap:**
-- $t$: forecast time step
-- $i$: refinement step during noise removal
-- $\mathbf{Z}_{i}^{t+1}$: noisy future-state increment
-- $\mathbf{X}^t$: full weather state at time $t$
+$t$: forecast time step; $i$: refinement step during noise removal; $\mathbf{Z}_{i}^{t+1}$: weather state increment at step $i$ and time $t+1$; and $\mathbf{X}^t$: full weather state at time $t$
+{{< /quote-red >}}
+
+<!--<div style="margin-top: -12px;">-->
 
 Instead of predicting a single future, GenCast generates many possible futures. Each begins as noise and is gradually shaped into a realistic atmospheric evolution based on learned physics and decades of ERA5 data. For example, 50 different noise samples yield 50 plausible storm paths -- some turning north, others speeding up or weakening -- capturing the full range of uncertainty in the atmosphere.
 
@@ -175,10 +177,10 @@ Instead of predicting a single future, GenCast generates many possible futures. 
 
 In GenCast, the removal of noise is treated as a *continuous transformation* rather than a series of fixed denoising steps like in DDPMs[^Ho2020]. This continuous transformation has a mathematical form called a <mark class="gray">*probability flow ordinary differential equation (ODE)*</mark>. It describes how a noisy sample changes smoothly as the noise level decreases, eventually becoming a clean and physically meaningful weather state.
 
-A useful fact -- *and the only one we need here* -- is that this probability flow ODE can be solved just like any other ODEs. GenCast uses a fast numerical method called DPMSolver++2S[^Lu2022] to perform this transformation efficiently. The process is deterministic, requires only a small number of steps, and helps ensure forecasts evolve smoothly and stably over time.
+A useful fact -- *and the only one we need here* -- is that this probability flow ODE can be solved just like any other ODEs. GenCast uses a fast numerical method called **DPMSolver++2S**[^Lu2022] to perform this transformation efficiently. The process is deterministic, requires only a small number of steps, and helps ensure forecasts evolve smoothly and stably over time.
 
-We'll leave the details for another article -- the key idea is that this ODE solver gives GenCast an efficient and accurate way to turn noise into realistic weather states.
-The benefits are straightforward:
+We'll save the details for another post -- the key idea is that this ODE solver enables GenCast to efficiently and accurately transform noise into realistic weather states.
+Its benefits include:
 - Smooth and stable forecast evolution
 - Fewer steps needed to refine each sample
 - Fast enough to run long forecasts
@@ -189,7 +191,7 @@ The benefits are straightforward:
 
 ### Denoiser Architecture
 
-The core of the refinement function $r_{\theta}$ is a trainable denoiser neural network $D_{\theta}$.
+The core of the refinement function $r_{\theta}$ is a *trainable denoiser neural network* $D_{\theta}$.
 At each step, it reduces noise in the predicted state while enforcing physically realistic atmospheric patterns, ensuring that the evolving forecast remains consistent with large-scale dynamics and fine-scale structures alike.
 
 {{< figure
@@ -200,7 +202,7 @@ At each step, it reduces noise in the predicted state while enforcing physically
   width="100%"
 >}}
 
-The architecture of $D_{\theta}$ includes 3 components:
+The architecture of $D_{\theta}$ includes 3 main components:
 
 - **The encoder**: maps a noisy target state $\mathbf{Z}_{n}^{t+1}$, as well as the conditioning $(\mathbf{X}^{t}, \mathbf{X}^{t-1})$, from the latitude-longitude grid to an internal learned representation defined on a *six-times-refined icosahedral mesh* (M$^6$). This mesh helps the model better capture global weather patterns without distortions near the poles.
 - **The processor**: is a graph transformer in which each node attends to its *k-hop neighborhood* on the mesh. It updates each point by learning how weather patterns influence each other across space -- helping the model understand spatial features like storms, jet streams, and atmospheric waves.
@@ -256,10 +258,12 @@ The training strategy follows a two-stage resolution approach: the model is firs
 {{< quote-red >}}
 **Quick summary:**
 {{< /quote-red >}}
-- Weather is chaotic, so forecasts need uncertainty — diffusion models help provide realistic probabilistic forecasts.
+- Because weather is chaotic, forecasts must quantify uncertainty — and diffusion models offer a powerful, principled way to do exactly that.
 - GenCast uses diffusion models to generate fast, high-quality ensemble forecasts up to 15 days ahead.
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.
+
+</br>
 
 {{< quote-blue >}}
 In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images -- stay tuned!
