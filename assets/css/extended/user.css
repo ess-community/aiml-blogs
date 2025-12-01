@@ -1,14 +1,17 @@
-/* Center Hugo figure shortcode content */
+/* Center the figure (PaperMod uses full-width containers) */
 .figure,
 figure {
-    text-align: center;
-    margin: 1.5em auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centers the image + caption */
 }
 
+/* Center and keep image responsive */
 .figure img,
 figure img {
     display: block;
-    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
 }
 
 /* Make figure captions match post body text exactly */
@@ -22,8 +25,8 @@ figure figcaption,
     text-align-last: center;
     font-style: italic;
     color: var(--fg-light);
-    margin-top: 0.6em;
-    margin-bottom: 1.5rem;
+    margin-top: 0em;
+    margin-bottom: 0.5rem;
 }
 
 /* Hugo Goldmark footnote hr */
@@ -120,7 +123,7 @@ mark.orange {
 
 /* Base look similar to normal Markdown blockquote */
 blockquote {
-    border-left-width: 6px !important; /* thicker */
+    border-left-width: 3px !important; /* thicker */
     border-left-style: solid !important;
     /*padding-left: 16px !important;*/
 }
@@ -128,29 +131,29 @@ blockquote {
 /* red quote */
 blockquote.quote-red {
     border-left-color: coral !important;
-    border-left: 12px solid coral !important;
+    border-left: 8px solid coral !important;
 }
 
 /* Blue quote */
 blockquote.quote-blue {
     border-left-color: dodgerblue !important;
-    border-left: 12px solid dodgerblue !important;
+    border-left: 8px solid dodgerblue !important;
 }
 
 /* green quote */
 blockquote.quote-green {
     border-left-color: seagreen !important;
-    border-left: 12px solid seagreen !important;
+    border-left: 8px solid seagreen !important;
 }
 
 /* orange quote */
 blockquote.quote-orange {
     border-left-color: darkorange !important;
-    border-left: 12px solid darkorange !important;
+    border-left: 8px solid darkorange !important;
 }
 
 /* purple quote */
 blockquote.quote-purple {
     border-left-color: rebeccapurple !important;
-    border-left: 12px solid rebeccapurple !important;
+    border-left: 8px solid rebeccapurple !important;
 }
