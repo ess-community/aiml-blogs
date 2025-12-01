@@ -1,8 +1,8 @@
 ---
-title: "Foundation Models for the Earth System (Part 1): AI That Understands Our Planet"
+title: "Foundation Models for the Earth System: AI That Understands Our Planet"
 description: "Foundation models have enabled new AI tools to study Earth system. How do we make the most of this opportunity?"
 date: 2025-11-30
-tags: ["Foundational Model", "Earth",]
+tags: ["Foundation Model", "Earth", "Self-supervised learning"]
 summary: "Exploring the power of foundation models in AI and Earth sciences."
 series: ["Foundation Models"]
 author: ["Phong Le"]
@@ -63,7 +63,7 @@ These are *large AI systems* built at such a scale that they consume a nontrivia
 
 Foundation models incorporate complex algorithms and deep learning techniques, allowing them to learn patterns, contexts, and nuances from huge amounts and many types of information (i.e., <mark class="green">*modalities*</mark>) and apply that knowledge to a wide range of tasks.
 
-><mark class="green">A ***modality*** is a distinct source of data that conveys information in a unique way -- for example, images, audio, text, time series.</mark>
+><mark class="green">A ***modality*** is a distinct source of data that conveys information in a unique way -- e.g., images, audio, text, time series.</mark>
 
 For example, the same AI that helps you draft an email can also:
 - Summarize long articles,
@@ -169,7 +169,7 @@ When AI models are trained on massive, diverse datasets with vast compute, they 
     width=75%
 >}}
 
-As models grow, performance improves predictably, but something remarkable happens at extreme scale: <mark class="blue">*emergent properties*</mark> appear. These are skills the model wasn’t explicitly trained for, such as reasoning about unfamiliar scenarios, making connections across modalities, or spotting subtle trends invisible to humans.
+As models grow, performance improves predictably, but something remarkable happens at extreme scale: <mark class="blue">*emergent properties*</mark>. These are skills the model wasn’t explicitly trained for -- such as reasoning about unfamiliar scenarios, making connections across modalities, or spotting subtle trends invisible to humans -- but they appear in complex, nonlinear ways as scale increases.
 
 ><mark class="blue">***Definition**: Emergent properties are characteristics or behaviors of a system that arise from the interactions and relationships between its individual components, rather than from the properties of those components alone. These properties cannot be predicted solely by examining the parts of the system in isolation; they emerge when the components work together in a structured way*.</mark>
 
@@ -191,14 +191,14 @@ Now, this technology is being applied to one of the most complex systems we know
 Earth foundation models (EFMs) bring the principles of foundation models from language and vision AI to the study of our planet.
 Instead of learning from books, websites, or photographs, EFMs are trained on massive collections of geoscience data: *satellite observations, climate simulations, weather sensor networks, ocean measurements, and more*.
 
-><mark>Earth foundation models help bridge the gap between observation and understanding -- enabling faster science and more informed actions in a rapidly changing world.</mark>
+><mark>EFMs help bridge the gap between observation and understanding -- enabling faster science and more informed actions in a rapidly changing world.</mark>
 
 By learning from this rich and multimodal data, EFMs can develop a holistic view of processes that shape Earth’s systems. For example:
 - How weather patterns form
 - How oceans and atmosphere interact
 - And how environmental changes unfold over time
 
-It is important to note that <mark class="pink">*an EFM typically doesn’t cover the entire planet’s science all at once*</mark>. Most EFMs are built for a specific domain such as Earth observation, climate, biodiversity, or land use. Still, the knowledge they gain often transfers across applications, giving scientists and users a flexible base to build upon.
+It is important to note that <mark class="pink">*an EFM typically doesn’t cover the entire Earth’s science all at once*</mark>. Most EFMs are built for a specific domain such as Earth observation, climate, biodiversity, or land use. Still, the knowledge they gain often transfers across applications, giving scientists and users a flexible base to build upon.
 
 <small>
 
@@ -258,7 +258,7 @@ Ultimately, EFMs reduce the time between observing a change and understanding wh
 Compute and resource constraints
 Integration with existing workflows
 Interpretability, market adoption, and trust-->
-Building Earth foundation models pushes the boundaries of both AI and geoscience -- and doing so comes with major challenges:
+Building EFMs pushes the boundaries of both AI and geoscience -- and doing so comes with major challenges:
 
 1. **Scale and Infrastructure**: Developing an EFM from scratch requires significant resources, time, and coordination across institutions. This includes expensive hardware, massive amounts of data, and months of training.
 

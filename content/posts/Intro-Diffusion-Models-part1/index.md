@@ -103,7 +103,7 @@ Diffusion models come in different forms, depending on whether the diffusion pro
 
 One of the most widely used approaches is the Denoising Diffusion Probabilistic Model[^Ho2020] (DDPM), which performs diffusion in discrete time. It models the generative process as a reverse <mark class="green">*Markov chain*</mark>, gradually denoising the sample through a fixed sequence of probabilistic transitions.
 
-><mark class="green"> *A **Markov chain** is a discrete-time stochastic process where the next state depends only on the current state — not on the full history of how you got there.*.</mark>
+><mark class="green"> *A **Markov chain** is a discrete-time stochastic process where the next state depends only on the current state — not on the full history of how you got there.*</mark>
 
 Other diffusion formulations include DDPM's deterministic variants like Denoising Diffusion Implicit Models[^JSong2020] (DDIMs) that accelerate sampling by integrating an *ordinary differential equation (ODE)* instead of a Markov chain, and continuous-time score-based models[^YSong2020], which use *stochastic differential equations (SDEs)* to model noise removal. More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit guidance techniques for improved controllability and speed.
 
@@ -286,7 +286,7 @@ $$
 
 Every KL divergence term in $L_{LVB}$ (except for $L_0$) compares two Gaussian distributions and therefore they can be computed in closed form. $L_T$ is constant with respect to $\theta$ and can be ignored during training.
 
-In DDPMs, this ultimately reduces to a simple and intuitive *loss*:
+In DDPMs, this ultimately reduces to a simple and intuitive *loss*[^Ho2020]:
 $$
 \mathcal{L}(\theta) = \mathbb{E}\_{\mathbf{x}\_0, \epsilon, t} \left[ || \epsilon - \epsilon\_\theta(\mathbf{x}\_t, t) ||^2 \right]
 $$
