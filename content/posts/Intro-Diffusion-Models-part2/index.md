@@ -95,7 +95,7 @@ where $\mathbf{X}^{\le t} = (\dots,\mathbf{X}^{t-1}, \mathbf{X}^{t})$ is the seq
 The task of probabilistic weather forecasting from the present time $t=0$ into the future is to model the <mark class="gray">*joint probability distribution*</mark> $P(\mathbf{X}^{-1}, \mathbf{X}^{0:T} \mid \mathbf{O}^{\le 0})$, where $T$ is the forecast horizon and $\mathbf{O}^{\le 0}$ are all observations up to the forecast initialization time.
 This joint probability distribution can be factored as:
 \begin{aligned}
-P(\mathbf{X}^{-1}, \mathbf{X}^{0:T} \mid \mathbf{O}^{\le 0}) & = P(\mathbf{X}^{-1}, \underbrace{{\color{red}\mathbf{X}^{0}, \mathbf{X}^{1:T}}}\_{{\color{black}\mathbf{X}^{0:T}}} \mid {{\mathbf{O}}}^{\le 0}) \\\
+P(\mathbf{X}^{-1}, \mathbf{X}^{0:T} \mid \mathbf{O}^{\le 0}) & = P(\mathbf{X}^{-1}, \underbrace{{\color{red}\mathbf{X}^{0}, \mathbf{X}^{1:T}}}\_{\mathbf{X}^{0:T}} \mid {{\mathbf{O}}}^{\le 0}) \\\
 &\rule{0pt}{1.0em} = P(\mathbf{X}^{0}, \mathbf{X}^{-1} \mid \mathbf{O}^{\le 0}) \times P(\mathbf{X}^{1:T} \mid \mathbf{X}^{0}, \mathbf{X}^{-1}, \mathbf{O}^{\le 0})  \quad \quad \quad \quad {\color{green}\small{\text{Chain rule}}} \\\
 &\rule{0pt}{1.5em} \approx P(\mathbf{X}^{0}, \mathbf{X}^{-1} \mid \mathbf{O}^{\le 0}) \times {\color{red}P(\mathbf{X}^{1:T} \mid \mathbf{X}^{0}, \mathbf{X}^{-1})} \quad \quad \ \ {\color{green}\small{\text{second-order Markov}}} \\\
 &\rule{0pt}{1.0em} = \underbrace{P(\mathbf{X}^{0}, \mathbf{X}^{-1} \mid \mathbf{O}^{\le 0})}\_{\text{state inference}} \times \underbrace{{\color{red}\prod_{t=0}^{T-1} p(\mathbf{X}^{t+1} \mid \mathbf{X}^t, \mathbf{X}^{t-1})}}\_{\text{forecast model}} \quad \ {\color{green}\small{\text{AR(2) factorization}}}
