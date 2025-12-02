@@ -235,7 +235,7 @@ $$
 
 By applying this reverse transition from $t=T \rightarrow 0$, we gradually transform pure noise $\mathbf{x}\_T$ to a coherent, realistic sample that is similar to $\mathbf{x}\_0$:
 $$
-p\_\theta(\mathbf{x}\_{0:T}) = p(\mathbf{x}\_T) \prod^T\_{t=1} p\_\theta(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)
+p\_\theta(\mathbf{x}\_{0:T}) = p\_\theta(\mathbf{x}\_T) \prod^T\_{t=1} p\_\theta(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)
 $$
 
 Note that although the noise added during the forward diffusion is random, it is *not arbitrary* -- its structure comes from the underlying data. As a result, by learning to predict and remove this noise accurately, the model implicitly learns the structure of the original image $\mathbf{x}\_0$ and how to reconstruct it from noise.
