@@ -50,7 +50,7 @@ These models represent a breakthrough beyond deep learning architectures and mar
 {{< figure
   src="https://cdn.prod.website-files.com/65d8ee5f025f02594c614c17/66ebf5038c1ad0c5af6f7ae3_65f87d7cb00a6e1b7bbb9676_1.webp"
   alt="Foundation"
-  caption="**The evolution of AI**: From machine learning (ML) to deep learning to foundation models. <small>Image source: [DATAFOREST](https://dataforest.ai/blog/ai-foundation-models-for-big-business-innovation)</small>"
+  caption="**The evolution of AI models** - from machine learning (feature-centric strategy) to deep learning (model-centric strategy) to foundation models (data-centric strategy). The data-centric approach prioritizes the accumulation of large-scale, high-quality data and, where feasible, aims for end-to-end learning. <small>Image source: [DATAFOREST](https://dataforest.ai/blog/ai-foundation-models-for-big-business-innovation)</small>"
 >}}
 
 In this first part of the series, we’ll look at what foundation models are, why they matter, and how they are advancing Earth science research.
@@ -122,7 +122,7 @@ Broadly speaking, this flexibility enables AI that grows with our needs -- expan
 <center> <span style="letter-spacing: 0.25rem;">• • •</span> </center>
 
 ### Self-supervised Learning
-One of the key innovations that make foundation models possible is *self-supervised learning* (SSL). This approach allows models to learn directly from raw, unlabeled data by constructing their own training signals, rather than relying on expensive human-generated labels.
+One of the key innovations behind foundation models possible is *self-supervised learning* (SSL). Instead of relying on expensive human-generated labels, SSL lets models learn directly from raw, unlabeled data by creating their own training signals. This approach gives models wide exposure to real-world information and helps them build a surprisingly deep understanding of of world knowledge.
 
 <!--<div style="border: 2px solid #708090; border-radius: 16px; padding: 0px 16px; margin: 1em auto; width: 95%;">
 <small>
@@ -132,11 +132,9 @@ One of the key innovations that make foundation models possible is *self-supervi
 </small>
 </div>-->
 
-In traditional ML, building high-quality labeled datasets is often the biggest bottleneck. Labeling millions of images, sentences, or audio clips requires time, money, and expert knowledge. Meanwhile, vast amounts of unlabeled data -- text, satellite imagery, sensor readings -- are generated every day. ***SSL turns this challenge into an advantage***.
+><mark>***Self-supervised learning**: is a ML approach in which a model learns from unlabeled data by generating its own supervisory signals, often by predicting missing or transformed (e.g., masked, shuffled) parts of the input*.</mark>
 
-><mark>***Definition**: Self-supervised learning is a ML approach in which a model learns from unlabeled data by generating its own supervisory signals, often by predicting missing or transformed (e.g., masked, shuffled) parts of the input*.</mark>
-
-<!--Unlike supervised learning, where every data point requires a human-provided label, SSL lets models teach themselves. They learn to predict missing parts of the data from the parts that are visible, turning raw, unlabeled information into a source of insight.-->
+We generate overwhelming amounts of unlabeled data every day: text, satellite imagery, sensor signals, and more. Manually labeling it all isn’t just costly -- it’s unrealistic. SSL flips this limitation into an advantage by learning straight from the data itself.
 
 {{< figure
     src="https://lilianweng.github.io/posts/2019-11-10-self-supervised/self-sup-lecun.png"
@@ -153,9 +151,9 @@ Because they can learn from huge amounts of raw, uncurated data, foundation mode
 
 <center> <span style="letter-spacing: 0.25rem;">• • •</span> </center>
 
-### Scaling Laws
-What makes foundation models powerful is *scale*.
-When AI models are trained on massive, diverse datasets with vast compute, they do more than memorize; they discover deep structures, hidden relationships, and patterns that generalize far beyond the examples they’ve seen.
+### Scale and Homogenization
+What makes foundation models so powerful is *scale*.
+When we train a model on massive, diverse datasets using large amounts of compute, the model doesn’t simply memorize information — it starts to uncover deeper structures and relationships in the data that generalize beyond what it has seen.
 
 {{< quote-red >}}
 "If I could use only one word to describe AI post-2020, it’d be *scale*." </br>
@@ -169,15 +167,21 @@ When AI models are trained on massive, diverse datasets with vast compute, they 
     width=75%
 >}}
 
-As models grow, performance improves predictably, but something remarkable happens at extreme scale: <mark class="blue">*emergent properties*</mark>. These are skills the model wasn’t explicitly trained for -- such as reasoning about unfamiliar scenarios, making connections across modalities, or spotting subtle trends invisible to humans -- but they appear in complex, nonlinear ways as scale increases.
+As models scale up, their abilities tend to improve along familiar metrics. But at sufficiently large scales, we often see something unexpected: new capabilities appear that weren’t directly targeted during training. These <mark class="blue">*emergent behaviors*</mark> can include reasoning in unfamiliar situations, integrating patterns across different modalities, or detecting subtle signals that humans might overlook.
 
-><mark class="blue">***Definition**: Emergent properties are characteristics or behaviors of a system that arise from the interactions and relationships between its individual components, rather than from the properties of those components alone. These properties cannot be predicted solely by examining the parts of the system in isolation; they emerge when the components work together in a structured way*.</mark>
+><mark class="blue">***Emergent behaviors:** are characteristics that arise from the interactions inside a large system — not explicitly programmed, and not visible in smaller models.*</mark>
 
-Scale, combined with SSL, in foundation models transforms AI from task-specific tools into versatile, general-purpose systems.
-Now, this technology is being applied to one of the most complex systems we know: **our planet**.
+Together, large-scale training and SSL transform models from narrow tools into flexible, general-purpose systems. This leads to an important outcome: <mark class="orange">*homogenization*</mark>.
 
-<!--While language models have been around for a while, they’ve only been able to grow to the scale they are today with self-supervision-->
-<!--Foundation models also mark the transition from task-specific models to general-purpose models-->
+><mark class="orange">***Homogenization:** The process by which AI systems across diverse tasks and domains converge toward a shared set of large, general-purpose model architectures, training objectives, and data sources, resulting in reduced variation in design and increased reliance on common computational infrastructure.*</mark>
+
+In the past, every scientific task required its own specialized model. If you were predicting wildfires, forecasting ocean temperatures, or estimating crop yields, you’d build everything from scratch -- new architecture, new data pipeline, new rules. Each domain built and maintained its own datasets, pipelines, and assumptions.
+
+Homogenization changes this paradigm. A single foundation model can serve as a shared computational "*backbone*" that many applications and research areas build upon. Instead of numerous disconnected systems, we get a unified base that becomes more capable as more users contribute data, insights, and fine-tuned adaptations.
+
+The result is less fragmentation across the scientific landscape and more opportunities for collaboration. As foundation models continue to scale, they increasingly function as common infrastructure -- a general foundation that supports progress across diverse domains.
+
+Now, these AI models are being applied to one of the most complex systems: **our planet**.
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
@@ -191,14 +195,14 @@ Now, this technology is being applied to one of the most complex systems we know
 Earth foundation models (EFMs) bring the principles of foundation models from language and vision AI to the study of our planet.
 Instead of learning from books, websites, or photographs, EFMs are trained on massive collections of geoscience data: *satellite observations, climate simulations, weather sensor networks, ocean measurements, and more*.
 
-><mark>EFMs help bridge the gap between observation and understanding -- enabling faster science and more informed actions in a rapidly changing world.</mark>
+><mark>EFMs help bridge the gap between observation and understanding Earth system -- enabling faster science and more informed actions in a rapidly changing world.</mark>
 
-By learning from this rich and multimodal data, EFMs can develop a holistic view of processes that shape Earth’s systems. For example:
+By learning from this rich and multimodal data, EFMs can develop a holistic view of processes that shape Earth’s systems, such as:
 - How weather patterns form
 - How oceans and atmosphere interact
 - And how environmental changes unfold over time
 
-It is important to note that <mark class="pink">*an EFM typically doesn’t cover the entire Earth’s science all at once*</mark>. Most EFMs are built for a specific domain such as Earth observation, climate, biodiversity, or land use. Still, the knowledge they gain often transfers across applications, giving scientists and users a flexible base to build upon.
+It is important to note that <mark class="pink">*an EFM typically doesn’t cover the entire Earth’s science all at once*</mark>. Most EFMs are built for a specific domain such as Earth observation, climate modeling, biodiversity, or land use. Still, the knowledge they gain often transfers across applications, giving scientists and users a flexible base to build upon.
 
 <small>
 
@@ -222,7 +226,7 @@ $^\dagger$This concept reflects the author’s emerging perspective and is share
 
 <div style="margin-top: 24px;"> </div>
 
-Like other foundation models, EFMs are pre-trained on enormous datasets and then fine-tuned for specific scientific challenges. This reduces the time, cost, and expertise required to build advanced models from scratch, helping accelerate research, integrate knowledge across domains, and provide a flexible foundation for tackling complex Earth science problems.
+Like other foundation models, EFMs are pre-trained on enormous datasets and then fine-tuned for specific applications. This reduces the time, cost, and expertise required to build advanced models from scratch, helping accelerate research, integrate knowledge across domains, and provide a flexible foundation for tackling complex Earth science problems.
 
 ### Why Foundation Models for Earth System?
 
