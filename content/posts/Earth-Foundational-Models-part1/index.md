@@ -204,10 +204,10 @@ It is important to note that <mark class="pink">*an EFM typically doesn’t cove
 
 | **Category** | **Scope** | **Training Data** | **Example Models** |
 |--------------|-----------|-------------------------|------------------|
-| Geospatial | Earth observation | Satellite & aerial imagery, DEMs, GIS, etc | DOFA[^Xiong2024], Prithvi[^Szwarcman2024], Clay[^clay], TerraMind[^Jakubik2025] |
+| Geospatial | Earth observation | Satellite & aerial imagery, GIS, etc | DOFA[^Xiong2024], Prithvi[^Szwarcman2024], Clay[^clay], TerraMind[^Jakubik2025] |
 | Climate / Earth System | Climate modeling, downscaling | reanalysis, ESM outputs, atmospheric data, etc | Earth-2[^Earth2], ClimaX[^Nguyen2023], Aurora[^Bodnar2025], ORBIT-2[^Wang2025] |
 | Environment | Environmental monitoring | Fire data, hydrology, soil moisture, precipitation | Granite-Geospatial-Ocean[^ggo] |
-| Biodiversity & Ecosystem | Species & habitat monitoring | Camera traps, lidar, bioacoustics, etc | NatureLM-audio, Animal2Vec |
+| Biodiversity & Ecosystem | Species & habitat monitoring | Camera traps, lidar, bioacoustics, etc | NatureLM-audio[^Robinson2024] |
 
 </small>
 
@@ -289,9 +289,10 @@ In Part 2, we’ll dive into how foundation models are used in Earth sciences.
 [^Wang2025]: Wang X., et al. (2025). ORBIT-2: Scaling Exascale Vision Foundation Models for Weather and Climate Downscaling. In Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis (SC '25). Association for Computing Machinery, New York, NY, USA, 86–98.
 [^Nguyen2023]: Nguyen, T., et al. (2023). ClimaX: a25 foundation model for weather and climate. In Proceedings of the 40th International Conference on Machine Learning (ICML'23), Vol. 202. JMLR.org, Article 1078, 25904–25938.
 [^ggo]: Granite-Geospatial-Ocean. https://huggingface.co/ibm-granite/granite-geospatial-ocean
-[^Xiong2024]: Xiong, Z., et al., 2024. Neural plasticity-inspired multimodal foundation model for earth observation. arXiv preprint arXiv:2403.15356.
-[^Szwarcman2024]: Szwarcman, D., et al., 2024. Prithvi-eo-2.0: A versatile multi-temporal foundation model for arth observation applications. arXiv preprint arXiv:2412.02732.
+[^Xiong2024]: Xiong, Z., et al., 2024. [Neural plasticity-inspired multimodal foundation model for earth observation](https://arxiv.org/abs/2403.15356). arXiv preprint arXiv:2403.15356.
+[^Szwarcman2024]: Szwarcman, D., et al., 2024. [Prithvi-eo-2.0: A versatile multi-temporal foundation model for arth observation applications](https://arxiv.org/abs/2412.02732). arXiv preprint arXiv:2412.02732.
 [^Jakubik2025]: Jakubik, J., et al., 2025. Terramind: Large-scale generative multimodality for earth observation. arXiv preprint arXiv:2504.11171.
 [^clay]: Clay Foundation Model. https://clay-foundation.github.io/model/
 [^Huyen2024]: Huyen, C., 2024. AI Engineering: Building Applications with Foundation Models. O'Reilly Media, Incorporated.
 [^lillog_ssl]: https://lilianweng.github.io/posts/2019-11-10-self-supervised/
+[^Robinson2024]: Robinson, D., et al., 2024. [NatureLM-audio: an Audio-Language Foundation Model for Bioacoustics](https://arxiv.org/abs/2411.07186). arXiv preprint arXiv:2411.07186.
