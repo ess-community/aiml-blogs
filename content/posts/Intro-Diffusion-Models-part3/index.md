@@ -1,8 +1,8 @@
 ---
-title: "Diffusion Models: Principles and Applications in Earth Sciences - Part 3"
+title: "Diffusion Models (Part 4): Satellite Precipitation Estimation"
 description: "Diffusion models are transforming how we analyze and predict Earth system processes"
 summary: "Diffusion models for environmental science"
-date: 2025-11-22
+date: 2025-12-03
 tags: ["Diffusion Model", "Precipitation Retrieval", "Satellites", "GPM"]
 author: "Authors"
 series: ["AI-ML"]
