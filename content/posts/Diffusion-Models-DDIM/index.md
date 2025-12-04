@@ -1,5 +1,5 @@
 ---
-title: "Diffusion Models 3: Denoising Diffusion Implicit Models"
+title: "Diffusion Models (Part 3): Denoising Diffusion Implicit Models"
 description: "A step-by-step guide to DDIM"
 summary: "A step-by-step guide to DDIM"
 date: 2025-12-03
@@ -35,25 +35,48 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 ---
 
-[In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored the principles of the *Denoising Diffusion Probabilistic Model* (DDPM). The core idea is that noise is gradually added to an image, and then the model learns how to reverse that noise. However, this process require simulating a Markov chain for many iterations to produce a high-quality sample.
-For fields like Earth science that involve large samples, this could be a bottleneck.
-This motivates the need for faster sampling methods. One of the most influential and widely used is the *Denoising Diffusion Implicit Model* (DDIM)[^JSong2020].
+[In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we looked at how *Denoising Diffusion Probabilistic Models (DDPMs)*[^Ho2020] generate samples by adding random noise to data and then learning how to remove it. 
+One of the most prevalent drawbacks of DDPMs is that they need a large number of iterations to generate a reasonably good looking image.
 
-In this post, we’ll walk through the theory of DDIM, explore key improvements over DDPM. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
+*Denoising Diffusion Implicit Models (DDIMs)*[^JSong2020] was invented to overcome this problem. They build on the same ideas behind DDPMs but take bigger, smarter steps, cutting down the time it takes to turn noise into a meaningful result.
+
+In this article, we’ll break down how DDIMs work and why they speed things up. If you missed Part 1, you may want to check it out first for the basics.
 
 Let’s get started!
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
-## What is DDIM?
-
-## Key Features of DDIM
-- Much faster sampling (e.g., only 50 steps instead of 1000)
-- Deterministic reverse process
-- Compatible with pre-trained diffusion models
-- Maintains high image quality
-
 ## From DDPMs to DDIMs
+
+Recall that the original DDPM transition probability in the forward pass takes the form:
+$$
+q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}) = \mathcal{N}(\mathbf{x}\_t; \sqrt{1 - \beta\_t} \mathbf{x}\_{t-1}, \beta\_t\mathbf{I})
+$$
+
+where $\\{\beta\_t \in (0, 1)\\}\_{t=1}^T$ is the predefined variance schedule. 
+
+Note that we can jump straight from the original sample $\mathbf{x}\_0$ to any noised version of the forward diffusion process $\mathbf{x}\_t$:
+ 
+$$
+\mathbf{x}\_t = \sqrt{\bar{\alpha}\_t}\mathbf{x}\_0 + \sqrt{1 - \bar{\alpha}\_t}\boldsymbol{\epsilon}_0
+$$
+
+where $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$.
+
+Here, the transition probability $q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1})$ follows a Markov chain -- meaning that the probability of $\mathbf{x}\_t$ is only dependent on $\mathbf{x}\_{t-1}$, not any previous states.
+
+The advantage of a Markovian structure is that the system is memoryless -- i.e., once we know $\mathbf{x}\_{t-1}$, we will know $\mathbf{x}\_{t-1}$. However, the downside is that a Markov chain can take many steps to converge.
+
+DDIM overcomes this issue by using non-Markovian.
+
+## Probability Distributions in DDIM
+
+
+## Derivation of the Transition Distribution.
+
+## Inference for DDIM
+
+
 The reverse process in traditional diffusion models (like DDPM) involves hundreds or thousands of steps. The larger the number of timesteps, the more passes the image must go through the neural network, resulting in an increased computational load.
 
 | **Feature** |	**DDPM** | **DDIM** |
