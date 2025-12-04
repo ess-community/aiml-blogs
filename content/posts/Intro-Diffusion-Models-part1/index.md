@@ -101,11 +101,12 @@ That's it -- and yet this simple idea works incredibly well in practice.
 
 Diffusion models come in different forms, depending on whether the diffusion process is modeled in *discrete* or *continuous* time, and whether noise is removed through *probabilistic* or *deterministic* dynamics.
 
-One of the most widely used approaches is the Denoising Diffusion Probabilistic Model[^Ho2020] (DDPM), which performs diffusion in discrete time. It models the generative process as a reverse <mark class="green">*Markov chain*</mark>, gradually denoising the sample through a fixed sequence of probabilistic transitions.
+A breakthrough approach is the *Denoising Diffusion Probabilistic Model* (DDPM)[^Ho2020], which performs diffusion in discrete time. It models the generative process as a reverse <mark class="green">*Markov chain*</mark>, gradually denoising the sample through a fixed sequence of probabilistic transitions.
 
 ><mark class="green"> *A **Markov chain** is a discrete-time stochastic process where the next state depends only on the current state — not on the full history of how you got there.*</mark>
 
-Other diffusion formulations include DDPM's deterministic variants like Denoising Diffusion Implicit Models[^JSong2020] (DDIMs) that accelerate sampling by integrating an *ordinary differential equation (ODE)* instead of a Markov chain, and continuous-time score-based models[^YSong2020], which use *stochastic differential equations (SDEs)* to model noise removal. More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit guidance techniques for improved controllability and speed.
+Other diffusion formulations include DDPM-inspired variants such as *Denoising Diffusion Implicit Models* (DDIMs)[^JSong2020], which introduce a non-Markovian formulation that enables deterministic and faster sampling, and continuous-time *score-based* models[^YSong2020], which replace the discrete Markov chain with stochastic and ordinary differential equation perspectives to model the diffusion and denoising processes.
+More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit guidance techniques for improved controllability and speed.
 
 {{< quote-red >}}
 **We focus on the DDPM in this post since it provides the most basic foundation.**
@@ -123,7 +124,7 @@ At their core, DDPMs involve two distinct stochastic processes in discrete time:
   alt="Diffusion model"
 >}}
 
-### Forward process
+### The Forward Process: Adding Noise
 Suppose we have a real data sample $\mathbf{x}_0 \sim q(\mathbf{x})$. In the forward process, we gradually corrupt the data by adding small amounts of *Gaussian noise* over $T$ steps, producing a sequence of increasingly noisy samples $(\mathbf{x}_1, \dots, \mathbf{x}_T)$.
 The amount of noise added at each step $t$ is controlled by a predefined *variance schedule* $\\{\beta\_t \in (0, 1)\\}\_{t=1}^T$.
 $$
@@ -185,7 +186,7 @@ What this really tells us is that $\mathbf{x}_t$ never loses the original signal
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
-### Reverse denoising process
+### The Reverse Process: Learning to Denoise
 The reverse process works in the opposite direction -- *and this is where the magic happens*. Instead of adding noise, the reverse systematically removes it, step by step, gradually reconstructing the original data. Once trained, the model can start from pure Gaussian noise and iteratively apply this reverse procedure to generate new, realistic samples similar to $\mathbf{x}_0$.
 
 In theory, the reverse diffusion process is defined as $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)$ -- meaning that given a noisy sample $\mathbf{x}\_t$, we would like to compute the distribution of the previous, slightly less noisy sample $\mathbf{x}\_{t-1}$. However, this distribution is *intractable* in practice because it depends on the entire (unknown) data distribution.
@@ -297,9 +298,7 @@ By minimizing this loss, the model learns to invert each step of the noising pro
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
-{{< quote-red >}}
-**Quick summary:**
-{{< /quote-red >}}
+## Summary
 - We gradually add noise to data (the *forward process*).
 - The model learns to remove the noise (the *reverse process*).
 - Training aims to *maximize the likelihood* of real data (or equivalently, *minimize the negative log-likelihood*).
