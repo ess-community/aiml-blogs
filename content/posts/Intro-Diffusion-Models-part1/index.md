@@ -37,7 +37,7 @@ editPost:
 
 Diffusion models have become one of the most powerful tools in *Artificial Intelligence (AI)*. They’re the engines behind some of today's most advanced *generative systems* -- from creating realistic images, audio, text, and videos to designing new molecules and medicines, and even modeling complex climate and environmental systems.
 
-There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <mark class="gray">core principles</mark> (in this post) and explore how diffusion models are being used in Earth and environmental sciences, and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), Part&nbsp;3, Part&nbsp;4).*
+There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <mark class="gray">core principles</mark> (in this post) and explore how diffusion models are being used in Earth and environmental sciences and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), Part&nbsp;3, Part&nbsp;4).*
 
 Let’s get started!
 
@@ -283,7 +283,7 @@ where $D\_\text{KL}(q||p)$ is the *Kullback–Leibler (KL) divergence*. Basicall
 {{< figure
   src="../../images/ELBO.png"
   alt="Diffusion model"
-  caption="Visualization of $\log p_{\theta}$ and $\text{ELBO}\_{\theta}$. The gap between the two curve is determined by the Kullback–Leibler divergence $D\_\text{KL}\big(q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0}) \mid\mid p\_\theta(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0}) \big)$. <small>*Adapted from [Chan (2024)](https://arxiv.org/abs/2403.18103)*</small>."
+  caption="Visualization of $\log p_{\theta}$ and $\text{ELBO}\_{\theta}$. The gap between the two curves is determined by the Kullback–Leibler divergence $D\_\text{KL}\big(q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0}) \mid\mid p\_\theta(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0}) \big)$. <small>*Adapted from [Chan (2024)](https://arxiv.org/abs/2403.18103)*</small>."
   width=70%
 >}}
 
@@ -318,7 +318,7 @@ The training and sampling algorithms in DDPM can be summarized as below:
 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
 
   <div style="border: 3px solid #00aeef; border-radius: 16px; padding: 12px; width: 49%;">
-    <b>Training DDPM</b> <br>
+    <h3 style="margin: 0;text-align: center;">Training DDPM</h3>
     For every sample $\mathbf{x}_0$ in the training dataset:
     <ol style="margin-left: 0px; margin-top: 0px">
       <li> <b>repeat</b>
@@ -331,11 +331,11 @@ The training and sampling algorithms in DDPM can be summarized as below:
   </div>
 
   <div style="border: 3px solid #ee2a7b; border-radius: 16px; padding: 12px; width: 49%;">
-    <b>Sampling DDPM</b> <br>
+    <h3 style="margin: 0;text-align: center;">Sampling DDPM</h3>
     <ol style="margin-left: 0px; margin-top: 0px">
       <li> $\mathbf{x}_T \sim \mathcal{N}(0,\mathbf{I})$
       <li> <b>for $t=T,...,1$ do</b>
-      <li> &nbsp;&nbsp;&nbsp; $\mathbf{z} \sim \mathcal{N}(0,\mathbf{I})$ if $t>1$, else $z=0$
+      <li> &nbsp;&nbsp;&nbsp; $\mathbf{z} \sim \mathcal{N}(0,\mathbf{I})$ if $t>1$, else $\mathbf{z}=0$
       <li> &nbsp;&nbsp;&nbsp; $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}\bigl(\mathbf{x}_t - \tfrac{1 - \alpha_t}{\sqrt{1-\bar{\alpha}_t}}\,\epsilon_\theta(\mathbf{x}_t, t)\bigr) + \sigma_t \mathbf{z}$
       <li> <b>end for</b>
       <li style="margin-bottom: -20px;"> <b>return</b> $\mathbf{x}_0$
