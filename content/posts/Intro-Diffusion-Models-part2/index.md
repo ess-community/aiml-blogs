@@ -113,7 +113,7 @@ GenCast models the atmosphere as a high-dimensional dynamical system evolving ov
 
 {{< figure
   align=center
-  src="../../images/GenCast_chain.jpg"
+  src="../../images/GenCast_chain.png"
   alt="gencast model"
   caption="**Forecast model and trajectory in GenCast**. If the current state is at Day 0, 18:00 UTC, the model uses the state from 12 hours earlier (i.e., Day 0, 06:00 UTC) as context to predict the next state at Day 1, 06:00 UTC. Each new predicted state is then fed back into the model to generate subsequent time steps, iteratively progressing through Day 15, 18:00 UTC."
 >}}
