@@ -270,7 +270,7 @@ $$
 \underbrace{\log p\_\theta(\mathbf{x}\_0)}\_{\text{Evidence}}
 &= \log \int p\_\theta(\mathbf{x}\_{0:T}) d\mathbf{x}\_{1:T} = \log \int {\color{red} q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \frac{p\_\theta(\mathbf{x}\_{0:T})}{\color{red}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}} d\mathbf{x}\_{1:T} \\\
 &= \log \mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[\frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}\Bigg] \quad \quad \color{green}\small{\text{By definition: } \mathbb{E}\_{p(x)}[f(x)] = \int p(x)f(x)dx} \\\
-&\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[ \log \frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \Bigg]}\_{\text{Evidence Lower Bound (ELBO)}} \quad \quad \color{green}\small{\text{Apply Jensen's inequality (log is concave)}} \\\
+&\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[ \log \frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \Bigg]}\_{\text{Evidence Lower Bound} \ (ELBO\_{\theta})} \quad \quad \color{green}\small{\text{Apply Jensen's inequality (log is concave)}} \\\
 &\rule{0pt}{2em} \color{blue}\small{\text{. . . We skip the details here for simplicity. At the end, we obtain:}} \\\
 &\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1} \vert \mathbf{x}\_0)} \Big[ \log p_{\theta}(\mathbf{x}\_{0} \vert \mathbf{x}\_{1})\Big] - D\_\text{KL}\big(q(\mathbf{x}\_{T}\vert\mathbf{x}\_0) \|| p\_\theta(\mathbf{x}\_{T}) \big) - \sum\_{t=2}^T \mathbb{E}\_{q(\mathbf{x}\_{t} \vert \mathbf{x}\_0)} \Big[ D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t) \big)\Big]}\_{\text{Variational Lower Bound ($L\_{VLB}$)}}
 \end{aligned}
@@ -317,29 +317,37 @@ The training and sampling algorithms in DDPM can be summarized as below:
 <small>
 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
 
-  <div style="border: 3px solid #00aeef; border-radius: 16px; padding: 12px; width: 49%;">
-    <h3 style="margin: 0;text-align: center;">Training DDPM</h3>
-    For every sample $\mathbf{x}_0$ in the training dataset:
-    <ol style="margin-left: 0px; margin-top: 0px">
-      <li> <b>repeat</b>
-      <li> &nbsp;&nbsp;&nbsp;&nbsp;$t\sim \text{Uniform}(\{1,...,T\})$
-      <li> &nbsp;&nbsp;&nbsp;&nbsp;$\boldsymbol{\epsilon} \sim \mathcal{N}(0,\mathbf{I})$
-      <li> &nbsp;&nbsp;&nbsp;&nbsp;take gradient descent step on: </br>
-          &nbsp;&nbsp;&nbsp; $\nabla_{\theta} \| \epsilon - \epsilon_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon},t) \|^2$
-      <li style="margin-bottom: -20px;"> <b>until</b> converged
-    </ol>
+  <div style="border: 3px solid #00aeef; border-radius: 11px; padding: 0px; width: 49%;">
+    <h4 style="margin: 0; text-align: center;">
+      <span style="background: #00aeef; display:block; padding:4px;">
+        Training DDPM
+      </span>
+    </h4>
+    <ul style="margin-left: 0px; margin-top: 0px; list-style: none;">
+      <li>1: <b>repeat</b>
+      <li>2: &emsp;$\mathbf{x}_0 \sim q(\mathbf{x}_0)$
+      <li>3: &emsp;$t\sim \text{Uniform}(\{1,...,T\})$
+      <li>4: &emsp;$\boldsymbol{\epsilon} \sim \mathcal{N}(0,\mathbf{I})$
+      <li>5: &emsp;take gradient descent step on: </br>
+             &emsp;&emsp;&emsp; $\nabla_{\theta} \| \epsilon - \epsilon_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon},t) \|^2$
+      <li style="margin-bottom: -20px;">6: <b>until</b> converged
+    </ul>
   </div>
 
-  <div style="border: 3px solid #ee2a7b; border-radius: 16px; padding: 12px; width: 49%;">
-    <h3 style="margin: 0;text-align: center;">Sampling DDPM</h3>
-    <ol style="margin-left: 0px; margin-top: 0px">
-      <li> $\mathbf{x}_T \sim \mathcal{N}(0,\mathbf{I})$
-      <li> <b>for $t=T,...,1$ do</b>
-      <li> &nbsp;&nbsp;&nbsp; $\mathbf{z} \sim \mathcal{N}(0,\mathbf{I})$ if $t>1$, else $\mathbf{z}=0$
-      <li> &nbsp;&nbsp;&nbsp; $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}\bigl(\mathbf{x}_t - \tfrac{1 - \alpha_t}{\sqrt{1-\bar{\alpha}_t}}\,\epsilon_\theta(\mathbf{x}_t, t)\bigr) + \sigma_t \mathbf{z}$
-      <li> <b>end for</b>
-      <li style="margin-bottom: -20px;"> <b>return</b> $\mathbf{x}_0$
-    </ol>
+  <div style="border: 3px solid lightsalmon; border-radius: 11px; padding: 0px; width: 49%;">
+    <h4 style="margin: 0; text-align: center;">
+    <span style="background: lightsalmon; display:block; padding:4px;">
+        Sampling DDPM
+    </span>
+    </h4>
+    <ul style="margin-left: 0px; margin-top: 0px; list-style: none;">
+      <li>1: $\mathbf{x}_T \sim \mathcal{N}(0,\mathbf{I})$
+      <li>2: <b>for $t=T,...,1$ do</b>
+      <li>3: &emsp; $\mathbf{z} \sim \mathcal{N}(0,\mathbf{I})$ if $t>1$, else $\mathbf{z}=0$
+      <li>4: &emsp; $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}\bigl(\mathbf{x}_t - \tfrac{1 - \alpha_t}{\sqrt{1-\bar{\alpha}_t}}\,\epsilon_\theta(\mathbf{x}_t, t)\bigr) + \sigma_t \mathbf{z}$
+      <li>5: <b>end for</b>
+      <li style="margin-bottom: -20px;">6: <b>return</b> $\mathbf{x}_0$
+    </ul>
   </div>
 </div>
 </small>
