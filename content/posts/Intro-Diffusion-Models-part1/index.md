@@ -37,7 +37,7 @@ editPost:
 
 Diffusion models have become one of the most powerful tools in *Artificial Intelligence (AI)*. They’re the engines behind some of today's most advanced *generative systems* -- from creating realistic images, audio, text, and videos to designing new molecules and medicines, and even modeling complex climate and environmental systems.
 
-There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <mark class="gray">core principles</mark> (in this post) and explore how diffusion models are being used in Earth and environmental sciences, and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), Part&nbsp;3, Part&nbsp;4).*
+There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <mark class="gray">core principles</mark> (in this post) and explore how diffusion models are being used in Earth and environmental sciences and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), Part&nbsp;3, Part&nbsp;4).*
 
 Let’s get started!
 
@@ -101,11 +101,12 @@ That's it -- and yet this simple idea works incredibly well in practice.
 
 Diffusion models come in different forms, depending on whether the diffusion process is modeled in *discrete* or *continuous* time, and whether noise is removed through *probabilistic* or *deterministic* dynamics.
 
-One of the most widely used approaches is the Denoising Diffusion Probabilistic Model[^Ho2020] (DDPM), which performs diffusion in discrete time. It models the generative process as a reverse <mark class="green">*Markov chain*</mark>, gradually denoising the sample through a fixed sequence of probabilistic transitions.
+A breakthrough approach is the *Denoising Diffusion Probabilistic Model* (DDPM)[^Ho2020], which performs diffusion in discrete time. It models the generative process as a reverse <mark class="green">*Markov chain*</mark>, gradually denoising the sample through a fixed sequence of probabilistic transitions.
 
-><mark class="green"> *A **Markov chain** is a discrete-time stochastic process where the next state depends only on the current state — not on the full history of how you got there.*</mark>
+><mark class="green"> *A **Markov chain** is a discrete-time stochastic process where the next state depends only on the current state.*</mark>
 
-Other diffusion formulations include DDPM's deterministic variants like Denoising Diffusion Implicit Models[^JSong2020] (DDIMs) that accelerate sampling by integrating an *ordinary differential equation (ODE)* instead of a Markov chain, and continuous-time score-based models[^YSong2020], which use *stochastic differential equations (SDEs)* to model noise removal. More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit guidance techniques for improved controllability and speed.
+Other diffusion formulations include DDPM-inspired variants such as *Denoising Diffusion Implicit Models* (DDIMs)[^JSong2020], which introduce a *non-Markovian* formulation that enables deterministic and faster sampling, and continuous-time *score-based* models[^YSong2020], which replace the discrete Markov chain with stochastic and ordinary differential equation perspectives to model the diffusion and denoising processes.
+More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit *guidance techniques* for improved controllability and speed.
 
 {{< quote-red >}}
 **We focus on the DDPM in this post since it provides the most basic foundation.**
@@ -123,7 +124,7 @@ At their core, DDPMs involve two distinct stochastic processes in discrete time:
   alt="Diffusion model"
 >}}
 
-### Forward process
+### The Forward Process: Adding Noise
 Suppose we have a real data sample $\mathbf{x}_0 \sim q(\mathbf{x})$. In the forward process, we gradually corrupt the data by adding small amounts of *Gaussian noise* over $T$ steps, producing a sequence of increasingly noisy samples $(\mathbf{x}_1, \dots, \mathbf{x}_T)$.
 The amount of noise added at each step $t$ is controlled by a predefined *variance schedule* $\\{\beta\_t \in (0, 1)\\}\_{t=1}^T$.
 $$
@@ -146,7 +147,7 @@ $$
 Since $\boldsymbol{\epsilon}\_{t-1}$ is standard Gaussian, if $\mathbf{x}\_{t-1}$ has zero mean and unit variance, then so does $\mathbf{x}_{t}$, because $\sqrt{1-\beta\_t}^2 + \sqrt{\beta\_t}^2=1$.
 
 {{< figure
-  src="../../images/forward_process.jpg"
+  src="../../images/forward_process.png"
   alt="Diffusion model"
   caption="Forward diffusion process."
 >}}
@@ -185,13 +186,13 @@ What this really tells us is that $\mathbf{x}_t$ never loses the original signal
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
-### Reverse denoising process
+### The Reverse Process: Learning to Denoise
 The reverse process works in the opposite direction -- *and this is where the magic happens*. Instead of adding noise, the reverse systematically removes it, step by step, gradually reconstructing the original data. Once trained, the model can start from pure Gaussian noise and iteratively apply this reverse procedure to generate new, realistic samples similar to $\mathbf{x}_0$.
 
 In theory, the reverse diffusion process is defined as $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)$ -- meaning that given a noisy sample $\mathbf{x}\_t$, we would like to compute the distribution of the previous, slightly less noisy sample $\mathbf{x}\_{t-1}$. However, this distribution is *intractable* in practice because it depends on the entire (unknown) data distribution.
 
 {{< figure
-  src="../../images/reverse_process.jpg"
+  src="../../images/reverse_process.png"
   alt="Diffusion model"
   caption="Reverse denoising process."
 >}}
@@ -210,7 +211,7 @@ where $\tilde{\boldsymbol{\mu}}\_t = {\frac{1}{\sqrt{\alpha\_t}} \Big( \mathbf{x
 This derivation relies on the *Markov property* of the forward process -- each state $\mathbf{x}\_t$ depends on the previous $\mathbf{x}\_{t-1}$, not on the original data $\mathbf{x}\_0$. Formally, $q(\mathbf{x}\_{t} \vert \mathbf{x}\_{t-1}, \mathbf{x}\_0) = q(\mathbf{x}\_{t} \vert \mathbf{x}\_{t-1})$.
 Since all the factors in the Bayes' rule expression are Gaussian, multiplying them results in another Gaussian. Using $\mathcal{N}\big(x; \mu, \sigma\big) \propto \exp \left( \frac{-(x-\mu)^2}{2\sigma^2}\right),$ we can solve analytically for $\tilde{\boldsymbol{\mu}}\_t$ and $\tilde{\beta}\_t$ as shown above.
 
-><mark class="gray">*If you’d like a quick walkthrough of this derivation, check out this [Lil'Log's post](https://lilianweng.github.io/posts/2021-07-11-diffusion-models)[^lillog_diff]. For a full step-by-step version, see page 12 of this article[^Luo2022].*</mark>
+><mark class="gray">*If you’d like a quick walkthrough of this derivation, check out this [Lil'Log's post](https://lilianweng.github.io/posts/2021-07-11-diffusion-models)[^lillog_diff]. For a full step-by-step version, see page 12 of this article[^Luo2022] and chapter 2 of this book[^Chan2024].*</mark>
 
 What does this conditioning mean? It means that during training, since we know $\mathbf{x}\_0$, we can compute the exact noise that was added to get $\mathbf{x}\_t$. This allows us to create training pairs $(\mathbf{x}\_t, \mathbf{\epsilon})$, where $\mathbf{\epsilon}$ is the exact noise, and train a model to predict this noise.
 
@@ -269,7 +270,7 @@ $$
 \underbrace{\log p\_\theta(\mathbf{x}\_0)}\_{\text{Evidence}}
 &= \log \int p\_\theta(\mathbf{x}\_{0:T}) d\mathbf{x}\_{1:T} = \log \int {\color{red} q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \frac{p\_\theta(\mathbf{x}\_{0:T})}{\color{red}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}} d\mathbf{x}\_{1:T} \\\
 &= \log \mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[\frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}\Bigg] \quad \quad \color{green}\small{\text{By definition: } \mathbb{E}\_{p(x)}[f(x)] = \int p(x)f(x)dx} \\\
-&\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[ \log \frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \Bigg]}\_{\text{Evidence Lower Bound (ELBO)}} \quad \quad \color{green}\small{\text{Apply Jensen's inequality (log is concave)}} \\\
+&\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0)} \Bigg[ \log \frac{p\_\theta(\mathbf{x}\_{0:T})}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \Bigg]}\_{\text{Evidence Lower Bound} \ (ELBO\_{\theta})} \quad \quad \color{green}\small{\text{Apply Jensen's inequality (log is concave)}} \\\
 &\rule{0pt}{2em} \color{blue}\small{\text{. . . We skip the details here for simplicity. At the end, we obtain:}} \\\
 &\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1} \vert \mathbf{x}\_0)} \Big[ \log p_{\theta}(\mathbf{x}\_{0} \vert \mathbf{x}\_{1})\Big] - D\_\text{KL}\big(q(\mathbf{x}\_{T}\vert\mathbf{x}\_0) \|| p\_\theta(\mathbf{x}\_{T}) \big) - \sum\_{t=2}^T \mathbb{E}\_{q(\mathbf{x}\_{t} \vert \mathbf{x}\_0)} \Big[ D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t) \big)\Big]}\_{\text{Variational Lower Bound ($L\_{VLB}$)}}
 \end{aligned}
@@ -277,29 +278,85 @@ $$
 
 ><mark class="gray">*For a complete derivation, check out this video[^Ozdemir] and this article[^Luo2022]*.</mark>
 
-where $D\_\text{KL}(p||q)$ is the *Kullback–Leibler (KL) divergence*. Basically, it measures the similarity between two probability distributions. KL divergence is always positive and can be non-symmetric under the interchange of $p$ and $q$.
+where $D\_\text{KL}(q||p)$ is the *Kullback–Leibler (KL) divergence*. Basically, it measures the similarity between two probability distributions. KL divergence is always positive and can be non-symmetric under the interchange of $p$ and $q$.
+
+{{< figure
+  src="../../images/ELBO.png"
+  alt="Diffusion model"
+  caption="Visualization of $\log p_{\theta}$ and $\text{ELBO}\_{\theta}$. The gap between the two curves is determined by the Kullback–Leibler divergence $D\_\text{KL}\big(q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0}) \mid\mid p\_\theta(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0}) \big)$. <small>*Adapted from [Chan (2024)](https://arxiv.org/abs/2403.18103)*</small>."
+  width=70%
+>}}
 
 To train the model, we instead minimize the negative log-likelihood bound:
 $$
--\log p\_\theta(\mathbf{x}\_0) \le \underbrace{\mathbb{E}\_{q(\mathbf{x}\_1 \vert \mathbf{x}\_0)} \big[- \log p\_\theta(\mathbf{x}\_0 \vert \mathbf{x}\_1)\big]}\_{L\_0} + \sum\_{t=2}^T \underbrace{\mathbb{E}\_{q(\mathbf{x}\_t \vert \mathbf{x}\_0)} \Big[ D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t)\big)\Big]}\_{L\_{t-1}} + \underbrace{D\_\text{KL}\big(q(\mathbf{x}\_T \vert \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_T)\big)}\_{L\_T}
+-\log p\_\theta(\mathbf{x}\_0) \le \underbrace{\mathbb{E}\_{q(\mathbf{x}\_1 \vert \mathbf{x}\_0)} \big[- \log p\_\theta(\mathbf{x}\_0 \vert \mathbf{x}\_1)\big]}\_{L\_0 \ (\text{reconstruction})} + \sum\_{t=2}^T \underbrace{\mathbb{E}\_{q(\mathbf{x}\_t \vert \mathbf{x}\_0)} \Big[ D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t)\big)\Big]}\_{L\_{t-1} \ (\text{consistency})} + \underbrace{D\_\text{KL}\big(q(\mathbf{x}\_T \vert \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_T)\big)}\_{L\_T \ (\text{prior matching})}
 $$
 
-Every KL divergence term in $L_{LVB}$ (except for $L_0$) compares two Gaussian distributions and therefore they can be computed in closed form. $L_T$ is constant with respect to $\theta$ and can be ignored during training.
-
-In DDPMs, this ultimately reduces to a simple and intuitive *loss*[^Ho2020]:
+Here, $L_T$ is constant with respect to $\theta$ and can be ignored during training. The consistency term is a summation of many KL divergence terms. 
+Every KL divergence term in $L_{LVB}$ (except for $L_0$) compares two Gaussian distributions and therefore they can be computed in closed form: 
 $$
-\mathcal{L}(\theta) = \mathbb{E}\_{\mathbf{x}\_0, \epsilon, t} \left[ || \epsilon - \epsilon\_\theta(\mathbf{x}\_t, t) ||^2 \right]
+\begin{aligned}
+D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t)\big) & = D\_\text{KL}\big(\mathcal{N}(\mathbf{x}\_{t-1}; \underbrace{\boldsymbol{\mu}\_t(\mathbf{x}\_t,\mathbf{x}\_0)}\_{\text{known}}, \underbrace{\sigma\_t^2 \mathbf{I}}\_{\text{known}}) \parallel \mathcal{N}(\mathbf{x}\_{t-1}; \underbrace{\boldsymbol{\mu}\_{\theta}(\mathbf{x}\_t)}\_{\text{neural net}}, \underbrace{\sigma\_t^2 \mathbf{I}}_\{\text{known}}) \big) \\\
+&=\frac{1}{2\sigma_t^2} || \boldsymbol{\mu}\_t(\mathbf{x}\_t,\mathbf{x}\_0) - \boldsymbol{\mu}\_{\theta}(\mathbf{x}\_t)||^2
+\end{aligned}
+$$
+The ELBO can also be simplified to absorb the reconstruction $L_0$ into the summation (see *Theorem 2.7* in this book[^Chan2024] for details).
+This ultimately reduces to a simple and intuitive *loss*[^Ho2020]:
+$$
+\rm{ELBO}\_{\theta}(\mathbf{x}\_0,\boldsymbol{\epsilon}) = \mathbb{E}\_{\mathbf{x}\_0, \epsilon} \left[ \frac{\beta_t^2}{2\sigma_t^2 \alpha_t (1-\bar{\alpha_t})} || \epsilon - \epsilon\_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}, t) ||^2 \right]
+$$
+
+To train the denoiser, we solve the optimization:
+$$
+\operatorname*{argmin}_{\theta} \ \mathbb{E}\_{\mathbf{x}\_0, \epsilon} \ \rm{ELBO}\_{\theta}(\mathbf{x}\_0,\boldsymbol{\epsilon})
 $$
 
 By minimizing this loss, the model learns to invert each step of the noising process. As training progresses, it becomes increasingly effective at removing noise from any noisy input $\mathbf{x}\_T$, enabling it to generate realistic samples starting from pure random noise.
 
-><mark class="gray">*If you’d like to explore the complete mathematical derivation, check out these excellent resources[^lillog_diff]<sup>,</sup>[^Ozdemir]<sup>,</sup>[^Luo2022]<sup>,</sup>[^theaisummer]<sup>,</sup>[^Lai2025]. Each provides a detailed explanation of the theory and intuition behind diffusion models.*</mark>
+The training and sampling algorithms in DDPM can be summarized as below:
+<small>
+<div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+
+  <div style="border: 3px solid #00aeef; border-radius: 11px; padding: 0px; width: 49%;">
+    <h4 style="margin: 0; text-align: center;">
+      <span style="background: #00aeef; display:block; padding:4px;">
+        Training DDPM
+      </span>
+    </h4>
+    <ul style="margin-left: 0px; margin-top: 0px; list-style: none;">
+      <li>1: <b>repeat</b>
+      <li>2: &emsp;$\mathbf{x}_0 \sim q(\mathbf{x}_0)$
+      <li>3: &emsp;$t\sim \text{Uniform}(\{1,...,T\})$
+      <li>4: &emsp;$\boldsymbol{\epsilon} \sim \mathcal{N}(0,\mathbf{I})$
+      <li>5: &emsp;take gradient descent step on: </br>
+             &emsp;&emsp;&emsp; $\nabla_{\theta} \| \epsilon - \epsilon_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon},t) \|^2$
+      <li style="margin-bottom: -20px;">6: <b>until</b> converged
+    </ul>
+  </div>
+
+  <div style="border: 3px solid lightsalmon; border-radius: 11px; padding: 0px; width: 49%;">
+    <h4 style="margin: 0; text-align: center;">
+    <span style="background: lightsalmon; display:block; padding:4px;">
+        Sampling DDPM
+    </span>
+    </h4>
+    <ul style="margin-left: 0px; margin-top: 0px; list-style: none;">
+      <li>1: $\mathbf{x}_T \sim \mathcal{N}(0,\mathbf{I})$
+      <li>2: <b>for $t=T,...,1$ do</b>
+      <li>3: &emsp; $\mathbf{z} \sim \mathcal{N}(0,\mathbf{I})$ if $t>1$, else $\mathbf{z}=0$
+      <li>4: &emsp; $\mathbf{x}_{t-1} = \tfrac{1}{\sqrt{\alpha_t}}\bigl(\mathbf{x}_t - \tfrac{1 - \alpha_t}{\sqrt{1-\bar{\alpha}_t}}\,\epsilon_\theta(\mathbf{x}_t, t)\bigr) + \sigma_t \mathbf{z}$
+      <li>5: <b>end for</b>
+      <li style="margin-bottom: -20px;">6: <b>return</b> $\mathbf{x}_0$
+    </ul>
+  </div>
+</div>
+</small>
+
+><mark class="gray">*If you’d like to explore the complete mathematical derivation, check out these excellent resources[^lillog_diff]<sup>,</sup>[^Luo2022]<sup>,</sup>[^Chan2024]<sup>,</sup>[^Ozdemir]<sup>,</sup>[^theaisummer]<sup>,</sup>[^Lai2025]. Each provides a detailed explanation of the theory and intuition behind diffusion models.*</mark>
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
-{{< quote-red >}}
-**Quick summary:**
-{{< /quote-red >}}
+## Summary
 - We gradually add noise to data (the *forward process*).
 - The model learns to remove the noise (the *reverse process*).
 - Training aims to *maximize the likelihood* of real data (or equivalently, *minimize the negative log-likelihood*).
@@ -325,3 +382,4 @@ In [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), we'll di
 [^JSong2020]: Song, J., Meng, C., & Ermon, S., 2020. [Denoising diffusion implicit models](https://arxiv.org/abs/2010.02502). arXiv preprint arXiv:2010.02502.
 [^Rombach2021]: R. Rombach, et al., 2021. [High-Resolution Image Synthesis with Latent Diffusion Models](https://www.computer.org/csdl/proceedings-article/cvpr/2022/694600k0674/1H1iFsO7Zuw), in 2022 IEEE/CVF Conference on CVPR, New Orleans, LA, USA, 2022.
 [^YSong2020]: Song, Y., et al. 2020. [Score-based generative modeling through stochastic differential equations](https://arxiv.org/abs/2011.13456), arXiv preprint arXiv:2011.13456 (2020).
+[^Chan2024]: Chan, S., 2024. [Tutorial on Diffusion Models for Imaging and Vision](https://dl.acm.org/doi/abs/10.1561/0600000112). *Found. Trends. Comput. Graph. Vis.* **16**, 4, 322–471.
