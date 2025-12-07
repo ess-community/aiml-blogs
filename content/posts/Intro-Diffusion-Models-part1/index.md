@@ -103,7 +103,7 @@ Diffusion models come in different forms, depending on whether the diffusion pro
 
 A breakthrough approach is the *Denoising Diffusion Probabilistic Model* (DDPM)[^Ho2020], which performs diffusion in discrete time. It models the generative process as a reverse <mark class="green">*Markov chain*</mark>, gradually denoising the sample through a fixed sequence of probabilistic transitions.
 
-><mark class="green"> *A **Markov chain** is a discrete-time stochastic process where the next state depends only on the current state.*</mark>
+><mark class="green"> *A <a id="markov-chain"></a>**Markov chain** is a discrete-time stochastic process where the next state depends only on the current state.*</mark>
 
 Other diffusion formulations include DDPM-inspired variants such as *Denoising Diffusion Implicit Models* (DDIMs)[^JSong2020], which introduce a *non-Markovian* formulation that enables deterministic and faster sampling, and continuous-time *score-based* models[^YSong2020], which replace the discrete Markov chain with stochastic and ordinary differential equation perspectives to model the diffusion and denoising processes.
 More recent approaches further optimize efficiency by performing diffusion in a compressed latent space (e.g., Latent Diffusion Models[^Rombach2021] - LBMs), or by unifying diffusion with flow-based or implicit *guidance techniques* for improved controllability and speed.
@@ -158,7 +158,7 @@ In theory, if we normalize the original sample $\mathbf{x}\_{0}$ to have zero me
 
 In practice, inputs are typically scaled to a bounded range (*e.g.*, $[0,1]$ or $[-1,1]$), and this range must be known and consistent because the noise schedule is defined relative to the data's scale.
 
-Another nice property of the above process is that we can jump straight from the original sample $\mathbf{x}_0$ to any noised version of the forward diffusion process $\mathbf{x}_t$ using a *reparameterization trick*</mark>.
+Another nice property of the above process is that we can jump straight from the original sample $\mathbf{x}_0$ to any noised version of the forward diffusion process $\mathbf{x}_t$ using a <a id="reparameterization-trick"></a>*reparameterization trick*</mark>.
 
 Let $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$, then we can write the following:
 $$
