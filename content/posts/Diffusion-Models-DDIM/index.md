@@ -48,19 +48,28 @@ DDIMs follow the same generative principle as DDPMs but take larger, more struct
 *If you're new to diffusion models, we recommend reading [Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}) for helpful background.*
 {{< /quote-red >}}
 
-Let’s get started!
-
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
-## Motivation
+## Notations
+| **Symbols** |	**Meaning** |
+|-------------|-------------|
+| $\mathbf{x}_0$ | Original clean sample	|
+| $\mathbf{x}_t$ | Noisy sample at step $t$	|
+| $\mathbf{x}\_{1:T}$ | Sequence of noisy samples $(\mathbf{x}_1, \dots, \mathbf{x}_T)$	|
+| $\\{\beta\_t \in (0, 1)\\}\_{t=1}^T \quad \quad$ | Variance schedule (predefined)	|
+| $\mathcal{N}(\boldsymbol{\mu},\sigma)$ | Normal distribution with mean $\boldsymbol{\mu}$ and variance $\sigma$ |
+| $q(\mathbf{x}_i \vert \mathbf{x}_j)$ | Conditional probability distribution of $\mathbf{x}_i$ given $\mathbf{x}_j$ |
 
+
+## Motivation
+Suppose we have a real data sample $\mathbf{x}_0 \sim q(\mathbf{x})$.
 Recall the [DDPM forward transition]({{< relref "../intro-diffusion-models-part1/index.md#the-forward-process-adding-noise" >}}):
 \begin{equation}
 q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}) = \mathcal{N}(\mathbf{x}\_t; \sqrt{1 - \beta\_t} \mathbf{x}\_{t-1}, \beta\_t\mathbf{I})
 \label{eq:ddpm-forward}
 \end{equation}
 
-where $\\{\beta\_t \in (0, 1)\\}\_{t=1}^T$ is a predefined *variance schedule*. Because $\beta\_t$ is small at each timestep, DDPMs require many small increments to reach the fully noised state.
+This forward noising process forms a [*Markov chain*]({{< relref "../intro-diffusion-models-part1/index.md#markov-chain" >}}) where each state $\mathbf{x}\_{t}$ depends only on the immediately preceding state $\mathbf{x}\_{t-1}$. 
 
 A useful property of DDPMs is that we can directly sample any noised state $\mathbf{x}\_t$ from the original sample $\mathbf{x}\_0$ ([*reparameterization trick*]({{< relref "../intro-diffusion-models-part1/index.md#reparameterization-trick" >}})):
  
@@ -69,40 +78,48 @@ A useful property of DDPMs is that we can directly sample any noised state $\mat
 \end{equation}
 
 with $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$.
-Thus, we can write the forward diffusion process in closed form:
+We can write the forward process in closed form:
 
 \begin{equation}
 q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}\big(\mathbf{x}_t; \sqrt{\bar{\alpha}_t} \mathbf{x}_0, (1 - \bar{\alpha}_t)\mathbf{I}\big)
 \end{equation}
 
-This forms a [*Markov chain*]({{< relref "../intro-diffusion-models-part1/index.md#markov-chain" >}}) where each state $\mathbf{x}\_{t}$ depends only on $\mathbf{x}\_{t-1}$. 
-However, the reverse process in DDPM needs to traverse the entire chain one step at a time.
-
-- <mark class="blue">**The benefit**:</mark> simple, memoryless structure.
-- <mark class="pink">**The drawback**:</mark> slow, requiring many small steps.
+<mark class="blue">The advantage of a Markov chain</mark> is that it is simple and has a *memoryless structure*; that is the next state can be sampled using only the current one.
+However, it also introduces <mark class="pink">a key limitation</mark>: slow sampling speed. 
+Because $\beta_t$ is small at each timestep, DDPMs often require many tiny increments to reach the fully noised state $\mathbf{x}\_T \sim \mathcal{N}(0,\boldsymbol{I})$, and the reverse process needs to traverse the entire chain one step at a time.
 
 <div style="border: 3px solid seagreen; border-radius: 10px; padding: 0px; width: 99%;">
-<h4 style="margin: 0; text-align: center;">
+<b style="margin: 0; text-align: center;">
 <span style="background: seagreen; display:block; padding:4px; border-radius: 0px;">
     Walking in a forest    
 </span>
-</h4>
+</b>
 <div style="margin-top: 6px;"> </div>
 
 <div style="padding: 0px 12px 8px 12px;text-align: justify;font-style: italic;">
 
-Imagine you are walking through a dense forest. The trees block your view, so you can only see the ground right in front of you. If each step is based only on your current position, you can move only in small, cautious increments because you have no sense of where the trail is going. <b>This is like a Markovian (memoryless) process</b>.
+Imagine you are walking through a dense forest. The trees block your view, so you can only see the ground right in front of you. If each step is based only on your current position, you can move only in small, cautious increments because you have no sense of where the trail is going. <b>This is like a Markov chain (memoryless)</b>.
 
 <div style="margin-top: 12px;"> </div>
 
-Now imagine you also carry a map showing where you started and where the trail leads. With this extra “memory”, you can take larger, more confident steps -- even skip intermediate ones -- because you know the general direction. <b><mark>This is the advantage of a non-Markovian process</mark>: you’re guided not just by the present moment, but by global information</b>.
+Now imagine you also carry a map showing where you started and where the trail leads. With this extra “memory”, you can take larger, more confident steps -- even skip intermediate ones -- because you know the general direction. <b>This is like a non-Markovian process: you’re guided not just by the present moment, but by global information</b>.
 </div>
 <div style="margin-top: -24px;"> </div>
 </div>
 
 <br>
+<!--Because $\beta\_t$ is small at each timestep, DDPMs require many tiny increments to reach the fully noised state $\mathbf{x}\_T \sim \mathcal{N}(0,\boldsymbol{I}).$-->
 
-DDIMs address the sampling inefficiency of DDPM by formulating a *non-Markovian* forward process, enabling deterministic and flexible sampling schedules.
+DDIMs address the sampling inefficiency of DDPM by formulating <mark class="orange">*non-Markovian*</mark> processes, enabling deterministic and flexible sampling schedules.
+
+><mark class="orange">*A non-Markovian process is a system whose future behavior depends not only on its current state but also on its past history -- meaning the process has memory.*</mark>
+
+{{< quote-blue >}}
+**Why memory matters?** <br>
+Memory allows a process to retain information from its past, which often influences its future evolution. Non-Markovian structures capture these dependencies, enabling more accurate modeling of system dynamics, smoother trajectories, and better predictions compared to memoryless (Markovian) systems.
+{{< /quote-blue >}}
+
+Let’s explore how DDIMs do this!
 
 ## Forward Process in DDIM
 DDIM starts by reparameterizing the DDPM forward process. Instead of using the coefficient $\alpha_t$ directly, DDIM expresses each step using the ratio $\color{blue}\frac{\alpha_t}{\alpha_{t-1}}$. Thus, Eqn \eqref{eq:ddpm-forward} becomes:
@@ -116,7 +133,7 @@ $$
 \bar{\alpha_t}=\prod\_{i=1}^t {\color{blue}\frac{\alpha\_i}{\alpha\_{i-1}}}={\color{red}\alpha_t} \quad \quad ; \text{assuming} \ \alpha_0=1
 $$
 
-From this point on, we use the new ${\color{red}\alpha_t}$. The forward process becomes:
+From this point on, we use the new ${\color{red}\alpha_t}$. The forward process in DDIM becomes:
 \begin{equation}
 q(\mathbf{x}_t \vert \mathbf{x}\_0) = \mathcal{N}\big(\mathbf{x}\_t; \sqrt{{\color{red}\alpha_t}} \mathbf{x}_0, (1 - {\color{red}\alpha_t})\mathbf{I}\big)
 \end{equation}
@@ -299,9 +316,9 @@ $$\sigma\_t=\sqrt{\frac{(1 - \alpha_{t-1})}{(1 - \alpha_t)} (1 - \frac{\alpha_t}
 |-------------|----------|----------|
 | Reverse Process | Stochastic | Deterministic or low-noise |
 | Sampling Speed | Slow (1000+ steps)	| Fast (10-50 steps) |
-| Supports Step Skipping | ❌ No  |  ✅ Yes |
+| Supports Step Skipping $\quad \quad$ | ❌ No  |  ✅ Yes |
 | Quality | Very High | Almost the same |
-| Requires Retraining? | Yes, for new schedules | No, use same model |
+| Requires Retraining? | Yes, for new schedules $\quad$ | No, use same model |
 
 ## Summary
 - DDIM is a faster alternative to DDPM for generation
