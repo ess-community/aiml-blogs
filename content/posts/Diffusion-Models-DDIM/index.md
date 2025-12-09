@@ -1,7 +1,7 @@
 ---
 title: "Diffusion Models (Part 3): Denoising Diffusion Implicit Models"
-description: "A beginner-friendly guide to Denoising Diffusion Implicit Models (DDIMs) — a faster and more efficient alternative to DDPMs."
-summary: "A beginner-friendly guide to Denoising Diffusion Implicit Models (DDIMs) — a faster and more efficient alternative to DDPMs."
+description: "An introduction to DDIMs - a faster and more efficient alternative to DDPMs."
+summary: "An introduction to DDIMs - a faster and more efficient alternative to DDPMs."
 date: 2025-12-03
 tags: ["Diffusion Model", "Generative", "Implicit Model", "Non-Markovian"]
 author: "Phong Le"
@@ -39,9 +39,9 @@ editPost:
 <span style="color: #1E90FF;"><small>[This post is a work in progress -- content will be updated!]</small></span>
 
 [In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored *Denoising Diffusion Probabilistic Models (DDPMs)*[^Ho2020] and saw how they turn pure noise into meaningful data. 
-The process is elegant, but there’s a catch: ***sampling takes a huge of steps, which makes it painfully slow in practice***.
+The process is elegant, but there’s a catch: ***sampling takes a huge number of steps, which makes it painfully slow in practice***.
 
-That’s where *Denoising Diffusion Implicit Models (DDIMs)*[^JSong2020] come in. They build on the same core ideas as DDPMs but traverse the noise space far more efficiently, producing high-quality samples in far fewer steps.
+That’s where *Denoising Diffusion Implicit Models (DDIMs)*[^JSong2020] come in. They build on the same core ideas as DDPMs but traverse the noise space far more efficiently, producing high-quality samples in a fraction of the steps.
 
 In this post, we’ll see how DDIMs work and why they’re so much faster.
 We’ll touch on some math, but only enough to develop an intuitive sense of what’s going on.
