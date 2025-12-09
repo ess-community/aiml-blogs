@@ -63,17 +63,6 @@ We’ll touch on some math, but only enough to develop an intuitive sense of wha
 | $q(\mathbf{x}_i \vert \mathbf{x}_j)$ | Conditional probability distribution of $\mathbf{x}_i$ given $\mathbf{x}_j$ |
 
 
-## Notations
-| **Symbols** |	**Meaning** |
-|-------------|-------------|
-| $\mathbf{x}_0$ | Original clean sample	|
-| $\mathbf{x}_t$ | Noisy sample at step $t$	|
-| $\mathbf{x}\_{1:T}$ | Sequence of increasingly noisy samples $(\mathbf{x}_1, \dots, \mathbf{x}_T)$	|
-| $\\{\beta\_t \in (0, 1)\\}\_{t=1}^T \quad \quad$ | Variance schedule (hyper-parameter)	|
-| $\mathcal{N}(\boldsymbol{\mu},\sigma)$ | Normal distribution with mean $\boldsymbol{\mu}$ and variance $\sigma$ |
-| $q(\mathbf{x}_i \vert \mathbf{x}_j)$ | Conditional probability distribution of $\mathbf{x}_i$ given $\mathbf{x}_j$ |
-
-
 ## The Problem with DDPMs
 Let's do a short re-cap of DDPMs first and explore their disadvantage.
 
