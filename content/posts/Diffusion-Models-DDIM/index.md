@@ -96,9 +96,9 @@ where $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$.
 
 A major benefit of a Markov chain is its simplicity: *the next state can be sampled using only the current one*.
 
-<mark class="pink">However, there is a flaw</mark>.
+However, there is a flaw.
 Because $\beta_t$ must be small to ensure stability, DDPMs require many $(T \gg 0)$ tiny increments to reach the fully noised state $\mathbf{x}\_T \sim \mathcal{N}(0,\boldsymbol{I})$, and the reverse process needs an equal number of steps (i.e., $T$) to traverse the entire chain for denoising.
-<mark>This makes generating samples in DDPMs very slow.</mark>
+<mark class="pink">This makes generating samples in DDPMs very slow.</mark>
 
 
 <div style="border: 3px solid seagreen; border-radius: 10px; padding: 0px; width: 99%;">
@@ -170,7 +170,7 @@ Similarly, for the previous step:
 \end{equation}
 
 <!--An important trick used here is to replace $\boldsymbol{\epsilon}$ by something so that $\mathbf{x}\_{t-1}$ is no longer $\mathbf{x}\_0$ perturbed by white noise.-->
-The trick is that we ***reuse the same noise*** $\boldsymbol{\epsilon}$ at both steps. Solving Eqn \eqref{eq:6} for $\boldsymbol{\epsilon}$ gives:
+<mark class="blue">The trick is that we **reuse the same noise** $\boldsymbol{\epsilon}$ at both steps.</mark> Solving Eqn \eqref{eq:6} for $\boldsymbol{\epsilon}$ gives:
 
 $$
 \boldsymbol{\epsilon} = \frac{\mathbf{x}\_t - \sqrt{\alpha\_t} \mathbf{x}\_0}{\sqrt{1 - \alpha\_{t}}}
@@ -255,8 +255,8 @@ q_{\sigma}(\mathbf{x}_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) = \mathcal{N}\bi
 ><mark>*Check out this tutorial[^Chan2024] to see the detailed derivation of this transition distribution.*</mark>
 
 Here, the magnitude of $\sigma_t$ controls how much fresh noise is injected at each step. 
-If $\sigma=0$, the process becomes fully deterministic (***we get a DDIM***).
-If $\sigma$ is chosen to match the DDPM posterior variance, we recover DDPM sampling.
+If $\sigma=0$, the process becomes fully deterministic, <mark class="orange">**and we get a DDIM**</mark>.
+If $\sigma$ is chosen to match the DDPM posterior variance, <mark class="blue">**we recover DDPM sampling**</mark>.
 
 ### Inference for DDIM
 Now let’s see how DDIM actually uses a neural network to go from noise back to data.
@@ -291,7 +291,7 @@ p\_{\theta}(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t) &= q\_{\sigma}(\mathbf{x}\_{t
 \label{eq:reverse-eq}
 \end{equation}
 
-The process can be summarized as follows:
+<mark>**The process can be summarized as follows**:</mark>
 - Take a noisy sample $\mathbf{x}\_t$;
 - Use the network to predict the noise $\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$;
 - Use that to estimate the clean sample $\mathbf{x}\_0$;
@@ -377,7 +377,7 @@ Let’s recap the main ideas:
 - This allows DDIM to use far fewer sampling steps (e.g., 10–50 instead of 1000+) while maintaining similar sample quality.
 - Because the training objective is essentially the same, a model trained as a DDPM can usually be used directly for DDIM sampling.
 
-In short: ***DDIM is a faster way to sample from diffusion models*** that you can apply to many existing DDPM models without retraining.
+**In short**: *DDIM is a faster way to sample from diffusion models* that you can apply to many existing DDPM models without retraining.
 
 ## References
 [^Sohl-Dickstein2015]: Sohl-Dickstein, J. et al., 2015. [Deep unsupervised learning using nonequilibrium thermodynamics](https://arxiv.org/abs/1503.03585). *Proceedings of the 32$^{nd}$ International Conference on Machine Learning (ICML)*, PMLR, 37, pp.2256–2265.

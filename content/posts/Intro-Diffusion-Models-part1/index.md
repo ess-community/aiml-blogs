@@ -37,7 +37,7 @@ editPost:
 
 Diffusion models have become one of the most powerful tools in *Artificial Intelligence (AI)*. They’re the engines behind some of today's most advanced *generative systems* -- from creating realistic images, audio, text, and videos to designing new molecules and medicines, and even modeling complex climate and environmental systems.
 
-There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the <mark class="gray">core principles</mark> (in this post) and explore how diffusion models are being used in Earth and environmental sciences and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), Part&nbsp;3, Part&nbsp;4).*
+There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the core principles (in this post) and explore how diffusion models are being used in Earth and environmental sciences and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}})).*
 
 Let’s get started!
 
@@ -127,24 +127,30 @@ At their core, DDPMs involve two distinct stochastic processes in discrete time:
 ### The Forward Process: Adding Noise
 Suppose we have a real data sample $\mathbf{x}_0 \sim q(\mathbf{x})$. In the forward process, we gradually corrupt the data by adding small amounts of *Gaussian noise* over $T$ steps, producing a sequence of increasingly noisy samples $(\mathbf{x}_1, \dots, \mathbf{x}_T)$.
 The amount of noise added at each step $t$ is controlled by a predefined *variance schedule* $\\{\beta\_t \in (0, 1)\\}\_{t=1}^T$.
-$$
+\begin{equation}
+q(\mathbf{x}\_t \mid \mathbf{x}\_{t-1}) = \mathcal{N}(\mathbf{x}\_t; \sqrt{1 - \beta\_t} \mathbf{x}\_{t-1}, \beta\_t\mathbf{I}) 
+\end{equation}
+Because the process is Markovian, the full joint distribution factorizes as follows:
+\begin{equation}
 \begin{aligned}
-q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}) &= \mathcal{N}(\mathbf{x}\_t; \sqrt{1 - \beta\_t} \mathbf{x}\_{t-1}, \beta\_t\mathbf{I}) \\\
-q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_0) &= \prod^T\_{t=1} q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1})
+q(\mathbf{x}\_{1:T} \mid \mathbf{x}\_0) &= q(\mathbf{x}\_1,...,\mathbf{x}\_T \mid \mathbf{x}\_0) \\\
+&= q(\mathbf{x}\_1 \mid \mathbf{x}\_0) \ q(\mathbf{x}\_2 \mid \mathbf{x}\_1, \mathbf{x}\_0) \ ... \ q(\mathbf{x}\_T \mid \mathbf{x}\_{T-1}, ..., \mathbf{x}\_0) \quad \color{green}\small{\text{(Bayes' theorem)}} \\\
+&= q(\mathbf{x}\_1 \mid \mathbf{x}\_0) \ {\color{red}q(\mathbf{x}\_2 \mid \mathbf{x}\_1)} \ ... \ {\color{red}q(\mathbf{x}\_T \mid \mathbf{x}\_{T-1})} \quad \quad \quad \quad \quad \ \ \ \color{green}\small{\text{(Markov property)}} \\\
+&= \prod^T\_{t=1} q(\mathbf{x}\_t \mid \mathbf{x}\_{t-1})
 \end{aligned}
-$$
+\end{equation}
 
 Here, $\mathcal{N}(\cdot,\cdot)$ denotes a [*normal distribution*](https://en.wikipedia.org/wiki/Normal_distribution).
 As $t$ increases, the sample $\mathbf{x}_t$ becomes progressively noisier.
 Eventually, when $T \rightarrow \infty$, $\mathbf{x}_T$ is indistinguishable from random noise.
 Mathematically, we can write each step of this process as follows:
-$$
+\begin{equation}
 \mathbf{x}\_t = \sqrt{1-\beta\_t}\mathbf{x}\_{t-1} + \sqrt{\beta\_t}\boldsymbol{\epsilon}\_{t-1} \quad \quad \text{where } \boldsymbol{\epsilon}\_{t-1} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})
-$$
+\end{equation}
 
 ><mark>*Note that when two components are independent, the variance of their sum is simply the sum of their variances.*</mark>
 
-Since $\boldsymbol{\epsilon}\_{t-1}$ is standard Gaussian, if $\mathbf{x}\_{t-1}$ has zero mean and unit variance, then so does $\mathbf{x}_{t}$, because $\sqrt{1-\beta\_t}^2 + \sqrt{\beta\_t}^2=1$.
+At each timestep $t$, we slightly perturb the sample by adding Gaussian noise with variance $\beta\_t$, while also scaling the previous sample $\mathbf{x}\_{t-1}$. This scaling is chosen so that the variance of the new sample $\mathbf{x}\_{t}$ stays the same over time. In particular, since $\boldsymbol{\epsilon}\_{t-1}$ is standard Gaussian, if $\mathbf{x}\_{t-1}$ has zero mean and unit variance, then $\mathbf{x}_{t}$ will as well. Intuitively, this works because the contributions from the signal and noise terms balance each other: $\sqrt{1-\beta\_t}^2 + \sqrt{\beta\_t}^2=1$.
 
 {{< figure
   src="../../images/forward_process.png"
@@ -161,7 +167,7 @@ In practice, inputs are typically scaled to a bounded range (*e.g.*, $[0,1]$ or 
 Another nice property of the above process is that we can jump straight from the original sample $\mathbf{x}_0$ to any noised version of the forward diffusion process $\mathbf{x}_t$ using a <a id="reparameterization-trick"></a>*reparameterization trick*</mark>.
 
 Let $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$, then we can write the following:
-$$
+\begin{equation}
 \begin{aligned}
 \mathbf{x}\_t
 &= \sqrt{\alpha\_t}\mathbf{x}\_{t-1} + \sqrt{1 - \alpha\_t}\boldsymbol{\epsilon}\_{t-1} \\\
@@ -172,15 +178,19 @@ $$
 &= \sqrt{\alpha\_t \alpha\_{t-1}\dots\alpha\_1} \mathbf{x}\_{0} + \sqrt{1 - \alpha\_t \alpha\_{t-1}\dots\alpha\_1} \boldsymbol{\epsilon}_0 \\\
 &= \sqrt{\bar{\alpha}\_t}\mathbf{x}\_0 + \sqrt{1 - \bar{\alpha}\_t}\boldsymbol{\epsilon}_0
 \end{aligned}
-$$
+\end{equation}
 
-><mark>***Explanation in words:***</mark> We unroll the update rule step by step, combining the noise terms along the way, so that $\mathbf{x}\_t$ can be written directly in terms of $\mathbf{x}\_0$.
->Note that since $\boldsymbol{\epsilon}\_{t-2}, \boldsymbol{\epsilon}\_{t-1} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$, their weighted sum is also Gaussian with standard deviation $\sqrt{\alpha_t (1-\alpha_{t-1})+(1-\alpha_t)} = \sqrt{1-\alpha_t\alpha_{t-1}}$, and $\bar{\boldsymbol{\epsilon}}\_{t-2} \sim \mathcal{N}(\mathbf{0},\mathbf{I}).$
+<small>
+{{< quote-orange >}}
+<mark>***Explanation in words:***</mark> We unroll the update rule step by step, combining the noise terms along the way, so that $\mathbf{x}\_t$ can be written directly in terms of $\mathbf{x}\_0$.
+Note that since $\boldsymbol{\epsilon}\_{t-2}, \boldsymbol{\epsilon}\_{t-1} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$, their weighted sum is also Gaussian with standard deviation $\sqrt{\alpha_t (1-\alpha_{t-1})+(1-\alpha_t)} = \sqrt{1-\alpha_t\alpha_{t-1}}$, and $\bar{\boldsymbol{\epsilon}}\_{t-2} \sim \mathcal{N}(\mathbf{0},\mathbf{I}).$
+{{< /quote-orange >}}
+</small>
 
 The forward diffusion process $q$ can therefore be written in closed form as:
-$$
+\begin{equation}
 q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}\big(\mathbf{x}_t; \sqrt{\bar{\alpha}_t} \mathbf{x}_0, (1 - \bar{\alpha}_t)\mathbf{I}\big)
-$$
+\end{equation}
 
 What this really tells us is that $\mathbf{x}_t$ never loses the original signal -- it’s just being covered by more and more Gaussian noise. The goal of diffusion models is figuring out how to peel that noise away again.
 
@@ -200,13 +210,17 @@ In theory, the reverse diffusion process is defined as $q(\mathbf{x}\_{t-1} \ver
 **Conditioning trick**
 
 Another useful trick in diffusion models is that the reverse transition becomes *tractable* if we condition on the original data $\mathbf{x}\_{0}$. Since the forward process is fully known, we can apply *Bayes’ rule* to obtain a closed-form expression:
-$$
+\begin{equation}
 \begin{aligned}
 q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) &= q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}, \mathbf{x}\_0) \frac{ q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_0) }{ q(\mathbf{x}\_t \vert \mathbf{x}\_0) } \\\
 &= \mathcal{N}\big(\mathbf{x}\_{t-1}; {\tilde{\boldsymbol{\mu}}}\_t, {\tilde{\beta}\_t} \mathbf{I}\big)
 \end{aligned}
-$$
-where $\tilde{\boldsymbol{\mu}}\_t = {\frac{1}{\sqrt{\alpha\_t}} \Big( \mathbf{x}\_t - \frac{1 - \alpha\_t}{\sqrt{1 - \bar{\alpha}\_t}} \boldsymbol{\epsilon}\_t \Big)}$ and $\tilde{\beta}\_t = {\frac{1 - \bar{\alpha}\_{t-1}}{1 - \bar{\alpha}\_t} \beta\_t}$.
+\end{equation}
+in which 
+\begin{equation}
+\tilde{\boldsymbol{\mu}}\_t = {\frac{1}{\sqrt{\alpha\_t}} \Big( \mathbf{x}\_t - \frac{1 - \alpha\_t}{\sqrt{1 - \bar{\alpha}\_t}} \boldsymbol{\epsilon}\_t \Big)} \quad \text{and} \quad \tilde{\beta}\_t = {\frac{1 - \bar{\alpha}\_{t-1}}{1 - \bar{\alpha}\_t} \beta\_t}
+\label{eq:mubeta}
+\end{equation}
 
 This derivation relies on the *Markov property* of the forward process -- each state $\mathbf{x}\_t$ depends on the previous $\mathbf{x}\_{t-1}$, not on the original data $\mathbf{x}\_0$. Formally, $q(\mathbf{x}\_{t} \vert \mathbf{x}\_{t-1}, \mathbf{x}\_0) = q(\mathbf{x}\_{t} \vert \mathbf{x}\_{t-1})$.
 Since all the factors in the Bayes' rule expression are Gaussian, multiplying them results in another Gaussian. Using $\mathcal{N}\big(x; \mu, \sigma\big) \propto \exp \left( \frac{-(x-\mu)^2}{2\sigma^2}\right),$ we can solve analytically for $\tilde{\boldsymbol{\mu}}\_t$ and $\tilde{\beta}\_t$ as shown above.
@@ -222,42 +236,38 @@ So we can no longer use the closed-form $q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t
 
 This is where deep learning comes into play.
 We instead train a *neural network* $\mathbf{\epsilon}\_\theta(\mathbf{x}\_{t},t)$ to predict the noise added at each step. Once we have this noise estimate, we can recover an estimate of the clean signal and approximate the true reverse process:
-$$
+\begin{equation}
 p\_\theta(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t) \approx q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)
-$$
+\end{equation}
 
 ><mark>*At each diffusion step, the neural network predicts the noise inside the current noisy sample and then subtracts it accordingly.*</mark>
 
 Since each step in the forward diffusion adds only a small amount of Gaussian noise, the reverse steps can also be modeled as Gaussian transitions:
 
-$$
+\begin{equation}
 p\_\theta(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t) = \mathcal{N} \big( \mathbf{x}\_{t-1}; \boldsymbol{\mu}\_\theta(\mathbf{x}\_t, t), \boldsymbol{\Sigma}\_\theta(\mathbf{x}\_t, t) \big)
-$$
+\end{equation}
 
 By applying this reverse transition from $t=T \rightarrow 0$, we gradually transform pure noise $\mathbf{x}\_T$ to a coherent, realistic sample that is similar to $\mathbf{x}\_0$:
-$$
+\begin{equation}
 p\_\theta(\mathbf{x}\_{0:T}) = p\_\theta(\mathbf{x}\_T) \prod^T\_{t=1} p\_\theta(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t)
-$$
+\end{equation}
 
 Note that although the noise added during the forward diffusion is random, it is *not arbitrary* -- its structure comes from the underlying data. As a result, by learning to predict and remove this noise accurately, the model implicitly learns the structure of the original image $\mathbf{x}\_0$ and how to reconstruct it from noise.
-
-<!--**In short:**
->- **Training:** we know $\mathbf{x}\_0$ → compute true noise → train a model to predict it
->- **Generation:** we start from pure Gaussian noise → the model predicts noise → remove noise step by step-->
 
 <center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Train diffusion models
 The goal of training a diffusion model is to make it assign *high probability* to real data. Formally, we want to maximize the *likelihood* of samples from the true data distribution:
-$$
+\begin{equation}
 \max\_{\theta} \mathbb{E}\_{\mathbf{x}\_0 \sim q(\mathbf{x}\_0)} \Big[ \log p\_{\theta}(\mathbf{x}\_0) \Big]
-$$
+\end{equation}
 Here $q(\mathbf{x}\_0)$ is the real data distribution, and $p\_{\theta}(\mathbf{x}\_0)$ is the distribution modeled by the neural network.
 However, the likelihood $p\_{\theta}(\mathbf{x}\_0)$ is intractable because the model generates data through a chain of latent noisy variables:
-$$
+\begin{equation}
 p_{\theta}(\mathbf{x}\_0)
 = \int p\_\theta(\mathbf{x}\_{0:T}) d\mathbf{x}\_{1:T}
-$$
+\end{equation}
 
 To solve this, diffusion models use a classical idea from variational inference -- the *Evidence Lower Bound (ELBO)*.
 
@@ -265,7 +275,7 @@ To solve this, diffusion models use a classical idea from variational inference 
 
 ELBO is a computable lower bound on the true log-likelihood of data. We maximize it because doing so also maximizes the likelihood of real data — but in a way we can actually calculate.
 
-$$
+\begin{equation}
 \begin{aligned}
 \underbrace{\log p\_\theta(\mathbf{x}\_0)}\_{\text{Evidence}}
 &= \log \int p\_\theta(\mathbf{x}\_{0:T}) d\mathbf{x}\_{1:T} = \log \int {\color{red} q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})} \frac{p\_\theta(\mathbf{x}\_{0:T})}{\color{red}{q(\mathbf{x}\_{1:T} \vert \mathbf{x}\_{0})}} d\mathbf{x}\_{1:T} \\\
@@ -274,7 +284,7 @@ $$
 &\rule{0pt}{2em} \color{blue}\small{\text{. . . We skip the details here for simplicity. At the end, we obtain:}} \\\
 &\ge \underbrace{\mathbb{E}\_{q(\mathbf{x}\_{1} \vert \mathbf{x}\_0)} \Big[ \log p_{\theta}(\mathbf{x}\_{0} \vert \mathbf{x}\_{1})\Big] - D\_\text{KL}\big(q(\mathbf{x}\_{T}\vert\mathbf{x}\_0) \|| p\_\theta(\mathbf{x}\_{T}) \big) - \sum\_{t=2}^T \mathbb{E}\_{q(\mathbf{x}\_{t} \vert \mathbf{x}\_0)} \Big[ D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t) \big)\Big]}\_{\text{Variational Lower Bound ($L\_{VLB}$)}}
 \end{aligned}
-$$
+\end{equation}
 
 ><mark class="gray">*For a complete derivation, check out this video[^Ozdemir] and this article[^Luo2022]*.</mark>
 
@@ -287,30 +297,38 @@ where $D\_\text{KL}(q||p)$ is the *Kullback–Leibler (KL) divergence*. Basicall
   width=70%
 >}}
 
-To train the model, we instead minimize the negative log-likelihood bound:
-$$
+To train the model, we instead <mark class="blue">minimize the negative log-likelihood</mark> bound (which is equivalent to maximizing the likelihood):
+\begin{equation}
 -\log p\_\theta(\mathbf{x}\_0) \le \underbrace{\mathbb{E}\_{q(\mathbf{x}\_1 \vert \mathbf{x}\_0)} \big[- \log p\_\theta(\mathbf{x}\_0 \vert \mathbf{x}\_1)\big]}\_{L\_0 \ (\text{reconstruction})} + \sum\_{t=2}^T \underbrace{\mathbb{E}\_{q(\mathbf{x}\_t \vert \mathbf{x}\_0)} \Big[ D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t)\big)\Big]}\_{L\_{t-1} \ (\text{consistency})} + \underbrace{D\_\text{KL}\big(q(\mathbf{x}\_T \vert \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_T)\big)}\_{L\_T \ (\text{prior matching})}
-$$
+\end{equation}
 
 Here, $L_T$ is constant with respect to $\theta$ and can be ignored during training. The consistency term is a summation of many KL divergence terms. 
 Every KL divergence term in $L_{LVB}$ (except for $L_0$) compares two Gaussian distributions and therefore they can be computed in closed form: 
-$$
+\begin{equation}
 \begin{aligned}
 D\_\text{KL}\big(q(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) \parallel p\_\theta(\mathbf{x}\_{t-1} \vert\mathbf{x}\_t)\big) & = D\_\text{KL}\big(\mathcal{N}(\mathbf{x}\_{t-1}; \underbrace{\boldsymbol{\mu}\_t(\mathbf{x}\_t,\mathbf{x}\_0)}\_{\text{known}}, \underbrace{\sigma\_t^2 \mathbf{I}}\_{\text{known}}) \parallel \mathcal{N}(\mathbf{x}\_{t-1}; \underbrace{\boldsymbol{\mu}\_{\theta}(\mathbf{x}\_t)}\_{\text{neural net}}, \underbrace{\sigma\_t^2 \mathbf{I}}_\{\text{known}}) \big) \\\
-&=\frac{1}{2\sigma_t^2} || \boldsymbol{\mu}\_t(\mathbf{x}\_t,\mathbf{x}\_0) - \boldsymbol{\mu}\_{\theta}(\mathbf{x}\_t)||^2
+&=\frac{1}{2\sigma_t^2} \Vert \boldsymbol{\mu}\_t(\mathbf{x}\_t,\mathbf{x}\_0) - \boldsymbol{\mu}\_{\theta}(\mathbf{x}\_t)\Vert^2
 \end{aligned}
-$$
-The ELBO can also be simplified to absorb the reconstruction $L_0$ into the summation (see *Theorem 2.7* in this book[^Chan2024] for details).
-This ultimately reduces to a simple and intuitive *loss*[^Ho2020]:
-$$
-\rm{ELBO}\_{\theta}(\mathbf{x}\_0,\boldsymbol{\epsilon}) = \mathbb{E}\_{\mathbf{x}\_0, \epsilon} \left[ \frac{\beta_t^2}{2\sigma_t^2 \alpha_t (1-\bar{\alpha_t})} || \epsilon - \epsilon\_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}, t) ||^2 \right]
-$$
+\end{equation}
+The ELBO can be simplified to absorb the reconstruction $L_0$ into the summation (see *Theorem 2.7* in this book[^Chan2024] for details). Recall Eqn \eqref{eq:mubeta} that the mean can also be described as a function of $\mathbf{x}\_{t}$ and $\boldsymbol{\epsilon}$. This ultimately reduces to a simple and intuitive *loss*:
+\begin{equation}
+\rm{ELBO}\_{\theta}(\mathbf{x}\_0,\boldsymbol{\epsilon}) = -\sum\_{t=1}^T \mathbb{E}\_{\mathbf{x}\_0, \epsilon} \Bigg[\ \underbrace{\frac{(1-\alpha_t)^2}{2\sigma_t^2 (1-\bar{\alpha_t}) \alpha_t}}\_{known} \times \Big\Vert \boldsymbol{\epsilon} - \boldsymbol{\epsilon}\_\theta(\underbrace{\sqrt{\bar{\alpha}_t}\mathbf{x}\_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}}\_{\mathbf{x}\_t}, t) \Big\Vert^2 \Bigg]
+\end{equation}
 
-To train the denoiser, we solve the optimization:
-$$
-\operatorname*{argmin}_{\theta} \ \mathbb{E}\_{\mathbf{x}\_0, \epsilon} \ \rm{ELBO}\_{\theta}(\mathbf{x}\_0,\boldsymbol{\epsilon})
-$$
+<!--To train the denoiser, we solve the optimization:
+\begin{equation}
+\begin{aligned}
+& \operatorname*{argmin}_{\theta} \ \mathbb{E}\_{\mathbf{x}\_0, \epsilon} \ \rm{ELBO}\_{\theta}(\mathbf{x}\_0,\boldsymbol{\epsilon}) \\\
+\approx \ & \operatorname*{argmin}\_{\theta} \sum\_{xo~\sim \mathcal{X}} \frac{1}{M} \sum\_{m=1}^M \rm{ELBO}\_{\theta}\big(\mathbf{x}\_0,\boldsymbol{\epsilon}_0^{(m)}\big)
+\end{aligned}
+\end{equation}
+where the superscript denotesthe $m$-th initial noise term.-->
+However, Ho *et al.,* (2020)[^Ho2020] found it beneficial to sample quality to train on the following variant of the variational bound:
 
+\begin{equation}
+\mathcal{L}\_{\text{simple}}(\theta) := \mathbb{E}\_{t,\mathbf{x}\_0, \epsilon} \left[ \Big\Vert \boldsymbol{\epsilon} - \boldsymbol{\epsilon}\_\theta(\sqrt{\bar{\alpha}_t}\mathbf{x}\_0 + \sqrt{1 - \bar{\alpha}_t}\boldsymbol{\epsilon}, t) \Big\Vert ^2 \right]
+\end{equation}
+where $t$ is uniform between 1 and $T$.
 By minimizing this loss, the model learns to invert each step of the noising process. As training progresses, it becomes increasingly effective at removing noise from any noisy input $\mathbf{x}\_T$, enabling it to generate realistic samples starting from pure random noise.
 
 The training and sampling algorithms in DDPM can be summarized as below:
