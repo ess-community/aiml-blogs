@@ -156,9 +156,9 @@ The sampling procedure can be summarized as follows:
 <li style="padding-bottom: 12px;"> Gradually denoise $\mathbf{Z}_0^{t+1}$ using a refinement function $r_{\theta}$, which applies the denoiser $D_{\theta}$ conditioned on the two most recent states $(\mathbf{X}^0, \mathbf{X}^{-1})$ to obtain $\mathbf{Z}_1^{t+1}$ at lower noise level $\sigma_1<\sigma_0$;
 <li style="padding-bottom: 12px;"> For $i=1$ to $20$, continue refining
 $\mathbf{Z}_{i+1}^{t+1} = r_{\theta} (\mathbf{Z}_{i}^{t+1}, \mathbf{X}^{t}, \mathbf{X}^{t-1}, \sigma_{i+1}, \sigma_i)$
-until the final residual $\mathbf{Z}^{1}=\mathbf{Z}_N^1$ is obtained at noise level $\sigma_N=0$;
+until the final residual $\mathbf{Z}^{t+1}=\mathbf{Z}_N^{t+1}$ is obtained at noise level $\sigma_N=0$;
 <li style="padding-bottom: 12px;"> Update $\mathbf{X}^{t+1} = \mathbf{X}^{t} + S \mathbf{Z}^{t+1}$, where $S$ is a diagonal matrix that inverts the normalization;
-<li style="padding-bottom: 12px;"> Autoregressively repeat the entire process for $T=30$ times to obtain a full 15-day trajectory forecast.
+<li style="padding-bottom: 12px;"> Autoregressively repeat the entire process for 30 times to obtain a full 15-day trajectory forecast.
 </ol>
 </div>
 
@@ -231,13 +231,13 @@ We’ll explore transformer and GNN architectures -- and their applications in E
 
 ### Denoiser Training
 During training, we want the denoiser to learn how to remove noise from a future state while still respecting real atmospheric structure.
-Specifically, the denoiser is applied to a version of the target $\mathbf{Z}^{t+1}$, which has been corrupted by adding noise $\boldsymbol{\varepsilon} \sim P_{noise}(\cdot \vert \sigma)$ at noise level σ:
+Specifically, the denoiser is applied to a version of the target $\mathbf{Z}^{t+1}$, which has been corrupted by adding noise $\boldsymbol{\varepsilon} \sim P_{noise}(\cdot \vert \sigma)$ at noise level $\sigma$:
 
 $$\mathbf{Y}^{t+1}=D_{\theta }(\mathbf{Z}^{t+1}+\varepsilon;\mathbf{X}^{t},\mathbf{X}^{t-1},\sigma )$$
 
-We train the denoiser to predict $\mathbf{Y}^{t+1}$ as the expectation of the noise-free target $\mathbf{Z}^{t}$ through minimization of a loss function:
+We train the denoiser to predict $\mathbf{Y}^{t+1}$ as the expectation of the noise-free target $\mathbf{Z}^{t+1}$ through minimization of a loss function:
 $$
-\sum \_{t\in {D}\_{{\rm{train}}}}E\left[\lambda (\sigma )\frac{1}{| G| | \,J| }\sum \_{i\in G}\sum \_{j\in J}{w}\_{j}{a}\_{i}{({Y}\_{i,j}^{t+1}-{Z}\_{i,j}^{t+1})}^{2}\right]$$
+\sum \_{t\in {D}\_{{\rm{train}}}}\mathbb{E}\left[\lambda (\sigma )\frac{1}{|G| |J| }\sum \_{i\in G}\sum \_{j\in J}{w}\_{j}{a}\_{i}{\left({Y}\_{i,j}^{t+1}-{Z}\_{i,j}^{t+1}\right)}^{2}\right]$$
 
 where:
 - $t$: timestep index of the training set $D_{train}$;
@@ -245,7 +245,7 @@ where:
 - $i \in G$: location index (latitude and longitude coordinates) in the grid;
 - $w_j$: loss weight for variable $j$;
 - $a_i$ is the area of the latitude-longitude grid cell;
-- $\lambda(\sigma)$ loss weight for noise level $\sigma$
+- $\lambda(\sigma)$ loss weight for noise level $\sigma$.
 
 This loss helps the model learn to remove noise in a physically consistent way across different atmospheric regimes, improving its ability to generalize during forecasting.
 
@@ -255,10 +255,8 @@ The training strategy follows a two-stage resolution approach: the model is firs
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
-{{< quote-red >}}
-**Quick summary:**
-{{< /quote-red >}}
-- Because weather is chaotic, forecasts must quantify uncertainty — and diffusion models offer a powerful, principled way to do exactly that.
+## Summary
+- Because weather is chaotic, forecasts must quantify uncertainty -- and diffusion models offer a powerful, principled way to do exactly that.
 - GenCast uses diffusion models to generate fast, high-quality ensemble forecasts up to 15 days ahead.
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.

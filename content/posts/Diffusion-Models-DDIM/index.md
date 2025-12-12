@@ -37,7 +37,7 @@ editPost:
 ---
 
 [In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored *Denoising Diffusion Probabilistic Models (DDPMs)*[^Ho2020] and saw how they can turn pure noise into meaningful data. 
-The idea is beautiful, but there’s a practical issue: ***sampling is slow***. 
+The idea is beautiful, but there’s a catch: ***sampling is slow***. 
 A DDPM often needs hundreds or even thousands of small denoising steps to create one sample.
 
 *Denoising Diffusion Implicit Models (DDIMs)*[^JSong2020] were introduced to fix this issue. They use the same basic diffusion idea as DDPMs, but change the way we sample so that we can generate good samples in far fewer steps.
@@ -76,41 +76,42 @@ q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}) = \mathcal{N}(\mathbf{x}\_t; \sqrt{1 - 
 \label{eq:ddpm-forward}
 \end{equation}
 
-This equation means:
-- We keep most of the previous sample $\mathbf{x}\_{t-1}$ (scaled by ($\sqrt{1 - \beta\_t}$)
-- We add a small amount of fresh Gaussian noise with variance $\beta_t$
+This equation describes how the model transitions from step $t-1$ to $t$:
+- It keeps most of the previous sample, scaling $\mathbf{x}\_{t-1}$ by $\sqrt{1 - \beta\_t}$;
+- It adds a small amount of fresh Gaussian noise with variance $\beta_t$;
 
 Mathematically, each forward step can be written as:
 \begin{equation}
 \mathbf{x}\_t = \sqrt{1 - \beta\_t}\mathbf{x}\_{t-1} + \sqrt{\beta\_t}\boldsymbol{\epsilon}\_{t-1} \quad \quad \text{where } \boldsymbol{\epsilon}\_{t-1} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})
 \end{equation}
 
-Over many steps, this forms a [*Markov chain*]({{< relref "../intro-diffusion-models-part1/index.md#markov-chain" >}}): each state $\mathbf{x}\_{t}$ depends only on the immediately preceding state $\mathbf{x}\_{t-1}$, not on earlier steps.
-We can also directly relate a noisy sample $\mathbf{x}\_{t}$ back to the original clean sample $\mathbf{x}\_{0}$ (see [*reparameterization trick*]({{< relref "../intro-diffusion-models-part1/index.md#reparameterization-trick" >}})):
+Over steps, this forms a [Markov chain]({{< relref "../intro-diffusion-models-part1/index.md#markov-chain" >}}): *each state $\mathbf{x}\_{t}$ depends only on the immediately preceding state $\mathbf{x}\_{t-1}$, not on earlier steps*.
+
+We can also directly relate a noisy sample $\mathbf{x}\_{t}$ back to the original clean sample $\mathbf{x}\_{0}$ (see the [reparameterization trick]({{< relref "../intro-diffusion-models-part1/index.md#reparameterization-trick" >}})):
 \begin{equation}
 q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}\big(\mathbf{x}_t; \sqrt{\bar{\alpha}_t} \mathbf{x}_0, (1 - \bar{\alpha}_t)\mathbf{I}\big)
 \label{eq:reparameter}
 \end{equation}
 where $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$.
 
-A <mark class="blue">major benefit</mark> of a Markov chain is that it is simple and has a *memoryless structure*; *i.e.,* the next state can be sampled using only the current one.
+A major benefit of a Markov chain is its simplicity: *the next state can be sampled using only the current one*.
 
-However, <mark class="pink">there is a flaw</mark>.
+However, there is a flaw.
 Because $\beta_t$ must be small to ensure stability, DDPMs require many $(T \gg 0)$ tiny increments to reach the fully noised state $\mathbf{x}\_T \sim \mathcal{N}(0,\boldsymbol{I})$, and the reverse process needs an equal number of steps (i.e., $T$) to traverse the entire chain for denoising.
-<mark>This makes generating samples in DDPMs very slow.</mark>
+<mark class="pink">This makes generating samples in DDPMs very slow.</mark>
 
 
 <div style="border: 3px solid seagreen; border-radius: 10px; padding: 0px; width: 99%;">
 <b style="margin: 0; text-align: center;">
 <span style="background: seagreen; display:block; padding:4px; border-radius: 0px;">
-    Walking in a forest    
+    Example - Walking in a forest    
 </span>
 </b>
 <div style="margin-top: 6px;"> </div>
 
 <div style="padding: 0px 12px 8px 12px;text-align: justify;font-style: italic;">
 
-Imagine you are walking through a dense forest. The trees block your view, so you can only see the ground right in front of you. If each step is based only on your current position, you can move only in small, cautious increments because you have no sense of where the trail leads. <b>This is like a Markov chain (memoryless)</b>.
+Imagine you are walking through a dense forest. The trees block your view, so you can only see the ground right in front of you. If each step is based on your current position, you can move only in small, cautious increments because you have no sense of where the trail leads. <b>This is like a Markov chain (memoryless)</b>.
 
 <div style="margin-top: 12px;"> </div>
 
@@ -136,7 +137,7 @@ Let’s explore how DDIMs do this!
 ## Non-Markovian Forward Process
 To generalize the DDPM forward process, the DDIM paper[^JSong2020] first changes the notation slightly. Instead of using the coefficient $\alpha_t$ directly, we express each transition in terms of the ratio $\color{red}\frac{\alpha_t}{\alpha_{t-1}}$. Thus, Eqn \eqref{eq:ddpm-forward} becomes:
 \begin{equation}
-q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}) = \mathcal{N}\left(\mathbf{x}\_t; \sqrt{{\color{red}\frac{\alpha_t}{\alpha_{t-1}}}} \mathbf{x}\_{t-1},  \big(1-{\color{red}\frac{\alpha_t}{\alpha_{t-1}}}\big)\mathbf{I}\right)
+q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}) = \mathcal{N}\left(\mathbf{x}\_t; \sqrt{{\color{red}\frac{\alpha_t}{\alpha_{t-1}}}} \mathbf{x}\_{t-1},  \Big(1-{\color{red}\frac{\alpha_t}{\alpha_{t-1}}}\Big)\mathbf{I}\right)
 \end{equation}
 
 This change does not have any physical meaning but simplifies notation. Under this form, the product term in Eqn \eqref{eq:reparameter} is simplified to:
@@ -146,7 +147,7 @@ $$
 $$
 
 Here, each intermediate $\alpha_i$ cancels, leaving only $\alpha_t$.
-Using the [*reparameterization trick*]({{< relref "../intro-diffusion-models-part1/index.md#reparameterization-trick" >}}), the forward process becomes:
+Using the [reparameterization trick]({{< relref "../intro-diffusion-models-part1/index.md#reparameterization-trick" >}}), the forward process becomes:
 \begin{equation}
 q(\mathbf{x}_t \vert \mathbf{x}\_0) = \mathcal{N}\big(\mathbf{x}\_t; \sqrt{{\color{red}\alpha_t}} \mathbf{x}_0, (1 - {\color{red}\alpha_t})\mathbf{I}\big)
 \end{equation}
@@ -169,7 +170,7 @@ Similarly, for the previous step:
 \end{equation}
 
 <!--An important trick used here is to replace $\boldsymbol{\epsilon}$ by something so that $\mathbf{x}\_{t-1}$ is no longer $\mathbf{x}\_0$ perturbed by white noise.-->
-The trick is that we ***reuse the same noise*** $\boldsymbol{\epsilon}$ at both steps. Solving Eqn \eqref{eq:6} for $\boldsymbol{\epsilon}$ gives:
+<mark class="blue">The trick is that we **reuse the same noise** $\boldsymbol{\epsilon}$ at both steps.</mark> Solving Eqn \eqref{eq:6} for $\boldsymbol{\epsilon}$ gives:
 
 $$
 \boldsymbol{\epsilon} = \frac{\mathbf{x}\_t - \sqrt{\alpha\_t} \mathbf{x}\_0}{\sqrt{1 - \alpha\_{t}}}
@@ -230,7 +231,7 @@ You don’t need to memorize these formulas. The main takeaway is:
 
 ## Generative Processes
 The most important requirement in DDIM is: 
-><mark class="pink">For every time step $t$, the marginal distribution $q_{\sigma}(\mathbf{x}\_{t} \vert \mathbf{x}\_0)$ should have the same form as in a DDPM:</mark> 
+><mark class="blue">For every time step $t$, the marginal distribution $q_{\sigma}(\mathbf{x}\_{t} \vert \mathbf{x}\_0)$ should have the same form as in a DDPM:</mark> 
 
 \begin{equation}
 q_{\sigma}(\mathbf{x}_{t} \vert \mathbf{x}\_0) = \mathcal{N}\big(\sqrt{\alpha\_{t}} \mathbf{x}_0, (1 - \alpha\_{t})\mathbf{I}\big)
@@ -254,8 +255,8 @@ q_{\sigma}(\mathbf{x}_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) = \mathcal{N}\bi
 ><mark>*Check out this tutorial[^Chan2024] to see the detailed derivation of this transition distribution.*</mark>
 
 Here, the magnitude of $\sigma_t$ controls how much fresh noise is injected at each step. 
-If $\sigma=0$, the process becomes fully deterministic (***we get a DDIM***).
-If $\sigma$ is chosen to match the DDPM posterior variance, we recover DDPM sampling.
+If $\sigma=0$, the process becomes fully deterministic, <mark class="orange">**and we get a DDIM**</mark>.
+If $\sigma$ is chosen to match the DDPM posterior variance, <mark class="blue">**we recover DDPM sampling**</mark>.
 
 ### Inference for DDIM
 Now let’s see how DDIM actually uses a neural network to go from noise back to data.
@@ -290,7 +291,7 @@ p\_{\theta}(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t) &= q\_{\sigma}(\mathbf{x}\_{t
 \label{eq:reverse-eq}
 \end{equation}
 
-The process can be summarized as follows:
+<mark>**The process can be summarized as follows**:</mark>
 - Take a noisy sample $\mathbf{x}\_t$;
 - Use the network to predict the noise $\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$;
 - Use that to estimate the clean sample $\mathbf{x}\_0$;
@@ -340,7 +341,7 @@ From the DDIM derivation, the reverse update can be written as:
 
 While both DDPM and DDIM use $\mathbf{x}\_t$ and $\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$ in their updates, the specific update formula leads to different convergence speeds. 
 
-There are two special cases:
+<mark class="pink">**There are two special cases**:</mark>
 1. When $\sigma_t = 0$
     - The random noise term disappears;
     - The trajectory becomes fully deterministic (this is DDIM);
@@ -376,7 +377,7 @@ Let’s recap the main ideas:
 - This allows DDIM to use far fewer sampling steps (e.g., 10–50 instead of 1000+) while maintaining similar sample quality.
 - Because the training objective is essentially the same, a model trained as a DDPM can usually be used directly for DDIM sampling.
 
-In short: ***DDIM is a faster way to sample from diffusion models*** that you can apply to many existing DDPM models without retraining.
+**In short**: *DDIM is a faster way to sample from diffusion models* that you can apply to many existing DDPM models without retraining.
 
 ## References
 [^Sohl-Dickstein2015]: Sohl-Dickstein, J. et al., 2015. [Deep unsupervised learning using nonequilibrium thermodynamics](https://arxiv.org/abs/1503.03585). *Proceedings of the 32$^{nd}$ International Conference on Machine Learning (ICML)*, PMLR, 37, pp.2256–2265.
