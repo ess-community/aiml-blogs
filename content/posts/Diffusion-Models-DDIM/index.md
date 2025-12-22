@@ -227,6 +227,7 @@ You don’t need to memorize these formulas. The main takeaway is:
   src="../../images/ddim_inferences.png"
   alt="Diffusion model"
   caption="Graphical models for diffusion (top) and non-Markovian (bottom) inference models. <small>*Adapted from [Song et al (2020)](https://arxiv.org/abs/2010.02502)*</small>."
+  width=85%
 >}}
 
 ## Generative Processes
@@ -240,6 +241,8 @@ q_{\sigma}(\mathbf{x}_{t} \vert \mathbf{x}\_0) = \mathcal{N}\big(\sqrt{\alpha\_{
 
 <!--The reason is that ultimately we want $q_{\sigma}(\mathbf{x}\_t \vert \mathbf{x}\_0)$ to become pure white noise when $t=T$ and the original sample when $t=0$.-->
 Why do we want this?
+<div style="margin-top: -18px;"> </div>
+
 - At $t=0$, we want $\mathbf{x}\_t$ to reduce to the original data $\mathbf{x}\_0$.
 - At $t=T$, we want $\mathbf{x}\_T$ to look like almost pure Gaussian noise.
 - Keeping the same form makes it possible to reuse DDPM-trained models.
@@ -249,18 +252,19 @@ There are many different choices of the reverse transition distribution $q\_{\si
 For this purpose, the reverse transition distribution in DDIM is chosen as follows[^JSong2020]:
 
 \begin{equation}
-q_{\sigma}(\mathbf{x}_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) = \mathcal{N}\big(\sqrt{\alpha\_{t-1}}\mathbf{x}\_0 + \sqrt{1 - \alpha\_{t-1}-\sigma_t^2} \left(\frac{\mathbf{x}\_t - \sqrt{\alpha\_t} \mathbf{x}\_0}{\sqrt{1 - \alpha\_{t}}} \right), \sigma_t^2\mathbf{I}\big)
+q_{\sigma}(\mathbf{x}_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) = \mathcal{N}\Big(\sqrt{\alpha\_{t-1}}\mathbf{x}\_0 + \sqrt{1 - \alpha\_{t-1}-\sigma_t^2} \Big(\frac{\mathbf{x}\_t - \sqrt{\alpha\_t} \mathbf{x}\_0}{\sqrt{1 - \alpha\_{t}}} \Big), \sigma_t^2\mathbf{I}\Big)
 \end{equation}
 
 ><mark>*Check out this tutorial[^Chan2024] to see the detailed derivation of this transition distribution.*</mark>
 
-Here, the magnitude of $\sigma_t$ controls how much fresh noise is injected at each step. 
-If $\sigma=0$, the process becomes fully deterministic, <mark class="orange">**and we get a DDIM**</mark>.
-If $\sigma$ is chosen to match the DDPM posterior variance, <mark class="blue">**we recover DDPM sampling**</mark>.
+Here, the magnitude of $\sigma_t$ controls how much fresh noise is injected at each step:
+<div style="margin-top: -18px;"> </div>
+
+- If $\sigma=0$, the process becomes fully deterministic, <mark class="orange">**and we get a DDIM**</mark>.
+- If $\sigma$ is chosen to match the DDPM posterior variance, <mark class="blue">**we recover DDPM sampling**</mark>.
 
 ### Inference for DDIM
-Now let’s see how DDIM actually uses a neural network to go from noise back to data.
-
+Now let’s see how DDIM actually uses a neural network to go from noise back to data.<br>
 From the marginal:
 \begin{equation}
 \underbrace{\mathbf{x}\_t}\_{\text{given}} = \underbrace{\sqrt{\alpha\_t}\mathbf{x}\_0}\_{\text{want to find}} + \underbrace{\sqrt{1 - \alpha\_t}\boldsymbol{\epsilon}}\_{\text{estimated by network}}
@@ -292,6 +296,8 @@ p\_{\theta}(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t) &= q\_{\sigma}(\mathbf{x}\_{t
 \end{equation}
 
 <mark>**The process can be summarized as follows**:</mark>
+<div style="margin-top: -18px;"> </div>
+
 - Take a noisy sample $\mathbf{x}\_t$;
 - Use the network to predict the noise $\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$;
 - Use that to estimate the clean sample $\mathbf{x}\_0$;
@@ -354,7 +360,7 @@ $$
 \begin{aligned}
 \sigma\_t&=\sqrt{\frac{1 - \alpha_{t-1}}{1 - \alpha_t}} \sqrt{1 - \frac{\alpha_t}{\alpha_{t-1}}} \quad \quad \color{green}\small{\text{DDIM}} \\\  
 &=\sqrt{\frac{1 - {\color{red}\bar{\alpha}_{t-1}}}{1 - {\color{red}\bar{\alpha}_t}}} \underbrace{\sqrt{1 - {\color{red}\alpha_t}}}\_{\sqrt{\beta_t}} \quad \quad \quad \ \color{green}\small{\text{DDPM; notation change from $\alpha_t$ to $\frac{\alpha\_t}{\alpha\_{t-1}}$}} \\\ 
-&= \sqrt{\tilde{\beta}_t}
+&= \sqrt{\tilde{\beta}_t} \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \ \color{green}\small{\tilde{\beta}\_t = {\frac{1 - \bar{\alpha}\_{t-1}}{1 - \bar{\alpha}\_t} \beta\_t}}
 \end{aligned}
 $$
 
