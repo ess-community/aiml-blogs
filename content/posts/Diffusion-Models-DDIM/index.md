@@ -40,8 +40,9 @@ editPost:
 The idea is beautiful, but there’s a catch: ***sampling is slow***. 
 A DDPM often needs hundreds or even thousands of small denoising steps to create one sample.
 
-*Denoising Diffusion Implicit Models (DDIMs)*[^JSong2020] were introduced to fix this issue. They use the same basic diffusion idea as DDPMs, but change the way we sample so that we can generate good samples in far fewer steps.
-<!--Even better, they work with the same trained DDPM model, so no retraining is required.-->
+In Earth and environmental science applications, where large-scale training and inference are common, this quickly becomes a serious bottleneck.
+
+*Denoising Diffusion Implicit Models (DDIMs)*[^JSong2020] were introduced to address this issue. They use the same basic diffusion idea as DDPMs, but change the way we sample so that we can generate good samples in far fewer steps.
 
 In this post, we’ll look at how DDIMs work and why they’re so much faster.
 We’ll touch on some math, but only enough to develop an intuitive understanding of what’s going on.
@@ -68,7 +69,7 @@ We’ll touch on some math, but only enough to develop an intuitive understandin
 To see why DDIMs are helpful, let's do a short recap of DDPMs and their main limitation.
 
 Suppose we have a real data sample $\mathbf{x}_0 \sim q(\mathbf{x})$.
-In the forward process of a DDPM, we gradually corrupt this data by adding small amounts of Gaussian noise over $T$ steps, producing a sequence of increasingly noisy samples $(\mathbf{x}_1, \dots, \mathbf{x}_T)$.
+In the forward process of a DDPM, we gradually corrupt this data by adding small amounts of Gaussian noise over $T$ steps, producing a sequence of increasingly noisy samples $\mathbf{x}\_{1:T} \equiv (\mathbf{x}_1, \dots, \mathbf{x}_T)$.
 
 Recall the [DDPM forward transition]({{< relref "../intro-diffusion-models-part1/index.md#the-forward-process-adding-noise" >}}) between steps:
 \begin{equation}
@@ -77,15 +78,17 @@ q(\mathbf{x}\_t \vert \mathbf{x}\_{t-1}) = \mathcal{N}(\mathbf{x}\_t; \sqrt{1 - 
 \end{equation}
 
 This equation describes how the model transitions from step $t-1$ to $t$:
-- It keeps most of the previous sample, scaling $\mathbf{x}\_{t-1}$ by $\sqrt{1 - \beta\_t}$;
-- It adds a small amount of fresh Gaussian noise with variance $\beta_t$;
+<div style="margin-top: -15px;"> </div>
+
+- *It keeps most of the previous sample, scaling $\mathbf{x}\_{t-1}$ by $\sqrt{1 - \beta\_t}$;*
+- *It adds a small amount of fresh Gaussian noise with variance $\beta_t$;*
 
 Mathematically, each forward step can be written as:
 \begin{equation}
 \mathbf{x}\_t = \sqrt{1 - \beta\_t}\mathbf{x}\_{t-1} + \sqrt{\beta\_t}\boldsymbol{\epsilon}\_{t-1} \quad \quad \text{where } \boldsymbol{\epsilon}\_{t-1} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})
 \end{equation}
 
-Over steps, this forms a [Markov chain]({{< relref "../intro-diffusion-models-part1/index.md#markov-chain" >}}): *each state $\mathbf{x}\_{t}$ depends only on the immediately preceding state $\mathbf{x}\_{t-1}$, not on earlier steps*.
+Over steps, this forms a [Markov chain]({{< relref "../intro-diffusion-models-part1/index.md#markov-chain" >}}): each state $\mathbf{x}\_{t}$ depends only on the immediately preceding state $\mathbf{x}\_{t-1}$, not on earlier steps.
 
 We can also directly relate a noisy sample $\mathbf{x}\_{t}$ back to the original clean sample $\mathbf{x}\_{0}$ (see the [reparameterization trick]({{< relref "../intro-diffusion-models-part1/index.md#reparameterization-trick" >}})):
 \begin{equation}
@@ -94,7 +97,7 @@ q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}\big(\mathbf{x}_t; \sqrt{\bar{\a
 \end{equation}
 where $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}\_t = \prod\_{i=1}^t \alpha\_i$.
 
-A major benefit of a Markov chain is its simplicity: *the next state can be sampled using only the current one*.
+A major benefit of a Markov chain is its simplicity: the next state can be sampled using only the current one.
 
 However, there is a flaw.
 Because $\beta_t$ must be small to ensure stability, DDPMs require many $(T \gg 0)$ tiny increments to reach the fully noised state $\mathbf{x}\_T \sim \mathcal{N}(0,\boldsymbol{I})$, and the reverse process needs an equal number of steps (i.e., $T$) to traverse the entire chain for denoising.
@@ -104,7 +107,7 @@ Because $\beta_t$ must be small to ensure stability, DDPMs require many $(T \gg 
 <div style="border: 3px solid seagreen; border-radius: 10px; padding: 0px; width: 99%;">
 <b style="margin: 0; text-align: center;">
 <span style="background: seagreen; display:block; padding:4px; border-radius: 0px;">
-    Example - Walking in a forest    
+    Walking in a forest    
 </span>
 </b>
 <div style="margin-top: 6px;"> </div>
@@ -127,10 +130,12 @@ DDIMs address the sampling inefficiency of DDPMs by formulating a <mark class="o
 
 ><mark class="orange">*A non-Markovian process is a system whose future behavior depends not only on its current state but also on its past history -- meaning the process has memory.*</mark>
 
+<small>
 {{< quote-blue >}}
 **Why memory matters?** <br>
 Memory allows a process to retain information from its past, which often influences its future evolution. Non-Markovian structures capture these dependencies, enabling more accurate modeling of system dynamics, smoother trajectories, and better predictions compared to memoryless (Markovian) systems.
 {{< /quote-blue >}}
+</small>
 
 Let’s explore how DDIMs do this!
 
@@ -220,8 +225,10 @@ q_{\sigma}(\mathbf{x}\_{t} \vert \mathbf{x}\_{t-1}, \mathbf{x}\_0) = \frac{q_{\s
 \end{equation}
 
 You don’t need to memorize these formulas. The main takeaway is:
-- We now allow transitions that depend on both the current state $\mathbf{x}\_t$ and the original data $\mathbf{x}\_0$.
-- This makes the process non-Markovian (it has "memory").
+<div style="margin-top: -15px;"> </div>
+
+- We allow transitions that depend on both the current state $\mathbf{x}\_{t-1}$ and the original data $\mathbf{x}\_0$.
+- This makes the process non-Markovian (i.e., it has "memory").
 
 {{< figure
   src="../../images/ddim_inferences.png"
@@ -232,7 +239,7 @@ You don’t need to memorize these formulas. The main takeaway is:
 
 ## Generative Processes
 The most important requirement in DDIM is: 
-><mark class="blue">For every time step $t$, the marginal distribution $q_{\sigma}(\mathbf{x}\_{t} \vert \mathbf{x}\_0)$ should have the same form as in a DDPM:</mark> 
+><mark class="blue">*For every time step $t$, the marginal distribution $q_{\sigma}(\mathbf{x}\_{t} \vert \mathbf{x}\_0)$ should have the same form as in a DDPM:*</mark> 
 
 \begin{equation}
 q_{\sigma}(\mathbf{x}_{t} \vert \mathbf{x}\_0) = \mathcal{N}\big(\sqrt{\alpha\_{t}} \mathbf{x}_0, (1 - \alpha\_{t})\mathbf{I}\big)
@@ -241,7 +248,7 @@ q_{\sigma}(\mathbf{x}_{t} \vert \mathbf{x}\_0) = \mathcal{N}\big(\sqrt{\alpha\_{
 
 <!--The reason is that ultimately we want $q_{\sigma}(\mathbf{x}\_t \vert \mathbf{x}\_0)$ to become pure white noise when $t=T$ and the original sample when $t=0$.-->
 Why do we want this?
-<div style="margin-top: -18px;"> </div>
+<div style="margin-top: -15px;"> </div>
 
 - At $t=0$, we want $\mathbf{x}\_t$ to reduce to the original data $\mathbf{x}\_0$.
 - At $t=T$, we want $\mathbf{x}\_T$ to look like almost pure Gaussian noise.
@@ -258,7 +265,7 @@ q_{\sigma}(\mathbf{x}_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0) = \mathcal{N}\Bi
 ><mark>*Check out this tutorial[^Chan2024] to see the detailed derivation of this transition distribution.*</mark>
 
 Here, the magnitude of $\sigma_t$ controls how much fresh noise is injected at each step:
-<div style="margin-top: -18px;"> </div>
+<div style="margin-top: -15px;"> </div>
 
 - If $\sigma=0$, the process becomes fully deterministic, <mark class="orange">**and we get a DDIM**</mark>.
 - If $\sigma$ is chosen to match the DDPM posterior variance, <mark class="blue">**we recover DDPM sampling**</mark>.
@@ -282,8 +289,11 @@ In practice, we don’t know $\boldsymbol{\epsilon}$, so we train a neural netwo
 {\color{red}f\_{\theta}^{(t)}(\mathbf{x}\_t)} = \frac{1}{\sqrt{\alpha\_t}} \left( \mathbf{x}\_t - \sqrt{1 - \alpha\_t} \cdot {\color{red}\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)} \right)
 \end{equation}
 
-There are two new terms in this equation. The first one is $\color{red}\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$, which replaces $\boldsymbol{\epsilon}$. It is the estimate of the noise based on the current input $\mathbf{x}\_t$.
-The second term is the denoised estimator $\color{red}f\_{\theta}^{(t)}(\mathbf{x}\_t)$, which is a prediction of the true signal $\mathbf{x}\_0$ given $\mathbf{x}\_t$.
+There are two new terms in this equation:
+<div style="margin-top: -15px;"> </div>
+
+- $\color{red}\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$: the model’s prediction of the noise conditioned on the current input $\mathbf{x}\_t$. This term replaces the true noise $\boldsymbol{\epsilon}$.
+- $\color{red}f\_{\theta}^{(t)}(\mathbf{x}\_t)$: a denoising function that estimates the original clean signal $\mathbf{x}\_0$ from the noisy input $\mathbf{x}\_t$.
 
 Returning to the transition distribution $q\_{\sigma}(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t, \mathbf{x}\_0)$, if we do not have access to $\mathbf{x}\_0$, we can replace it with $\color{red}f\_{\theta}^{(t)}(\mathbf{x}\_t)$:
 
@@ -296,7 +306,7 @@ p\_{\theta}(\mathbf{x}\_{t-1} \vert \mathbf{x}\_t) &= q\_{\sigma}(\mathbf{x}\_{t
 \end{equation}
 
 <mark>**The process can be summarized as follows**:</mark>
-<div style="margin-top: -18px;"> </div>
+<div style="margin-top: -15px;"> </div>
 
 - Take a noisy sample $\mathbf{x}\_t$;
 - Use the network to predict the noise $\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$;
@@ -331,7 +341,7 @@ When the length of this sampling trajectory $S \ll T$, we can achieve a signific
 This is the foundation of accelerated sampling in DDIM and one of the main reasons it is widely used in practice.
 
 
-## DDPM vs DDIM: Key Differences
+## DDPM vs DDIM
 The DDPM reverse update (in one common form) looks like:
 \begin{equation}
 \mathbf{x}\_{t-1} = \frac{1}{\sqrt{\alpha_t}} \left( \mathbf{x}_t - \frac{1 - \alpha_t}{\sqrt{1 - \bar{\alpha}\_t}} \boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t) \right) + \\sqrt{\tilde{\beta}_t} \boldsymbol{\epsilon}\_t
@@ -348,6 +358,8 @@ From the DDIM derivation, the reverse update can be written as:
 While both DDPM and DDIM use $\mathbf{x}\_t$ and $\boldsymbol{\epsilon}\_{\theta}^{(t)}(\mathbf{x}\_t)$ in their updates, the specific update formula leads to different convergence speeds. 
 
 <mark class="pink">**There are two special cases**:</mark>
+<div style="margin-top: -15px;"> </div>
+
 1. When $\sigma_t = 0$
     - The random noise term disappears;
     - The trajectory becomes fully deterministic (this is DDIM);
