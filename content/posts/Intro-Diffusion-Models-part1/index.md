@@ -37,7 +37,7 @@ editPost:
 
 Diffusion models have become one of the most powerful tools in *Artificial Intelligence (AI)*. They’re the engines behind some of today's most advanced *generative systems* -- from creating realistic images, audio, text, and videos to designing new molecules and medicines, and even modeling complex climate and environmental systems.
 
-There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the core principles (in this post) and explore how diffusion models are being used in Earth and environmental sciences and why those applications are so promising (see [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}})).*
+There are already plenty of great articles that dive into the details of diffusion models -- and we’ll share some of our favorites along the way. In this series, we'll keep things accessible: *we focus on the core principles (in this post) and explore how diffusion models are being used in Earth and environmental sciences and why those applications are so promising (see [Part 3]({{< relref "../Diffusion-Models-part3/index.md" >}})).*
 
 Let’s get started!
 
@@ -383,7 +383,7 @@ The training and sampling algorithms in DDPM can be summarized as below:
 </br>
 
 {{< quote-blue >}}
-In [Part 2]({{< relref "../Intro-Diffusion-Models-part2/index.md" >}}), we'll dive into how diffusion models are applied in Earth 🌎 sciences.
+In [Part 2]({{< relref "../Intro-Diffusion-Models-DDIM-part2/index.md" >}}), we’ll dive into new diffusion model variants called DDIMs and see how they speed up sampling.
 {{< /quote-blue >}}
 
 ## References

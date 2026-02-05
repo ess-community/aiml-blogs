@@ -1,8 +1,8 @@
 ---
-title: "Diffusion Models (Part 3): Denoising Diffusion Implicit Models"
+title: "Diffusion Models (Part 2): Denoising Diffusion Implicit Models"
 description: "An introduction to DDIMs - a faster and more efficient alternative to DDPMs."
 summary: "An introduction to DDIMs - a faster and more efficient alternative to DDPMs."
-date: 2025-12-03
+date: 2025-11-18
 tags: ["Diffusion Model", "Generative", "Implicit Model", "Non-Markovian"]
 author: "Phong Le"
 series: ["Diffusion Models"]
@@ -44,7 +44,7 @@ In Earth and environmental science applications, where large-scale training and 
 
 *Denoising Diffusion Implicit Models (DDIMs)*[^JSong2020] were introduced to address this issue. They use the same basic diffusion idea as DDPMs, but change the way we sample so that we can generate good samples in far fewer steps.
 
-In this post, we’ll look at how DDIMs work and why they’re so much faster.
+In this Part 2, we’ll look at how DDIMs work and why they’re so much faster.
 We’ll touch on some math, but only enough to develop an intuitive understanding of what’s going on.
 
 {{< quote-red >}}
@@ -128,16 +128,14 @@ Now imagine you also carry a map showing where you started and where the trail l
 
 DDIMs address the sampling inefficiency of DDPMs by formulating a <mark class="orange">*non-Markovian*</mark> process, enabling deterministic and flexible sampling schedules.
 
-><mark class="orange">*A non-Markovian process is a system whose future behavior depends not only on its current state but also on its past history -- meaning the process has memory.*</mark>
+><mark class="orange">***Definition**: A non-Markovian process is a system whose future behavior depends not only on its current state but also on its past history -- meaning the process has memory.*</mark>
 
-<small>
 {{< quote-blue >}}
-**Why memory matters?** <br>
-Memory allows a process to retain information from its past, which often influences its future evolution. Non-Markovian structures capture these dependencies, enabling more accurate modeling of system dynamics, smoother trajectories, and better predictions compared to memoryless (Markovian) systems.
+***Why memory matters?*** </br>
+*Memory allows a process to retain information from its past, which often influences its future evolution. Non-Markovian structures capture these dependencies, enabling more accurate modeling of system dynamics, smoother trajectories, and better predictions compared to memoryless (Markovian) systems.*
 {{< /quote-blue >}}
-</small>
 
-Let’s explore how DDIMs do this!
+Let’s explore how DDIMs do this! 🚀
 
 ## Non-Markovian Forward Process
 To generalize the DDPM forward process, the DDIM paper[^JSong2020] first changes the notation slightly. Instead of using the coefficient $\alpha_t$ directly, we express each transition in terms of the ratio $\color{red}\frac{\alpha_t}{\alpha_{t-1}}$. Thus, Eqn \eqref{eq:ddpm-forward} becomes:
@@ -396,6 +394,10 @@ Let’s recap the main ideas:
 - Because the training objective is essentially the same, a model trained as a DDPM can usually be used directly for DDIM sampling.
 
 **In short**: *DDIM is a faster way to sample from diffusion models* that you can apply to many existing DDPM models without retraining.
+
+{{< quote-blue >}}
+In Parts [3]({{< relref "../Diffusion-Models-part3/index.md" >}}) and [4]({{< relref "../Diffusion-Models-part4/index.md" >}}), we'll dive into how diffusion models are applied in Earth 🌎 sciences.
+{{< /quote-blue >}}
 
 ## References
 [^Sohl-Dickstein2015]: Sohl-Dickstein, J. et al., 2015. [Deep unsupervised learning using nonequilibrium thermodynamics](https://arxiv.org/abs/1503.03585). *Proceedings of the 32$^{nd}$ International Conference on Machine Learning (ICML)*, PMLR, 37, pp.2256–2265.

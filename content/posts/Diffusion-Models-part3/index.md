@@ -1,8 +1,8 @@
 ---
-title: "Diffusion Models (Part 2): Advancing Weather Forecasting"
+title: "Diffusion Models (Part 3): Advancing Weather Forecasting"
 description: "Diffusion models are transforming how we analyze and predict weather"
-summary: "A new era of weather forecasting is emerging with diffusion models"
-date: 2025-11-18
+summary: "A new era of weather forecasting is emerging with diffusion models."
+date: 2025-12-03
 tags: ["Diffusion Model", "Weather Forecast", "Earth system", "GenCast"]
 author: "Phong Le"
 series: ["AI-ML"]
@@ -36,8 +36,13 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 ---
 
- - [In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored the principles of diffusion models -- how they can transform random noise into structured and meaningful data.
- - In Part 2, we look at how these models are being applied to weather forecasting and why that shift could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
+ - In [Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}) and [Part 2]({{< relref "../Intro-Diffusion-Models-DDIM-part2/index.md" >}}), we explored the principles of diffusion models -- how they can transform random noise into structured and meaningful data.
+ - In this Part 3, we look at how these models are being used in weather forecasting and why that shift could make a real difference. 
+ 
+ {{< quote-red >}}
+ *If you’re new to diffusion models, we recommend reading parts 1 and 2 for useful background context.*
+ {{< /quote-red >}}
+
 
 <center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
 
@@ -261,10 +266,8 @@ The training strategy follows a two-stage resolution approach: the model is firs
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.
 
-</br>
-
 {{< quote-blue >}}
-In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images -- stay tuned!
+In [Part 4]({{< relref "../Diffusion-Models-part4/index.md" >}}), we'll look at another application of diffusion models for precipitation monitoring from satellite imagery -- stay tuned!
 {{< /quote-blue >}}
 
 ## References
