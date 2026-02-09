@@ -48,7 +48,7 @@ In this Part&nbsp;4, we explore how generative Artificial Intelligence (AI) meth
 {{< /quote-red >}}
 
 </br>
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 </br>
 
 Precipitation includes all forms of water that fall from the atmosphere to Earth -- *rain, snow, sleet, and hail*. Through this process, water stored in clouds returns to the land surface, completing a vital stage of the [_water cycle_](https://www.noaa.gov/education/resource-collections/freshwater/water-cycle).
@@ -61,7 +61,7 @@ Precipitation sustains ecosystems, refills water bodies, supports agriculture, a
 Despite its presence everyday, precipitation is surprisingly hard to measure accurately over large areas. 
 Rainfall can be highly uneven and evolve rapidly, with intense downpours confined to narrow regions while nearby areas remain dry. Capturing this transient and spatially patchy behavior is one of the central challenges in observing Earth’s atmosphere.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Tracking Precipitation
 To monitor precipitation, scientists rely on multiple observational systems, each offering a different perspective on atmospheric processes.
@@ -124,7 +124,7 @@ _For decades, satellite-based precipitation retrievals have relied on combinatio
 
 This is where AI begins to play a transformative role.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## AI for Precipitation Estimation
 Recently, [Guilloteau and colleagues](https://efi.eng.uci.edu/) at the University of California, Irvine introduced **DifERS**[^Guilloteau:2025] (**Dif**fusion-Based **E**nsemble **R**ainfall estimation from **S**atellites). This generative AI model represents a fundamental shift in how we retrieve precipitation: _rather than providing a single "best guess" estimate, it generates an  ensemble of physically realistic possibilities_. 
@@ -232,14 +232,15 @@ In terms of spatial coherence with the truth, DifERS surpasses legacy algorithms
 
 This demonstrates the ability of a deep generative diffusion model like DifERS to generate realistic precipitation intensity maps properly constrained by measurements form satellite infrared and microwave imagers.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Summary
 - Satellite imagers provide frequent but indirect information about precipitation
 - Diffusion-based generative models naturally represent uncertainty through ensembles
 - DifERS leverages this framework to generate high-resolution, physically realistic precipitation maps constrained by satellite infrared and microwave observations.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">•</span> </center>
+<center> <span style="letter-spacing: 1rem;">• •</span> </center>
 
 ## References
 

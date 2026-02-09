@@ -51,7 +51,7 @@ We’ll touch on some math, but only enough to develop an intuitive understandin
 *If you’re new to diffusion models, we strongly recommend reading [Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}) first, as we will reuse some concepts from there.*
 {{< /quote-red >}}
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Notations
 | **Symbols** |	**Meaning** |
@@ -64,6 +64,7 @@ We’ll touch on some math, but only enough to develop an intuitive understandin
 | $\mathcal{N}(\boldsymbol{\mu}, \sigma^2)$ | Normal (Gaussian) distribution with mean $\boldsymbol{\mu}$ and variance $\sigma^2$ |
 | $q(\mathbf{x}_i \mid \mathbf{x}_j)$ | Transition distribution from state $\mathbf{x}_j$ to state $\mathbf{x}_i$ |
 
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## The Problem with DDPMs
 To see why DDIMs are helpful, let's do a short recap of DDPMs and their main limitation.
@@ -137,6 +138,8 @@ DDIMs address the sampling inefficiency of DDPMs by formulating a <mark class="o
 
 Let’s explore how DDIMs do this! 🚀
 
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
+
 ## Non-Markovian Forward Process
 To generalize the DDPM forward process, the DDIM paper[^JSong2020] first changes the notation slightly. Instead of using the coefficient $\alpha_t$ directly, we express each transition in terms of the ratio $\color{red}\frac{\alpha_t}{\alpha_{t-1}}$. Thus, Eqn \eqref{eq:ddpm-forward} becomes:
 \begin{equation}
@@ -156,6 +159,8 @@ q(\mathbf{x}_t \vert \mathbf{x}\_0) = \mathcal{N}\big(\mathbf{x}\_t; \sqrt{{\col
 \end{equation}
 
 >*<mark>**Note:** The noisy marginals are the same as in the original DDPM. That means any diffusion model trained with the DDPM objective can be reused in the DDIM framework without retraining. The difference will come from how we define the reverse process.</mark>*
+
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Deterministic Reconstruction
 The key idea behind DDIM is to make the reverse process less random (or even fully deterministic), while still matching the same noisy distributions $q(\mathbf{x}_t \vert \mathbf{x}\_0)$.
@@ -202,7 +207,7 @@ Because the update is now a deterministic transformation, the sampler no longer 
 <div style="margin-top: 0px;"> </div>
 </div>
 
-<br>
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### A family of inference processes
 The DDIM paper defines not just one process, but a family of possible inference processes. Each member of this family is controlled by a vector $\sigma \in \mathbb{R}^T_{\ge 0}$, which decides how much extra noise we allow at each step:
@@ -234,6 +239,8 @@ You don’t need to memorize these formulas. The main takeaway is:
   caption="Graphical models for diffusion (top) and non-Markovian (bottom) inference models. <small>*Adapted from [Song et al (2020)](https://arxiv.org/abs/2010.02502)*</small>."
   width=85%
 >}}
+
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Generative Processes
 The most important requirement in DDIM is: 
@@ -267,6 +274,8 @@ Here, the magnitude of $\sigma_t$ controls how much fresh noise is injected at e
 
 - If $\sigma=0$, the process becomes fully deterministic, <mark class="orange">**and we get a DDIM**</mark>.
 - If $\sigma$ is chosen to match the DDPM posterior variance, <mark class="blue">**we recover DDPM sampling**</mark>.
+
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Inference for DDIM
 Now let’s see how DDIM actually uses a neural network to go from noise back to data.<br>
@@ -323,6 +332,8 @@ Even though the reverse process has changed, the resulting training objective tu
 J\_{\sigma}(\boldsymbol{\epsilon}\_{\theta}) = \mathbb{E}\_{\mathbf{x}\_{0:T} \sim q(\mathbf{x}\_{0:T})} \left[ \log q_\sigma(\mathbf{x}\_{1:T} \vert \mathbf{x}_0 ) - \log p\_{\theta}(\mathbf{x}\_{0:T}) \right]
 \end{equation}
 
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
+
 ### Accelerated sampling
 In a traditional DDPM, a full generative trajectory requires iterating through all $T$ diffusion steps. However, DDIM introduces a key insight: *the sampling schedule (which timesteps we visit during generation) is not tied to the original forward-noising schedule*. This flexibility allows us to define a subset of timesteps $\tau = \\{\tau_1,\dots,\tau_S\\}$ and run the reverse process only at those points.
 
@@ -338,6 +349,7 @@ When the length of this sampling trajectory $S \ll T$, we can achieve a signific
 
 This is the foundation of accelerated sampling in DDIM and one of the main reasons it is widely used in practice.
 
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## DDPM vs DDIM
 The DDPM reverse update (in one common form) looks like:
@@ -384,8 +396,10 @@ So DDIM and DDPM are not completely separate models. DDIM gives us a continuum o
 | Quality | Very high | Almost the same |
 | Requires Retraining? | Often yes | No, use same model |
 
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
+
 ## Summary
-Let’s recap the main ideas:
+<mark>Let’s recap the main ideas</mark>:
 
 - DDPMs gradually add and remove noise in many small steps, which makes sampling slow but produces very high-quality results.
 - DDIMs keep the same noisy distributions $q(\mathbf{x}_t \vert \mathbf{x}\_0)$ but change the reverse process to be non-Markovian and often deterministic.
@@ -398,6 +412,9 @@ Let’s recap the main ideas:
 {{< quote-blue >}}
 In Parts [3]({{< relref "../Diffusion-Models-part3/index.md" >}}) and [4]({{< relref "../Diffusion-Models-part4/index.md" >}}), we'll dive into how diffusion models are applied in Earth 🌎 sciences.
 {{< /quote-blue >}}
+
+<center> <span style="letter-spacing: 1rem;">•</span> </center>
+<center> <span style="letter-spacing: 1rem;">• •</span> </center>
 
 ## References
 [^Sohl-Dickstein2015]: Sohl-Dickstein, J. et al., 2015. [Deep unsupervised learning using nonequilibrium thermodynamics](https://arxiv.org/abs/1503.03585). *Proceedings of the 32$^{nd}$ International Conference on Machine Learning (ICML)*, PMLR, 37, pp.2256–2265.

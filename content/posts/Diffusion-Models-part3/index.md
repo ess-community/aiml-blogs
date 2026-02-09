@@ -44,7 +44,7 @@ editPost:
  {{< /quote-red >}}
 
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Probabilistic Weather Forecasting
 Weather affects nearly every aspect of our daily lives -- from what we wear in the morning to how we plan for the days ahead. But predicting weather is far from simple because the Earth's atmosphere is inherently chaotic and highly sensitive to uncertainty.
@@ -72,7 +72,7 @@ This is where Artificial Intelligence (AI)-based weather forecast models come in
 
 That’s beginning to change.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Next-Generation AI for Weather Forecasting
 In 2024, Google DeepMind introduced **GenCast**[^Price2024], a probabilistic weather forecasting system built on diffusion models. Building on GraphCast[^Lam2023] deterministic architecture, GenCast enhances weather forecasting by quantifying uncertainty and generating many plausible outcomes. It provides:
@@ -131,7 +131,7 @@ GenCast handles the state inference by simply using existing <mark class="green"
 
 ***The remaining problem becomes solving the forecast model*** -- and that’s where generative diffusion models step in.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Diffusion Models in GenCast
 
@@ -258,7 +258,7 @@ The training strategy follows a two-stage resolution approach: the model is firs
 
 ><mark class="gray">*If you’d like to explore the complete Methods in GenCast, check out these papers[^Price2024]<sup>,</sup>[^Lam2023]<sup>.*</mark>
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Summary
 - Because weather is chaotic, forecasts must quantify uncertainty -- and diffusion models offer a powerful, principled way to do exactly that.
@@ -269,6 +269,9 @@ The training strategy follows a two-stage resolution approach: the model is firs
 {{< quote-blue >}}
 In [Part 4]({{< relref "../Diffusion-Models-part4/index.md" >}}), we'll look at another application of diffusion models for precipitation monitoring from satellite imagery -- stay tuned!
 {{< /quote-blue >}}
+
+<center> <span style="letter-spacing: 1rem;">•</span> </center>
+<center> <span style="letter-spacing: 1rem;">• •</span> </center>
 
 ## References
 [^Price2024]: Price, I., Sanchez-Gonzalez, A., Alet, F. et al. [Probabilistic weather forecasting with machine learning](https://www.nature.com/articles/s41586-024-08252-9). *Nature* **637**, 84--90 (2025).

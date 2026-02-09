@@ -41,7 +41,7 @@ There are already plenty of great articles that dive into the details of diffusi
 
 Let’s get started!
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## What are generative models?
 
@@ -77,7 +77,7 @@ There are different types of generative models, such as Generative Adversarial N
   caption="**Computation graphs of prominent generative models**. GANs use a generator $G(\mathbf{z})$ to produce data. VAEs use a probabilistic decoder $p_{\theta}(\mathbf{x}|\mathbf{z})$ to generate data. Flow-based models apply an invertible transformation $f^{-1}(\mathbf{z})$ to obtain data from latent variables. The transformations in these models are performed in a single forward pass through the neural network. Diffusion models instead gradually transform noise into data through a sequence of iterative denoising steps, reversing a learned diffusion process. <small>Image source: [Lil'Log](https://lilianweng.github.io/).</small>"
 >}}
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## What are diffusion models?
 Diffusion models are inspired by *non-equilibrium thermodynamics* -- specifically, how particles spread out or "*diffuse*" over time. The core idea behind them is simple: we gradually corrupt (*i.e.*, add noise to) clean data until it becomes completely random, then train a deep learning model to reverse this process and recover the original data.
@@ -113,7 +113,7 @@ More recent approaches further optimize efficiency by performing diffusion in a 
 {{< /quote-red >}}
 
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## How do DDPMs work?
 Now, let’s explore how DDPMs actually work.
@@ -372,7 +372,7 @@ The training and sampling algorithms in DDPM can be summarized as below:
 
 ><mark class="gray">*If you’d like to explore the complete mathematical derivation, check out these excellent resources[^lillog_diff]<sup>,</sup>[^Luo2022]<sup>,</sup>[^Chan2024]<sup>,</sup>[^Ozdemir]<sup>,</sup>[^theaisummer]<sup>,</sup>[^Lai2025]. Each provides a detailed explanation of the theory and intuition behind diffusion models.*</mark>
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Summary
 - We gradually add noise to data (the *forward process*).
@@ -380,11 +380,12 @@ The training and sampling algorithms in DDPM can be summarized as below:
 - Training aims to *maximize the likelihood* of real data (or equivalently, *minimize the negative log-likelihood*).
 - The exact likelihood is intractable, we instead minimize a *lower bound*.
 
-</br>
-
 {{< quote-blue >}}
 In [Part 2]({{< relref "../Intro-Diffusion-Models-DDIM-part2/index.md" >}}), we’ll dive into new diffusion model variants called DDIMs and see how they speed up sampling.
 {{< /quote-blue >}}
+
+<center> <span style="letter-spacing: 1rem;">•</span> </center>
+<center> <span style="letter-spacing: 1rem;">• •</span> </center>
 
 ## References
 [^Goodfellow:2014]: Goodfellow, I. et al., 2014. [Generative Adversarial Networks](https://arxiv.org/abs/1406.2661). *Advances in Neural Information Processing Systems (NeurIPS)*, 27, pp.2672–2680.

@@ -117,7 +117,7 @@ Once <mark class="orange">*pre-trained*</mark>, foundation models can be further
 
 Broadly speaking, this flexibility enables AI that grows with our needs -- expanding skills as new challenges arise.
 
-<center> <span style="letter-spacing: 0.25rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Self-supervised Learning
 One of the key innovations that makes foundation models possible is *self-supervised learning* (SSL). Instead of relying on expensive human-generated labels, SSL lets models learn directly from raw, unlabeled data by creating their own training signals. This approach gives foundation models broad exposure to real-world information and helps them build a surprisingly deep understanding of world knowledge.
@@ -148,7 +148,7 @@ SSL gives these models the broad exposure they need to generalize across tasks �
 
 ><mark class="gray">*For a more detailed, mathematical perspective on self-supervised representation learning, see [this post from Lil'Log](https://lilianweng.github.io/posts/2019-11-10-self-supervised/)[^lillog_ssl].*</mark>
 
-<center> <span style="letter-spacing: 0.25rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Scale and Homogenization
 What makes foundation models so powerful, however, is *scale*.
@@ -182,7 +182,7 @@ The result is less fragmentation across the scientific landscape and more opport
 
 Now, these AI models are being applied to one of the most complex systems: **our planet**.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Foundation Models for Earth System
 {{< figure
@@ -215,7 +215,7 @@ It is important to note that <mark class="pink">*an EFM typically doesn’t cove
 </small>
 
 {{< quote-purple >}}
-<mark>An EFM that covers all major components of the Earth system in a single, unified framework would be considered a **General Earth Foundation Model (GEFM)**$^\dagger$. Reaching this milestone would represent a significant step forward for Earth science -- but we are not there yet. We will explore the path toward such a model in a future post.</mark> </br>
+<mark>_An EFM that covers all major components of the Earth system in a single, unified framework would be considered a **General Earth Foundation Model (GEFM)**$^\dagger$. Reaching this milestone would represent a significant step forward for Earth science -- but we are not there yet. We will explore the path toward such a model in a future post._</mark> </br>
 {{< /quote-purple >}}
 
 <div style="margin-top: -18px;"> </div>
@@ -226,6 +226,8 @@ $^\dagger$This concept reflects the author’s emerging perspective and is share
 <div style="margin-top: 24px;"> </div>
 
 Like other foundation models, EFMs are pre-trained on enormous datasets and then fine-tuned for specific applications. This reduces the time, cost, and expertise required to build advanced models from scratch, helping accelerate research, integrate knowledge across domains, and provide a flexible foundation for tackling complex Earth science problems.
+
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
 
 ### Why Foundation Models for Earth System?
 
@@ -256,6 +258,8 @@ Because they learn from broad and multimodal datasets, EFMs can uncover relation
 
 Ultimately, EFMs reduce the time between observing a change and understanding what it means -- and that speed matters when lives, ecosystems, and economies are at risk.
 
+<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
+
 ### Challenges and Limitations
 <!--Data availability and quality
 Compute and resource constraints
@@ -273,6 +277,8 @@ Flaws in pre-training can silently scale across every downstream application. Tr
 
 4. **Cross-Domain Expertise**: EFMs sit at the intersection of advanced AI and Earth system science. Combining these disciplines demands specialized knowledge that remains scarce and unevenly accessible.
 
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
+
 ## Summary
 <!--Foundation models aren’t just powering apps -- they’re becoming the digital infrastructure of the future. And we’re only at the beginning of what they’ll enable.-->
 
@@ -284,6 +290,9 @@ Flaws in pre-training can silently scale across every downstream application. Tr
 {{< quote-blue >}}
 In Part 2, we’ll dive into how foundation models are used in Earth sciences.
 {{< /quote-blue >}}
+
+<center> <span style="letter-spacing: 1rem;">•</span> </center>
+<center> <span style="letter-spacing: 1rem;">• •</span> </center>
 
 ## References
 [^Earth2]: Earth-2. https://www.nvidia.com/en-us/high-performance-computing/earth-2/
