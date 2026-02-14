@@ -1,8 +1,8 @@
 ---
-title: "Diffusion Models (Part 2): Advancing Weather Forecasting"
+title: "Diffusion Models (Part 3): Advancing Weather Forecasting"
 description: "Diffusion models are transforming how we analyze and predict weather"
-summary: "A new era of weather forecasting is emerging with diffusion models"
-date: 2025-11-18
+summary: "A new era of weather forecasting is emerging with diffusion models."
+date: 2025-12-03
 tags: ["Diffusion Model", "Weather Forecast", "Earth system", "GenCast"]
 author: "Phong Le"
 series: ["AI-ML"]
@@ -36,10 +36,15 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 ---
 
- - [In Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}), we explored the principles of diffusion models -- how they can transform random noise into structured and meaningful data.
- - In Part 2, we look at how these models are being applied to weather forecasting and why that shift could make a real difference. If you’re new to diffusion models, we recommend reading Part 1 for useful background context.
+ - In [Part 1]({{< relref "../Intro-Diffusion-Models-part1/index.md" >}}) and [Part 2]({{< relref "../Intro-Diffusion-Models-DDIM-part2/index.md" >}}), we explored the principles of diffusion models -- how they can transform random noise into structured and meaningful data.
+ - In this Part 3, we look at how these models are being used in weather forecasting and why that shift could make a real difference. 
+ 
+ {{< quote-red >}}
+ *If you’re new to diffusion models, we recommend reading parts 1 and 2 for useful background context.*
+ {{< /quote-red >}}
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Probabilistic Weather Forecasting
 Weather affects nearly every aspect of our daily lives -- from what we wear in the morning to how we plan for the days ahead. But predicting weather is far from simple because the Earth's atmosphere is inherently chaotic and highly sensitive to uncertainty.
@@ -67,7 +72,7 @@ This is where Artificial Intelligence (AI)-based weather forecast models come in
 
 That’s beginning to change.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Next-Generation AI for Weather Forecasting
 In 2024, Google DeepMind introduced **GenCast**[^Price2024], a probabilistic weather forecasting system built on diffusion models. Building on GraphCast[^Lam2023] deterministic architecture, GenCast enhances weather forecasting by quantifying uncertainty and generating many plausible outcomes. It provides:
@@ -126,7 +131,7 @@ GenCast handles the state inference by simply using existing <mark class="green"
 
 ***The remaining problem becomes solving the forecast model*** -- and that’s where generative diffusion models step in.
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Diffusion Models in GenCast
 
@@ -156,9 +161,9 @@ The sampling procedure can be summarized as follows:
 <li style="padding-bottom: 12px;"> Gradually denoise $\mathbf{Z}_0^{t+1}$ using a refinement function $r_{\theta}$, which applies the denoiser $D_{\theta}$ conditioned on the two most recent states $(\mathbf{X}^0, \mathbf{X}^{-1})$ to obtain $\mathbf{Z}_1^{t+1}$ at lower noise level $\sigma_1<\sigma_0$;
 <li style="padding-bottom: 12px;"> For $i=1$ to $20$, continue refining
 $\mathbf{Z}_{i+1}^{t+1} = r_{\theta} (\mathbf{Z}_{i}^{t+1}, \mathbf{X}^{t}, \mathbf{X}^{t-1}, \sigma_{i+1}, \sigma_i)$
-until the final residual $\mathbf{Z}^{1}=\mathbf{Z}_N^1$ is obtained at noise level $\sigma_N=0$;
+until the final residual $\mathbf{Z}^{t+1}=\mathbf{Z}_N^{t+1}$ is obtained at noise level $\sigma_N=0$;
 <li style="padding-bottom: 12px;"> Update $\mathbf{X}^{t+1} = \mathbf{X}^{t} + S \mathbf{Z}^{t+1}$, where $S$ is a diagonal matrix that inverts the normalization;
-<li style="padding-bottom: 12px;"> Autoregressively repeat the entire process for $T=30$ times to obtain a full 15-day trajectory forecast.
+<li style="padding-bottom: 12px;"> Autoregressively repeat the entire process for 30 times to obtain a full 15-day trajectory forecast.
 </ol>
 </div>
 
@@ -231,13 +236,13 @@ We’ll explore transformer and GNN architectures -- and their applications in E
 
 ### Denoiser Training
 During training, we want the denoiser to learn how to remove noise from a future state while still respecting real atmospheric structure.
-Specifically, the denoiser is applied to a version of the target $\mathbf{Z}^{t+1}$, which has been corrupted by adding noise $\boldsymbol{\varepsilon} \sim P_{noise}(\cdot \vert \sigma)$ at noise level σ:
+Specifically, the denoiser is applied to a version of the target $\mathbf{Z}^{t+1}$, which has been corrupted by adding noise $\boldsymbol{\varepsilon} \sim P_{noise}(\cdot \vert \sigma)$ at noise level $\sigma$:
 
 $$\mathbf{Y}^{t+1}=D_{\theta }(\mathbf{Z}^{t+1}+\varepsilon;\mathbf{X}^{t},\mathbf{X}^{t-1},\sigma )$$
 
-We train the denoiser to predict $\mathbf{Y}^{t+1}$ as the expectation of the noise-free target $\mathbf{Z}^{t}$ through minimization of a loss function:
+We train the denoiser to predict $\mathbf{Y}^{t+1}$ as the expectation of the noise-free target $\mathbf{Z}^{t+1}$ through minimization of a loss function:
 $$
-\sum \_{t\in {D}\_{{\rm{train}}}}E\left[\lambda (\sigma )\frac{1}{| G| | \,J| }\sum \_{i\in G}\sum \_{j\in J}{w}\_{j}{a}\_{i}{({Y}\_{i,j}^{t+1}-{Z}\_{i,j}^{t+1})}^{2}\right]$$
+\sum \_{t\in {D}\_{{\rm{train}}}}\mathbb{E}\left[\lambda (\sigma )\frac{1}{|G| |J| }\sum \_{i\in G}\sum \_{j\in J}{w}\_{j}{a}\_{i}{\left({Y}\_{i,j}^{t+1}-{Z}\_{i,j}^{t+1}\right)}^{2}\right]$$
 
 where:
 - $t$: timestep index of the training set $D_{train}$;
@@ -245,7 +250,7 @@ where:
 - $i \in G$: location index (latitude and longitude coordinates) in the grid;
 - $w_j$: loss weight for variable $j$;
 - $a_i$ is the area of the latitude-longitude grid cell;
-- $\lambda(\sigma)$ loss weight for noise level $\sigma$
+- $\lambda(\sigma)$ loss weight for noise level $\sigma$.
 
 This loss helps the model learn to remove noise in a physically consistent way across different atmospheric regimes, improving its ability to generalize during forecasting.
 
@@ -253,21 +258,20 @@ The training strategy follows a two-stage resolution approach: the model is firs
 
 ><mark class="gray">*If you’d like to explore the complete Methods in GenCast, check out these papers[^Price2024]<sup>,</sup>[^Lam2023]<sup>.*</mark>
 
-<center> <span style="letter-spacing: 0.75rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
-{{< quote-red >}}
-**Quick summary:**
-{{< /quote-red >}}
-- Because weather is chaotic, forecasts must quantify uncertainty — and diffusion models offer a powerful, principled way to do exactly that.
+## Summary
+- Because weather is chaotic, forecasts must quantify uncertainty -- and diffusion models offer a powerful, principled way to do exactly that.
 - GenCast uses diffusion models to generate fast, high-quality ensemble forecasts up to 15 days ahead.
 - GenCast conditions predictions on the last two weather states and iteratively turns noise into future states.
 - A specialized architecture (probability flow ODE solver + graph transformer + spherical harmonics) keeps forecasts physically consistent and efficient.
 
-</br>
-
 {{< quote-blue >}}
-In Part 3, we'll look at another application of diffusion models for precipitation retrieval from satellite images -- stay tuned!
+In [Part 4]({{< relref "../Diffusion-Models-part4/index.md" >}}), we'll look at another application of diffusion models for precipitation monitoring from satellite imagery -- stay tuned!
 {{< /quote-blue >}}
+
+<center> <span style="letter-spacing: 1rem;">•</span> </center>
+<center> <span style="letter-spacing: 1rem;">• •</span> </center>
 
 ## References
 [^Price2024]: Price, I., Sanchez-Gonzalez, A., Alet, F. et al. [Probabilistic weather forecasting with machine learning](https://www.nature.com/articles/s41586-024-08252-9). *Nature* **637**, 84--90 (2025).
