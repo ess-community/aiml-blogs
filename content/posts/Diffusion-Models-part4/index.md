@@ -1,9 +1,9 @@
 ---
 title: "Diffusion Models (Part 4): Precipitation Estimation from Satellite Imagery"
 description: "AI is transforming how we observe and understand Earth’s water cycle."
-summary: "From orbit to rainfall: how AI helps us understand Earth’s water cycle."
+summary: "From orbit to rainfall -- how AI helps us understand Earth’s water cycle."
 date: 2026-02-06
-tags: ["Diffusion Model", "Precipitation Retrieval", "Satellites", "GPM"]
+tags: ["Diffusion Model", "Precipitation Retrieval", "Satellite Imagers", "DifERS"]
 author: "Clement Guilloteau, Efi Foufoula-Georgiou, Phong Le"
 series: ["AI-ML"]
 showToc: true
@@ -11,7 +11,6 @@ TocOpen: false
 draft: false
 hidemeta: false
 comments: true
-disableHLJS: true # to disable highlightjs
 disableShare: false
 disableHLJS: false
 hideSummary: false
