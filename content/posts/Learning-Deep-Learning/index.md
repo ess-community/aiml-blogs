@@ -40,11 +40,11 @@ editPost:
 
 ## Introduction
 
-The goal of the bootcamp was to help participants become familiar with the full range of AI/ML methods applicable to their research and understand the importance of data curation for AI/ML. Each lesson was divided into understanding the method and hands-on activity portions, with each hands-on activity featuring an Earth science-relevant domain application of AI/ML in heavily commented jupyter notebooks. 
+A bootcamp was developed for Earth Scientists all about helping them get comfortable with the wide range of artificial intelligence and machine learning (ML/AI) methods that can power their research. Each lesson had two parts. First, a walk through of the method, followed by a hands-on activity using Earth science examples in Jupyter notebooks packed with helpful comments. 
 
-In addition to the basics of ML and popular [deep learning](https://www.projectpro.io/article/deep-learning-architectures/996) techniques, there are also two sessions covered how to use the ML libraries `keras` and `pytorch`, which offer the tools to run these models and other useful resources. Fuller detail on the bootcamp and a follow-on hackathon can be found in our EOS article [[Goldberger et al 2025](https://eos.org/science-updates/a-two-step-approach-to-training-earth-scientists-in-ai)].
+In addition to the basics of ML and popular [deep learning](https://www.projectpro.io/article/deep-learning-architectures/996) techniques, two sessions also covered how to use the `keras` and `pytorch`, the go to libraries for running these models and other useful resources. The full story on the bootcamp and a follow-on hackathon can be found in our EOS article [[Goldberger et al 2025](https://eos.org/science-updates/a-two-step-approach-to-training-earth-scientists-in-ai)].
 
-Recently, the  bootcamp materials developed by PNNL scientists were updated for public release and made available on PNNL’s github [[IPID 33445, IR#373274](https://github.com/pnnl/AI_Modules_for_Earth_Science/tree/main)]. Each lesson folder contains a clearly ordered set of notebooks, a dedicated environment yaml file, datasets, and a PowerPoint which should be viewed first. 
+Here is the exciting news for you. The  bootcamp materials developed by PNNL scientists have been updated and are now publically available on PNNL’s github [[IPID 33445, IR#373274](https://github.com/pnnl/AI_Modules_for_Earth_Science/tree/main)]. Each lesson folder contains a clearly ordered set of notebooks, a dedicated environment yaml file, datasets, and a PowerPoint to start with. 
 
 A pre-lesson to the bootcamp not included in the github, introduction to python, was taught by Rob Hetland based on Texas A&M’s [python4geosciences](https://github.com/kthyng/python4geosciences) course covered syntax, data containers, basic logical control, reading and plotting data with `pandas` and `xarray`, georeferenced data and projections, and basic analysis techniques. 
 
@@ -79,7 +79,7 @@ Lesson 2 describes the concept of deep learning and covers shallow versus deep n
 ## Lesson 3️⃣: `TensorFlow` and `Keras` Library Packages
 *by Erol Cromwell*
 
-Lesson 3 provided an overview of the `TensorFlow` and `keras` library packages. `TensorFlow` is an end-to-end, open-source machine learning platform. For this lesson we focused on it’s python APIs. `keras` is a user interface for deep learning, dealing with layers, models, optimizers, loss functions, metrics, and more. `keras` makes `TensorFlow` simple and productive. 
+Lesson 3 provided an overview of the `TensorFlow` and `keras` library packages. `TensorFlow` is an end-to-end, open-source machine learning platform. For this lesson we focused on it’s python APIs (application programming interface). `keras` is a user interface for deep learning, dealing with layers, models, optimizers, loss functions, metrics, and more. `keras` makes `TensorFlow` simple and productive. 
 
 The example in lesson three sets up and trains a deep neural network model[^Cromwell:2021] using `keras` to estimate five subsurface (soil and geologic) permeability parameters from simulated watershed discharge time series data. This is an example of inverse modeling: using observed data (stream discharge) to infer causal factors (subsurface permeability). Subsurface permeability is one of the key parameters that determine the subsurface flow and transport processes in watershed models. However, this parameter is difficult and expensive to measure directly at the spatial extent and resolution required by fully distributed, physics-based watershed model. The linkages between permeability and stream flow provide a new opportunity to estimate subsurface permeability from stream flow monitoring data that are made available through monitoring networks. The data was generated using ensemble forward simulations of the Rock Creek watershed in Colorado using the Advanced Terrestrial Simulator (ATS).
 
@@ -108,13 +108,12 @@ In lesson 4, the keras pipeline is extended to include CNN along with hyperparam
 ## Lesson 5️⃣: Generative Adversarial Networks
 *by Andrew Geiss and Melissa Swift*
 
-Lesson five defines generative models, their implementation, identifies practical concerns, describes combined loss functions, and discusses ethical concerns for generative ML. GAN are ML models that generate realistic data samples. The first example is the classic number generator, MNIST. 
-The second demonstration is atmospheric science oriented and uses GAN to generate realistic samples of true color MODIS imagery. The training image samples are taken from a dataset of labeled marine cloud regimes and contain primarily low-level clouds over the subtropical oceans. GANS provide highly realistic but potentially false outputs, this leads to obvious ethical concerns in environmental science. This presentation deliberates ethical ML stewardship.
+Lesson five defines generative models, their implementation, identifies practical concerns, describes combined loss functions, and discusses ethical concerns for generative ML. GAN are ML models that generate realistic data samples. The first example is the classic number generator, MNIST. The second demonstration is atmospheric science oriented and uses GAN to generate realistic samples of true color MODIS imagery. The training image samples are taken from a dataset of labeled marine cloud regimes and contain primarily low-level clouds over the subtropical oceans. GANS provide highly realistic but potentially false outputs, this leads to obvious ethical concerns in environmental science. This presentation deliberates ethical ML stewardship.
 
 {{< figure
   src="https://i.ibb.co/hFVsxPgS/Picture5.png"
   alt="Nine tiles each with an image of a cloud from satellite generated by a GAN"
-  caption="After 100,000 training updates the GAN can produce extremely convincing MODIS imagery. It generates a variety of cloud morphologies and even includes features like sunlight and shadow."
+  caption="After 100,000 training updates the GAN can produce extremely convincing MODIS imagery (photos of earth and earth's features, such as clouds, taken from the terra and aqua satellites). It generates a variety of cloud morphologies and even includes features like sunlight and shadow."
 >}}
 
 <center> <span style="letter-spacing: 1rem;">• • •</span> </center>
@@ -122,7 +121,7 @@ The second demonstration is atmospheric science oriented and uses GAN to generat
 ## Lesson 6️⃣: Pytorch Library Package
 *by Sally Wang*
 
-This lesson covers the basics and key elements of pytorch in comparison with keras. In the hands on tutorial, annual mean meterology from MERRA2 is used to predict the annual surface PM2.5 over China during 2000-2017. The goal of this project is to see whether we can use annual meteorology (surface temperature, RH, precipitation, surface pressure, 10-m U wind and 10-m V wind) to predict/explain annual surface PM2.5 concentration. 
+This lesson covers the basics and key elements of pytorch in comparison with keras. In the hands on tutorial, annual mean meterology from MERRA2, a NASA global reanalysis dataset based on space-based observations (Modern-Era Retrospective analysis for Research and Applications), is used to predict the annual surface PM2.5 over China during 2000-2017. The goal of this project is to see whether we can use annual meteorology (surface temperature, RH, precipitation, surface pressure, 10-m U wind and 10-m V wind) to predict/explain annual surface PM2.5 concentration. 
 
 To challenge bootcamp participants, this exercise asks participants to try and add a 1-D convolutional layer (with kernel_size of 2, no padding, stride=1) before the fully connected layer to try to see whether the model performance improves after including a convolutional layer. If not, why?
 
@@ -151,7 +150,7 @@ Lesson 7 discusses sequence modeling, identifies the purpose of RNN, when to use
 
 ## What are the Next Steps
 
-The success of the two-step approach speaks for itself. As of January 2026, three of the hackathon teams (made up of both participants and instructors from the bootcamp) published their projects. Li _et al.,_ (2024)[^Li:2024] describes a data-driven framework for predicting aerosol-cloud interactions. Another team used a CNN model to identify open- versus closed-cell atmospheric convection in radar data, which helps explain distributions of clouds and rainfall, published in JGR Machine Learning[^Tian:2025] and received a highlight in EOS [[Folini 2025](https://eos.org/editor-highlights/machine-learning-provides-a-new-perspective-of-low-level-clouds)]. A third project also compared different classification models on classifying thermodynamic cloud phase in AMT[^Goldberger:2025]. PNNL reported an uptick in proposals from its Earth scientists for various internal funding opportunities focused on leveraging AI/ML methods, signifying steps towards independent AI driven research.  
+The success of the two-step approach speaks for itself. As of January 2026, three of the hackathon teams (made up of both participants and instructors from the bootcamp) published their projects. Li _et al.,_ (2024)[^Li:2024] describes a data-driven framework for predicting aerosol-cloud interactions. Another team used a CNN model to identify open- versus closed-cell atmospheric convection in radar data, which helps explain distributions of clouds and rainfall, published in Journal of Geophysical Research (JGR) Machine Learning[^Tian:2025] and received a highlight in EOS [[Folini 2025](https://eos.org/editor-highlights/machine-learning-provides-a-new-perspective-of-low-level-clouds)]. A third project also compared different classification models on classifying thermodynamic cloud phase in Atmospheric Measurement Technology (AMT) [^Goldberger:2025]. PNNL reported an uptick in proposals from its Earth scientists for various internal funding opportunities focused on leveraging AI/ML methods, signifying steps towards independent AI driven research.  
 
 Whether organizing workforce training or learning ML/AI independently, success with AI like any skill takes time, but the effort is worthwhile, and a collaborative, cross-disciplinary environment accelerates such learning. Our two-step approach can rather be described as a pyramid, building a strong foundation leading to independence in stages: 
 1.	**Community (Foundation)**:
@@ -169,6 +168,15 @@ At the top of the pyramid is independence: the ability to analyze results critic
   caption="Schematic of AI learning success. Generated by OpenAI with input from Lexie Goldberger"
   width=100%
 >}}
+
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
+
+## Summary
+
+- Learning domain specific ML/AI methods to apply to your research can be daunting. Bootcamp learning modules can help.
+- Community resources are a valuable asset when learning a new skill, including ML/AI. 
+- The bootcamp modules PNNL released cover 7 ML/AI methodologies applicable to Earth Science research, each with a python tutorial available on github.
+- When applying these methods for the first time, be mindful of the question to solve, the appropriate methodology, and data curation, as these are known challenge points.
 
 <center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
