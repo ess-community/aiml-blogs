@@ -1,9 +1,9 @@
 ---
 title: "Learning the Deep Learning for Earth System Research"
-description: "Learning new research methods can feel overwhelming - especially when it comes to artificial intelligence (AI) and machine learning (ML). To help Earth scientists get started, the Pacific Northwest National Laboratory (PNNL) created an AI/ML bootcamp. The materials are now publicly available and can help anyone interested in applying AI to Earth system research."
+description: "Learning new research methods can feel overwhelming - especially when it comes to Artificial Intelligence (AI) and machine learning (ML). To help Earth scientists get started, the Pacific Northwest National Laboratory (PNNL) created an AI/ML bootcamp. The materials are now publicly available and can help anyone interested in applying AI to Earth system research."
 summary: "Seven modules were released by PNNL to demonstrate a broad display of AI/ML application to the Earth Sciences, a useful tool for scientists looking to apply more AI/ML methodologies in their research."
 date: 2026-02-13 # if you set date in the future, it will not show in the blog. Put past date during writing post
-tags: ["Earth Science", "Bootcamp","Machine Learning","Education","python","neural networks","random forrest", "deep learning", "satellite imagery","hydrology", "PM2.5","ENSO forecasting"]
+tags: ["Earth science", "Bootcamp","machine learning","Education","python","neural networks","random forest", "deep learning", "satellite imagery","hydrology", "PM2.5","ENSO forecasting"]
 author: ["Lexie Goldberger"]
 series: ["AI-ML"]
 showToc: true
@@ -40,9 +40,9 @@ editPost:
 
 ## Introduction
 
-A bootcamp was developed for Earth Scientists all about helping them get comfortable with the wide range of artificial intelligence and machine learning (ML/AI) methods that can power their research. Each lesson had two parts. First, a walk through of the method, followed by a hands-on activity using Earth science examples in Jupyter notebooks packed with helpful comments. 
+A bootcamp was developed for Earth Scientists all about helping them get comfortable with the wide range of artificial intelligence and machine learning (AI/ML) methods that can power their research. Each lesson had two parts. First, a walk through of the method, followed by a hands-on activity using Earth science examples in Jupyter notebooks packed with helpful comments. 
 
-In addition to the basics of ML and popular [deep learning](https://www.projectpro.io/article/deep-learning-architectures/996) techniques, two sessions also covered how to use the `keras` and `pytorch`, the go to libraries for running these models and other useful resources. The full story on the bootcamp and a follow-on hackathon can be found in our EOS article [[Goldberger et al 2025](https://eos.org/science-updates/a-two-step-approach-to-training-earth-scientists-in-ai)].
+In addition to the basics of ML and popular [deep learning](https://www.projectpro.io/article/deep-learning-architectures/996) techniques, two sessions also covered how to use the `keras` and `pytorch`, the go to libraries for running these models and other useful resources. The full story on the bootcamp and a follow-on hackathon can be found in our EOS article[^Goldberger:2025eos].
 
 Here is the exciting news for you. The  bootcamp materials developed by PNNL scientists have been updated and are now publically available on PNNL’s github [[IPID 33445, IR#373274](https://github.com/pnnl/AI_Modules_for_Earth_Science/tree/main)]. Each lesson folder contains a clearly ordered set of notebooks, a dedicated environment yaml file, datasets, and a PowerPoint to start with. 
 
@@ -94,7 +94,7 @@ The example in lesson three sets up and trains a deep neural network model[^Crom
 ## Lesson 4️⃣: Convolutional Neural Networks
 *by Maruti Mudunuru, Sam Dixon, Robin Cosby, & Andrew Geiss*
 
-In lesson 4, the keras pipeline is extended to include CNN along with hyperparameter tuning using KerasTuner for CNNs. Participants learned about the convolutional neural networks and its components, the difference between CNNs and DNNs, and also hyperparameter tuning to find optimal DNN and CNN architectures. The hands on exercise teaches how to develop a workflow to load, visualize, pre-process, and develop a CNN models revisiting the same synthetic data and SWAT model used in lesson 2.
+In lesson 4, the `keras` pipeline is extended to include CNN along with hyperparameter tuning using KerasTuner for CNNs. Participants learned about the convolutional neural networks and its components, the difference between CNNs and DNNs, and also hyperparameter tuning to find optimal DNN and CNN architectures. The hands on exercise teaches how to develop a workflow to load, visualize, pre-process, and develop a CNN models revisiting the same synthetic data and SWAT model used in lesson 2.
 
 {{< figure
   src="https://i.ibb.co/CpsfVwDB/Picture4.png"
@@ -108,7 +108,7 @@ In lesson 4, the keras pipeline is extended to include CNN along with hyperparam
 ## Lesson 5️⃣: Generative Adversarial Networks
 *by Andrew Geiss and Melissa Swift*
 
-Lesson five defines generative models, their implementation, identifies practical concerns, describes combined loss functions, and discusses ethical concerns for generative ML. GAN are ML models that generate realistic data samples. The first example is the classic number generator, MNIST. The second demonstration is atmospheric science oriented and uses GAN to generate realistic samples of true color MODIS imagery. The training image samples are taken from a dataset of labeled marine cloud regimes and contain primarily low-level clouds over the subtropical oceans. GANS provide highly realistic but potentially false outputs, this leads to obvious ethical concerns in environmental science. This presentation deliberates ethical ML stewardship.
+Lesson five defines generative models, their implementation, identifies practical concerns, describes combined loss functions, and discusses ethical concerns for generative ML. GANs are ML models that generate realistic data samples. The first example is the classic number generator, MNIST. The second demonstration is atmospheric science oriented and uses GAN to generate realistic samples of true color MODIS imagery. The training image samples are taken from a dataset of labeled marine cloud regimes and contain primarily low-level clouds over the subtropical oceans. GANS provide highly realistic but potentially false outputs, this leads to obvious ethical concerns in environmental science. This presentation deliberates ethical ML stewardship.
 
 {{< figure
   src="https://i.ibb.co/hFVsxPgS/Picture5.png"
@@ -150,9 +150,9 @@ Lesson 7 discusses sequence modeling, identifies the purpose of RNN, when to use
 
 ## What are the Next Steps
 
-The success of the two-step approach speaks for itself. As of January 2026, three of the hackathon teams (made up of both participants and instructors from the bootcamp) published their projects. Li _et al.,_ (2024)[^Li:2024] describes a data-driven framework for predicting aerosol-cloud interactions. Another team used a CNN model to identify open- versus closed-cell atmospheric convection in radar data, which helps explain distributions of clouds and rainfall, published in Journal of Geophysical Research (JGR) Machine Learning[^Tian:2025] and received a highlight in EOS [[Folini 2025](https://eos.org/editor-highlights/machine-learning-provides-a-new-perspective-of-low-level-clouds)]. A third project also compared different classification models on classifying thermodynamic cloud phase in Atmospheric Measurement Technology (AMT) [^Goldberger:2025]. PNNL reported an uptick in proposals from its Earth scientists for various internal funding opportunities focused on leveraging AI/ML methods, signifying steps towards independent AI driven research.  
+The success of the two-step approach speaks for itself. As of January 2026, three of the hackathon teams (made up of both participants and instructors from the bootcamp) published their projects. Li _et al.,_ (2024)[^Li:2024] describes a data-driven framework for predicting aerosol-cloud interactions. Another team used a CNN model to identify open- versus closed-cell atmospheric convection in radar data, which helps explain distributions of clouds and rainfall, published in Journal of Geophysical Research (JGR) Machine Learning[^Tian:2025] and received a highlight in EOS[^Folini:2025]. A third project also compared different classification models on classifying thermodynamic cloud phase in Atmospheric Measurement Technology (AMT) [^Goldberger:2025]. PNNL reported an uptick in proposals from its Earth scientists for various internal funding opportunities focused on leveraging AI/ML methods, signifying steps towards independent AI driven research.  
 
-Whether organizing workforce training or learning ML/AI independently, success with AI like any skill takes time, but the effort is worthwhile, and a collaborative, cross-disciplinary environment accelerates such learning. Our two-step approach can rather be described as a pyramid, building a strong foundation leading to independence in stages: 
+Whether organizing workforce training or learning AI/ML independently, success with AI like any skill takes time, but the effort is worthwhile, and a collaborative, cross-disciplinary environment accelerates such learning. Our two-step approach can rather be described as a pyramid, building a strong foundation leading to independence in stages: 
 1.	**Community (Foundation)**:
 A strong community is essential. This includes having peers, mentors, and collaborators you can turn to for questions, feedback, and shared learning. This is finding your machine learning experts, data scientists, and domain scientists interested in the next frontier of AI/ML.
 2.	**AI/ML Literacy**:
@@ -173,9 +173,9 @@ At the top of the pyramid is independence: the ability to analyze results critic
 
 ## Summary
 
-- Learning domain specific ML/AI methods to apply to your research can be daunting. Bootcamp learning modules can help.
-- Community resources are a valuable asset when learning a new skill, including ML/AI. 
-- The bootcamp modules PNNL released cover 7 ML/AI methodologies applicable to Earth Science research, each with a python tutorial available on github.
+- Learning domain specific AI/ML methods to apply to your research can be daunting. Bootcamp learning modules can help.
+- Community resources are a valuable asset when learning a new skill, including AI/ML. 
+- The bootcamp modules PNNL released cover 7 AI/ML methodologies applicable to Earth science research, each with a python tutorial available on Github.
 - When applying these methods for the first time, be mindful of the question to solve, the appropriate methodology, and data curation, as these are known challenge points.
 
 <center> <span style="letter-spacing: 1rem;">• • •</span> </center>
@@ -185,3 +185,5 @@ At the top of the pyramid is independence: the ability to analyze results critic
 [^Tian:2025]: Tian, J., Comstock, J., Geiss, A., Wu, P., Silber, I., Zhang, D., et al. (2025). [Mesoscale cellular convection detection and classification using convolutional neural networks: Insights from long-term observations at ARM Eastern North Atlantic site](https://doi.org/10.1029/2024JH000486). _Journal of Geophysical Research: Machine Learning and Computation_, 2, e2024JH000486.
 [^Goldberger:2025]: Goldberger, L., Levin, M., Harris, C., Geiss, A., Shupe, M. D., and Zhang, D.: [Classifying thermodynamic cloud phase using machine learning models](https://doi.org/10.5194/amt-18-5393-2025), *Atmos. Meas. Tech.*, 18, 5393–5414, 2025.
 [^Cromwell:2021]: Cromwell, E., Shuai, P., Jiang, P., Coon, E.T., Painter, S.L., Moulton, J.D., Lin, Y. and Chen, X., 2021. [Estimating watershed subsurface permeability from stream discharge data using deep neural networks](https://www.frontiersin.org/journals/earth-science/articles/10.3389/feart.2021.613011/full). *Frontiers in Earth Science*, 9, p.613011.
+[^Goldberger:2025eos]: Goldberger, L., Jiang, P., Chakraborty, T., Geiss, A., & Chen, X. (2025). [A Two-Step Approach to Training Earth Scientists in AI](https://eos.org/science-updates/a-two-step-approach-to-training-earth-scientists-in-ai). *Eos*, 106(PNNL-SA--203739).
+[^Folini:2025]: Folini, D. (2025). [Machine Learning Provides a New Perspective of Low-level Clouds](https://eos.org/editor-highlights/machine-learning-provides-a-new-perspective-of-low-level-clouds). *Eos*, 106(PNNL-SA--203739).
