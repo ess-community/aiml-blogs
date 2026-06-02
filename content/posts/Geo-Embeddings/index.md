@@ -26,7 +26,6 @@ math: true
 cover:
     image: "images/global_embeddings.png"
     caption: "Three dimensions of Google's Satellite Embedding dataset (produced by AlphaEarth Foundations) for 2024 visualized as an RGB image. Image Source: [Medium Post by Google Earth](https://medium.com/google-earth/ai-powered-pixels-introducing-googles-satellite-embedding-dataset-31744c1f4650)"
-    # caption: "Image source: Wildflow"
     relative: false # when using page bundles set this to true
     hidden: false          # don't hide globally
     hiddenInList: true     # hide in list pages
@@ -37,20 +36,26 @@ editPost:
     appendFilePath: true # to append file path to Edit link
 ---
 
+{{< quote-red >}}
 **Note:** If you haven’t already, I recommend checking out the *[“Foundation Models for the Earth System: AI that Understands our Planet”](https://esscommunity.org/aiml-blogs/posts/earth-foundational-models-part1/)* post by Phong Le, which introduces the types of models that create these datasets.
+{{< /quote-red >}}
+
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## What are Geospatial Embeddings? 
-In the field of satellite remote sensing, advances in artificial intelligence (AI) are reshaping how we search, process, and analyze Earth Observation (EO) data. The 2020s have seen a breakthrough with the rise of **Geospatial Foundation Models (GFMs)**: large neural networks pre-trained on massive catalogs of satellite data and often on many other geospatial data sources.
+In the field of satellite remote sensing, advances in artificial intelligence (AI) are reshaping how we search, process, and analyze *Earth Observation (EO)* data. The 2020s have seen a breakthrough with the rise of **Geospatial Foundation Models (GFMs)**: large neural networks pre-trained on massive catalogs of satellite data and often on many other geospatial data sources.
 
-Using **self-supervised learning** techniques, these models learn general-purpose representations of Earth’s surface. Initially, many applications of these generalist models have involved **fine-tuning**: customizing the model with your own training data for a specific task, like mapping all water in an image or detecting changes in croplands from year to year. This involves updating the model weights to be more specific to your application.
+Using [*self-supervised learning* (SSL)]({{< relref "../earth-foundational-models-part1/index.md#self-supervised-learning" >}}) techniques, these models learn general-purpose representations of Earth’s surface. Initially, many applications of these generalist models have involved [*fine-tuning*]({{< relref "../earth-foundational-models-part1/index.md#fine-tuning" >}}): customizing the model with your own training data for a specific task, like mapping all water in an image or detecting changes in croplands from year to year. This involves updating the model weights to be more specific to your application.
 
 But beyond their ability to be fine-tuned for specific downstream applications, many of these models also produce <mark class="green">*embeddings*</mark>.
 
-><mark class="green"> ***Embeddings*** are an output of foundation model pre-training. At their most basic level, they are vectors: sequences of numbers that represent more complex data. An embedding can compress months or years of multi-source satellite and geospatial data into a compact numerical representation for a single location. </mark>
+><mark class="green"> ***Embeddings*** are an output of foundation model [pre-training]({{< relref "../earth-foundational-models-part1/index.md#pre-training" >}}). At their most basic level, they are vectors: sequences of numbers that represent more complex data. An embedding can compress months or years of multi-source satellite and geospatial data into a compact numerical representation for a single location. </mark>
 
-I once heard embeddings jokingly compared to a parent bird feeding its young: the model has already collected and broken down the raw data, then hands us something easier to digest. Crude, but it gets the point across. In practice, embeddings compress large, complex geospatial datasets, often combining many data types, sensors, and time periods, into a few numbers. That makes them easier to download, analyze, and plug into workflows than if we had to collect, process, and stitch together all the source data ourselves. Moreover, these embeddings exist in a shared **latent space**, where similar places tend to be closer together numerically. 
+I once heard embeddings jokingly compared to a parent bird feeding its young: the model has already collected and broken down the raw data, then hands us something easier to digest. Crude, but it gets the point across. 
 
-><mark> *Latent Space is a compressed, abstract representation where high-dimensional data (like images or text) is encoded into a lower-dimensional mathematical space that captures key features and patterns.* </mark>
+In practice, embeddings compress large, complex geospatial datasets, often combining many data types, sensors, and time periods, into a few numbers. That makes them easier to download, analyze, and plug into workflows than if we had to collect, process, and stitch together all the source data ourselves. Moreover, these embeddings exist in a shared <mark>*latent space*</mark>, where similar places tend to be closer together numerically. 
+
+><mark> ***Latent space** is a compressed, abstract representation where high-dimensional data (like images or text) is encoded into a lower-dimensional mathematical space that captures key features and patterns.* </mark>
 
 
 {{< figure
@@ -59,18 +64,26 @@ I once heard embeddings jokingly compared to a parent bird feeding its young: th
 >}}
 
 
-Before moving on, it’s important to distinguish between GFMs and embeddings. A GFM is something you run. It is the architecture plus the trained weights, and using it typically means setting up an inference pipeline, feeding in input data, and often using GPU resources. Embeddings, by contrast, are a static, precomputed data product: a “frozen” output generated by the GFM[^Fang2026]. That is one of their biggest advantages. Embeddings separate the heavy computational cost of running a large model from the end user, making the data much easier to digest and plug into downstream workflows. Many GFM developers are now distributing embeddings from their models as a standalone dataset. Of course, you can also compute embeddings yourself with a GFM, especially if you need a specific time period or custom input data. 
+Before moving on, it’s important to distinguish between GFMs and embeddings. 
+- A GFM is something you run. It is the architecture plus the trained weights, and using it typically means setting up an inference pipeline, feeding in input data, and often using GPU resources. 
+- Embeddings, by contrast, are a static, precomputed data product: a “frozen” output generated by the GFM[^Fang2026]. That is one of their biggest advantages. Embeddings separate the heavy computational cost of running a large model from the end user, making the data much easier to digest and plug into downstream workflows. 
 
+Many GFM developers are now distributing embeddings from their models as a standalone dataset. Of course, you can also compute embeddings yourself with a GFM, especially if you need a specific time period or custom input data. 
 
-<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
+</br>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
-### Embeddings as a Data Product
+## Embeddings as a Data Product
 
 So what does an embedding actually look like? 
 
-To illustrate this, I’m going to use Google’s AlphaEarth embedding dataset [^Brown2025], which is publicly available on [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL) and on [Source Cooperative](https://source.coop/tge-labs/aef-mosaic). Below, you can see a visualization of these embeddings for a 10 km area in Alaska’s Arctic coastal plain, a region dotted with wetlands and lakes. Google’s AlphaEarth embeddings are distributed at an annual time scale and 10-meter pixel resolution. For each 10-meter pixel, in each year, the dataset provides a 64-dimensional vector, in other words, 64 numbers that summarize what the model has learned about that location. 
+To illustrate this, I’m going to use Google’s AlphaEarth embedding dataset [^Brown2025], which is publicly available on [Google Earth Engine](https://developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL) and on [Source Cooperative](https://source.coop/tge-labs/aef-mosaic). Below, you can see a visualization of these embeddings for a 10 km area in Alaska’s Arctic coastal plain, a region dotted with wetlands and lakes. 
 
-To someone familiar with satellite data, this basically looks like an image with 64 bands when downloaded as a GeoTIFF, except instead of each band representing different wavelengths of the electromagnetic spectrum (red, green, blue, etc.), each band is part of the model’s learned representation of that place. These embeddings are meant to be used in place of more conventional image composites and engineered features like spectral indices in downstream models. But, similar to the GFMs that produce them, they are generalist datasets. There currently isn’t one embedding dataset specifically meant for hydrology, another for vegetation, and so on. Instead, these datasets are designed to generalize across a wide variety of applications and provide a strong base from which smaller, lighter task-specific models can be trained at a fraction of the time and cost compared to fine-tuning the GFM itself.
+Google’s AlphaEarth embeddings are distributed at an annual time scale and 10-meter pixel resolution. For each 10-meter pixel, in each year, the dataset provides a 64-dimensional vector, in other words, 64 numbers that summarize what the model has learned about that location. 
+
+To someone familiar with satellite data, this basically looks like an image with 64 bands when downloaded as a GeoTIFF, except instead of each band representing different wavelengths of the electromagnetic spectrum (red, green, blue, etc.), each band is part of the model’s learned representation of that place. 
+
+These embeddings are meant to be used in place of more conventional image composites and engineered features like spectral indices in downstream models. But, similar to the GFMs that produce them, they are generalist datasets. There currently isn’t one embedding dataset specifically meant for hydrology, another for vegetation, and so on. Instead, these datasets are designed to generalize across a wide variety of applications and provide a strong base from which smaller, lighter task-specific models can be trained at a fraction of the time and cost compared to fine-tuning the GFM itself.
 
 
 {{< figure
@@ -78,64 +91,76 @@ To someone familiar with satellite data, this basically looks like an image with
     caption="**Visualizing Google's AlphaEarth Embeddings:** an example of Google’s AlphaEarth 64-dimensional embeddings for a small area in Alaska’s Arctic coastal plain with clear streams, lakes, and ponds. Data values are in the range of -1 to 1 for each dimension, while each plot shown in this figure is stretched to the min and max of values contained within that subset to clearly visualize the patterns that each dimension highlights."
 >}}
 
-Many models that produce embeddings are trained using a variety of geospatial datasets, some of which are shown in the table below. A key thing to note is that there is a difference between the data a model learns from during training and the data it actually needs at inference time. Most end users will not need to compute embeddings themselves, but it is useful to understand the logic behind this distinction.
-For instance, Google’s AlphaEarth learns from a broad range of inputs, including Sentinel-1, Sentinel-2, Landsat, ERA5 climate data, GEDI vegetation height, L-band radar from PALSAR-2, and others. But once trained, the model does not need all of that information to produce an embedding. At inference time, it only needs Sentinel-1, Sentinel-2, and Landsat 8/9 imagery to generate an annual embedding.
+Many models that produce embeddings are trained using a variety of geospatial datasets, some of which are shown in Table 1 below. A key thing to note is that there is a difference between the data a model learns from during (pre-)training and the data it actually needs at inference time. 
 
-
-<div style="border: 2px solid #708090; border-radius: 16px; padding: 0px 16px; margin: 1em auto; width: 70%;">
+<div style="border: 2px solid #708090; border-radius: 16px; padding: 0px 16px; margin: 1em auto; width: 80%;">
 <small>
 {{< quote-red >}}
-***Pre-Training** teaches the model what Earth looks like* </br>
+***Pre-Training:** teaches the model what Earth looks like* </br>
 {{< /quote-red >}}
 <div style="margin-top: -18px;"> </div>
 {{< quote-blue >}}
-***Inference** asks the model to apply that knowledge to new data*
+***Inference:** asks the model to apply that knowledge to new data*
 {{< /quote-blue >}}
 <div style="margin-top: -4px;"> </div>
 </small>
 </div>
 
+Most end users will not need to compute embeddings themselves, but it is useful to understand the logic behind this distinction.
+For instance, Google’s AlphaEarth learns from a broad range of inputs, including [Sentinel-1/2](https://www.esa.int/Applications/Observing_the_Earth/Copernicus/The_Sentinel_missions), [Landsat](https://science.nasa.gov/mission/landsat/), [ERA5 climate data](https://cds.climate.copernicus.eu/), [GEDI vegetation height](https://svs.gsfc.nasa.gov/4950), L-band radar from [PALSAR-2](https://www.eorc.jaxa.jp/ALOS-2/en/about/palsar2.htm), and others. But once trained, the model does not need all of that information to produce an embedding. At inference time, it only needs Sentinel-1/2, and Landsat 8/9 imagery to generate an annual embedding.
+
+
 This distinction matters, especially when choosing a specific embedding dataset to work with. Suppose we want to map flooded areas beneath tree canopy, which is notoriously difficult to detect with optical imagery or C-band radar alone. Because AlphaEarth saw L-band radar during training, a data source that can better penetrate canopy cover, it may have learned useful representations associated with inundation under trees. At inference time, even when only optical and C-band inputs are provided, the model may still benefit from those learned relationships, producing embeddings that carry richer context than the inference inputs alone might suggest.
 
 But this has limits. The model cannot recreate L-band-specific signals that were never part of the input. Having the learned context is powerful, but it is not the same as having the raw measurement.
 
-
-| **Model** | **Training Data** | **Inference Data** | **Type (Patch vs Pixel)** | **Dimensions** | **Source** |
-|--------------|-----------|-------------------------|------------------|--------------|-----------|
-| Google AlphaEarth | Sentinel-1/2, Copernicus DEM, ERA5, Landsat, GEDI, GRACE, NLCD, ALOS PALSAR ScanSAR, Wikipedia articles, GBIF | Sentinel-1/2 and Landsat | Pixel | 64 | [^Brown2025] |
-| OlmoEarth | Sentinel-1/2, Landsat, WorldCover, OpenStreetMap, CDL, WorldCereal, SRTM, Canopy Height | Sentinel-1/2, Landsat | Patch | Varies by model version (128-1024) | [^Herzog2025] |
-| TESSERA | Sentinel-1/2 | Sentinel-1/2 | Pixel | 128 | [^Feng2025]|
-| Clay | Landsat, Sentinel-1/2, NAIP, LIN, MODIS | Sentinel-2/Sensor Agnostic | Patch | Varies by model version (768-1024) | [^ClayWebsite] |
 <p align="center"><em>Table 1. Example embedding datasets and their specifications.</em></p>
+<small>
 
+| **Model** | **Training Data** | **Inference Data** | **Type** | **Dimensions** |
+|--------------|-----------|-------------------------|------------------|--------------|
+| Google AlphaEarth[^Brown2025] | Sentinel-1/2, Copernicus DEM, ERA5, Landsat, GEDI, GRACE, NLCD, ALOS PALSAR ScanSAR, Wikipedia articles, GBIF | Sentinel-1/2 and Landsat | Pixel | 64 |
+| OlmoEarth[^Herzog2025] | Sentinel-1/2, Landsat, WorldCover, OpenStreetMap, CDL, WorldCereal, SRTM, Canopy Height | Sentinel-1/2, Landsat | Patch | Varies by model version (128-1024) |
+| TESSERA[^Feng2025] | Sentinel-1/2 | Sentinel-1/2 | Pixel | 128 |
+| Clay[^ClayWebsite] | Landsat, Sentinel-1/2, NAIP, LIN, MODIS | Sentinel-2/Sensor Agnostic | Patch | Varies by model version (768-1024) |
 
-<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
+</small>
 
-><mark class="green"> Embedding datasets also vary in how many **dimensions** each vector has — basically, how many numbers are used to represent each location. </mark>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
-AlphaEarth produces a 64-dimensional vector, while OlmoEarth’s largest model produces an embedding dataset with a 1024-dimensional vector, and other models use still different sizes. But bigger does not always mean better. More dimensions do not necessarily mean more useful information; many embedding datasets contain a good amount of redundancy. For more on this topic, check out this nice [blog post](https://geospatialml.com/posts/compressing-earth-embeddings/) by Caleb Robinson and Isaac Corley. 
+><mark class="orange"> Embedding datasets also vary in how many **dimensions** each vector has — basically, how many numbers are used to represent each location. </mark>
 
-Embedding datasets also differ in whether they are **pixel-level** or **patch-level** embeddings. Many early embedding efforts focused on generating a single embedding for each image patch — analogous to an image chip, window, or tile. In other words, one vector might represent a spatial subset read from a larger image, often something like 256 x 256 pixels. Pixel-level embeddings, by contrast, assign an embedding vector to each pixel [^Fang2026],[^Klemmer2025].
+AlphaEarth produces a 64-dimensional vector, while OlmoEarth’s largest model produces an embedding dataset with a 1024-dimensional vector, and other models use still different sizes. But bigger does not always mean better. More dimensions do not necessarily mean more useful information; many embedding datasets contain a good amount of redundancy. 
+
+{{< quote-blue >}}
+For more on this topic, check out this nice [blog post](https://geospatialml.com/posts/compressing-earth-embeddings/) by Caleb Robinson and Isaac Corley. 
+{{< /quote-blue >}}
+
+</br>
+
+Embedding datasets also differ in whether they are <mark class="purple">**pixel-level**</mark> or <mark class="green">**patch-level**</mark> embeddings. Many early embedding efforts focused on generating a single embedding for each image patch — analogous to an image chip, window, or tile. In other words, one vector might represent a spatial subset read from a larger image, often something like 256 x 256 pixels. Pixel-level embeddings, by contrast, assign an embedding vector to each pixel [^Fang2026],[^Klemmer2025].
 
 
 <div style="border: 2px solid #708090; border-radius: 16px; padding: 0px 16px; margin: 1em auto; width: 80%;">
 <small>
-{{< quote-green >}}
-***Patch Embedding** one vector represents a whole image chip/tile/window.* </br>
-{{< /quote-green >}}
-<div style="margin-top: -18px;"> </div>
 {{< quote-purple >}}
 ***Pixel Embedding** one vector represents each pixel.*
 {{< /quote-purple >}}
+<div style="margin-top: -18px;"> </div>
+{{< quote-green >}}
+***Patch Embedding** one vector represents a whole image chip/tile/window.* </br>
+{{< /quote-green >}}
 <div style="margin-top: -4px;"> </div>
 </small>
 </div>
 
-
+</br>
 Patch embeddings are especially useful for search and retrieval tasks. By comparing the embedding for a reference location against embeddings from other places, we can find locations that resemble it. For example, in the image below, we can identify a bunch of agricultural fields near the Washington–Oregon border that look like circles due to a method known as center-pivot irrigation. Then, by calculating the similarity between embedding vectors, we can find other fields in the area with similar characteristics. 
+In this example, you can see that the areas matching the light tan appearance of our reference center-pivot circle pop up very clearly with a high similarity score. 
 
-In this example, you can see that the areas matching the light tan appearance of our reference center-pivot circle pop up very clearly with a high similarity score. For a nice tutorial on how to do this with Google’s AlphaEarth embeddings, check out this [link](https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-05-similarity-search).
-
+{{< quote-blue >}}
+For a nice tutorial on how to do this with AlphaEarth embeddings, check out this [link](https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-05-similarity-search).
+{{< /quote-blue >}}
 
 
 {{< figure
@@ -146,17 +171,17 @@ In this example, you can see that the areas matching the light tan appearance of
 
 This is also where embeddings are starting to be adopted in some exciting work combining them with other AI models. Search and retrieval workflows are increasingly being paired with Large Language Models (LLMs), making it possible to query the Earth with plain language. For example, “*show me all solar panels in California,*” or “*find all urban rivers in East Coast cities.*” Which is pretty neat compared to manually combing through imagery or maps yourself.
 
-The alternative to patch embeddings is pixel embeddings. These are often the better fit for fine-grained tasks like land cover mapping, flood mapping, or change detection. But “per-pixel” does not mean the model only knows about that one pixel. Depending on the origin model architecture, each pixel’s embedding can still carry information from its neighbors.
+The alternative to patch embeddings is pixel embeddings. These are often the better fit for fine-grained tasks like land cover mapping, flood mapping, or change detection. But “per-pixel” does not mean the model only knows about that one pixel. 
+Depending on the origin model architecture, each pixel’s embedding can still carry information from its neighbors. For example, Google’s AlphaEarth Foundations model produces pixel-based embeddings from a spatiotemporal data cube. It encodes not only a pixel’s behavior through time, but also information about the pixels around it, making the embeddings “spatially aware.” 
 
-For example, Google’s AlphaEarth Foundations model produces pixel-based embeddings from a spatiotemporal data cube. It encodes not only a pixel’s behavior through time, but also information about the pixels around it, making the embeddings “spatially aware.” Overall, if you need high-resolution, more spatially detailed information, pixel-level embeddings are probably going to be your go-to.
+Overall, if you need high-resolution, more spatially detailed information, pixel-level embeddings are probably going to be your go-to.
 That said, this is not a firm rule. You can use patch embeddings for segmentation-like tasks, and pixel embeddings for search and retrieval — the similarity example above used embeddings from AlphaEarth, which is pixel-based. The main thing is to understand what each dataset was optimized for and the spatial context that informs each embedding. In fact, many of the patch-based embedding datasets deliver their embeddings at the pixel-level.
 
-<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
-### Use Cases for Embeddings
+## Use Cases for Embeddings
 
 We’ve already outlined a few example use cases, but these datasets can support a wide variety of applications. 
-
 Here is a summary of some of the main ways embeddings are currently being used [^Klemmer2025]:
 
 
@@ -188,6 +213,8 @@ Here is a summary of some of the main ways embeddings are currently being used [
   </p>
 </div>
 
+</br>
+
 As these datasets become more explored and adopted into different domain applications, we expect this list of applications to grow as different communities test different datasets.
 
 {{< figure
@@ -196,14 +223,11 @@ As these datasets become more explored and adopted into different domain applica
     width=100%
 >}}
 
+<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
-<center> <span style="letter-spacing: 0.5rem;">• • •</span> </center>
+## Benefits & Challenges
 
-### Benefits & Challenges
-
-<p>
-  As with any new data source, there are benefits and challenges to working with geospatial embeddings as they exist today. 
-</p>
+As with any new data source, there are benefits and challenges to working with geospatial embeddings as they exist today. 
 
 <style>
 .embedding-section {
@@ -297,7 +321,6 @@ As these datasets become more explored and adopted into different domain applica
   </ul>
 </div>
 
-
 <center> <span style="letter-spacing: 1rem;">• • •</span> </center>
 
 ## Summary
@@ -307,29 +330,40 @@ As these datasets become more explored and adopted into different domain applica
 - They are powerful but not a catch-all; there are trade-offs around interpretability, temporal resolution, data size, transparency, and standardization.
 - Overall, embeddings offer a pathway to go from dense satellite archives and mixed geospatial datasets to scalable, AI-ready geospatial analytics.
 
+</br>
 <center> <span style="letter-spacing: 1rem;">• • •</span> </center>
+</br>
 
-## Other Useful Blog Posts if You Want to Learn More
-- [Geo-Embeddings 101](https://lgnd.ai/resources/geo-embeddings-101)
-- [How Embeddings Will Revolutionise the Geospatial Data Industry](https://www.sensat.co/news/embeddings-the-future-of-geospatial-data-intelligence)
-- [Geospatial Embeddings](https://newsletter.cecil.earth/p/geospatial-embeddings)
-- [Unlocking The Potential of Geospatial Embeddings](https://www.linkedin.com/pulse/unlocking-potential-geospatial-embeddings-made-with-clay-znbhe/?trackingId=s8bnZmZl5bIDCGodQt87lg%3D%3D)
-- [Unlocking the Earth: How AI is Changing the Way We Read Our Planet](https://lgnd.ai/resources/unlocking-the-earth-how-ai-is-changing-the-way-we-read-our)
-- [The Hitchhiker's Guide to Vector Embeddings in Machine Learning (for Geographers)](https://datacommons.substack.com/p/the-hitchhikers-guide-to-vector-embeddings)
-- [Geo Embeddings Explained: Understanding Locations as Vectors](https://geoawesome.com/geo-embeddings-explained-understanding-locations-as-vectors/)
-- [From Earth Pixels to GeoEmbeddings](https://www.linkedin.com/pulse/from-earth-pixels-geoembeddings-bruno-sanchez-andrade-nu%25C3%25B1o-h0sbf/?trackingId=QfvT5r7pSI2Og%2FGZfttBmQ%3D%3D)
-- [How to Actually Use Embeddings](https://christopherren.substack.com/p/how-to-actually-use-embeddings)
-- [AI-Powered Pixels: Introducing Google's Satellite Embedding Dataset](https://medium.com/google-earth/ai-powered-pixels-introducing-googles-satellite-embedding-dataset-31744c1f4650)
+<div style="border: 3px solid #b39ddb; border-radius: 16px; padding: 4px 16px; margin: 1em auto; width: 100%;">
+<small>
+<h3>📚 Other Useful Blog Posts if You Want to Learn More</h3>
+<ul style="padding-left: 3em;">
+  <li><a href="https://lgnd.ai/resources/geo-embeddings-101">Geo-Embeddings 101</a></li>
+  <li><a href="https://www.sensat.co/news/embeddings-the-future-of-geospatial-data-intelligence">How Embeddings Will Revolutionise the Geospatial Data Industry</a></li>
+  <li><a href="https://newsletter.cecil.earth/p/geospatial-embeddings">Geospatial Embeddings</a></li>
+  <li><a href="https://www.linkedin.com/pulse/unlocking-potential-geospatial-embeddings-made-with-clay-znbhe/">Unlocking The Potential of Geospatial Embeddings</a></li>
+  <li><a href="https://lgnd.ai/resources/unlocking-the-earth-how-ai-is-changing-the-way-we-read-our">Unlocking the Earth: How AI is Changing the Way We Read Our Planet</a></li>
+  <li><a href="https://datacommons.substack.com/p/the-hitchhikers-guide-to-vector-embeddings">The Hitchhiker's Guide to Vector Embeddings in Machine Learning (for Geographers)</a></li>
+  <li><a href="https://geoawesome.com/geo-embeddings-explained-understanding-locations-as-vectors/">Geo Embeddings Explained: Understanding Locations as Vectors</a></li>
+  <li><a href="https://www.linkedin.com/pulse/from-earth-pixels-geoembeddings-bruno-sanchez-andrade-nu%C3%B1o-h0sbf/">From Earth Pixels to GeoEmbeddings</a></li>
+  <li><a href="https://christopherren.substack.com/p/how-to-actually-use-embeddings">How to Actually Use Embeddings</a></li>
+  <li><a href="https://medium.com/google-earth/ai-powered-pixels-introducing-googles-satellite-embedding-dataset-31744c1f4650">AI-Powered Pixels: Introducing Google's Satellite Embedding Dataset</a></li>
+</ul>
 
-## Resources for Downloading/Using Embeddings
-- [TerraTorch](https://github.com/torchgeo/terratorch) and [TorchGeo](https://github.com/torchgeo/torchgeo)
-- [GeoAI Python Package](https://opengeoai.org/embeddings/)
-- [Google Earth Engine Tutorials (AlphaEarth)](https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-01-introduction)
-- [OlmoEarth Studio (OlmoEarth)](https://olmoearth.allenai.org/)
-- [TESSERA GitHub](https://github.com/ucam-eo/tessera)
-- [Clay Website](https://madewithclay.org/)
+<h3>🛠️ Resources for Downloading and Using Embeddings</h3>
+<ul style="padding-left: 3em;">
+  <li><a href="https://github.com/torchgeo/terratorch">TerraTorch</a> and <a href="https://github.com/torchgeo/torchgeo">TorchGeo</a></li>
+  <li><a href="https://opengeoai.org/embeddings/">GeoAI Python Package</a></li>
+  <li><a href="https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-01-introduction">Google Earth Engine Tutorials (AlphaEarth)</a></li>
+  <li><a href="https://olmoearth.allenai.org/">OlmoEarth Studio (OlmoEarth)</a></li>
+  <li><a href="https://github.com/ucam-eo/tessera">TESSERA GitHub</a></li>
+  <li><a href="https://madewithclay.org/">Clay Website</a></li>
+</ul>
+</small>
+</div>
 
-<center> <span style="letter-spacing: 1rem;">• • •</span> </center>
+<center> <span style="letter-spacing: 1rem;">•</span> </center>
+<center> <span style="letter-spacing: 1rem;">• •</span> </center>
 
 ## References
 [^Brown2025]: Brown, C., et al., 2025. [AlphaEarth Foundations: An embedding field model for accurate and efficient global mapping from sparse label data](https://arxiv.org/abs/2507.22291). arXiv preprint arXiv:2507.22291.
@@ -338,4 +372,3 @@ As these datasets become more explored and adopted into different domain applica
 [^ClayWebsite]: https://madewithclay.org/.
 [^Klemmer2025]: Klemmer, K., et al., 2025. [Earth Embeddings: Towards AI-centric Representations of our Planet](https://eartharxiv.org/repository/view/11083/). Earth ArXiv preprint https://doi.org/10.31223/X5HX9S.
 [^Fang2026]: Fang, H., et al., 2026. [Earth Embeddings as Products: Taxonomy, Ecosystem, and Standardized Access](https://doi.org/10.48550/arXiv.2601.13134). arXiv preprint arXiv:2601.13134.
-

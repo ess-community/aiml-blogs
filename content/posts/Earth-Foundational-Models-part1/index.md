@@ -102,15 +102,15 @@ Once <mark class="orange">*pre-trained*</mark>, foundation models can be further
 <div style="border: 2px solid #708090; border-radius: 16px; padding: 0px 16px; margin: 1em auto; width: 95%;">
 <small>
 {{< quote-red >}}
-***Pre-train**: learn the basic skills from massive datasets (initial training phase)* </br>
+*<a id="pre-training"></a>**Pre-train**: learn the basic skills from massive datasets (initial training phase)* </br>
 {{< /quote-red >}}
 <div style="margin-top: -18px;"> </div>
 {{< quote-blue >}}
-***Fine-tune**: customize those skills for a particular task (additional, fast training)*
+*<a id="fine-tuning"></a>**Fine-tune**: customize those skills for a particular task (additional, fast training)*
 {{< /quote-blue >}}
 <div style="margin-top: -18px;"> </div>
 {{< quote-purple >}}
-***Prompt**: use natural language to direct a model to perform a new task without retraining it*
+*<a id="prompting"></a>**Prompt**: use natural language to direct a model to perform a new task without retraining it*
 {{< /quote-purple >}}
 </small>
 </div>
@@ -130,7 +130,7 @@ One of the key innovations that makes foundation models possible is *self-superv
 </small>
 </div>-->
 
-><mark>***Self-supervised learning**: a ML approach in which a model learns from unlabeled data by generating its own supervisory signals, often by predicting missing or transformed (e.g., masked, shuffled) parts of the input*.</mark>
+><mark>*<a id="self-supervised-learning"></a>**Self-supervised learning**: a ML approach in which a model learns from unlabeled data by generating its own supervisory signals, often by predicting missing or transformed (e.g., masked, shuffled) parts of the input*.</mark>
 
 We generate overwhelming amounts of unlabeled data every day: text, satellite imagery, sensor signals, and more. Manually labeling it all isn’t just costly -- it’s unrealistic. SSL flips this limitation into an advantage by learning straight from the data itself.
 
